@@ -1,9 +1,14 @@
-import React from 'react';
+import React from "react";
+import logo from "../assets/logo.jpg";
+
 
 function Header() {
-    return (
-        <div>My Header</div>
-    );
+  return (
+    <>
+      <h1>Les Tisserands d'EBN </h1>
+     
+    </>
+  );
 }
 
 export default Header;

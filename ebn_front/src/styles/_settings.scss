@@ -1,0 +1,9 @@
+// setting de base , couleur , fonts 
+$color-primary : #32CCBC;
+$color-secondary :#0396FF;
+h1 {
+    color: $color-primary;
+    display: flex;
+    justify-items: center;
+    justify-content: space-around;
+}
