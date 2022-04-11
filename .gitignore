@@ -44,6 +44,9 @@ ebn_front/node_modules/
 ebn_front/.next/
 ebn_back/node_modules/
 jspm_packages/
+.idea
+ebn_front/.idea
+ebn_back/.idea
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
