@@ -2,7 +2,7 @@ import React from 'react';
 
 function Header() {
     return (
-        <div>My Header</div>
+        <div>COUCOU TOUT LE MONDE C'EST KOJO,BIENVENUE SUR MA CHAINE YOUTUBE</div>
     );
 }
 
