@@ -1,10 +1,10 @@
-import {Column, Entity} from "typeorm";
+import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class Historique {
 
-    @Column()
-    public id:number;
+    @PrimaryGeneratedColumn()
+    public id?:number;
 
     @Column()
     public idClient:number;
