@@ -20,9 +20,7 @@ export class Tournee {
   @JoinColumn()
   collecteur: Collecteur;
 
-  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {
-    eager: true,
-  })
+  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
   @JoinTable()
   conteneur: Conteneur;
 }

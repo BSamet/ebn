@@ -15,9 +15,7 @@ export class Ramassage {
   @Column()
   public date: Date;
 
-  @ManyToOne(() => Client, (client) => client.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Client, (client) => client.id, {})
   @JoinTable()
   client: Client;
 }

@@ -24,7 +24,7 @@ export class Client {
   public mail: string;
 
   @Column()
-  public telephone: string;
+  public telephone: number;
 
   @Column()
   public siret: number;
@@ -39,20 +39,16 @@ export class Client {
   public typeDeDechets: string;
 
   @OneToMany(() => Ramassage, (ramassage) => ramassage.id, {
-    eager: true,
     onDelete: 'CASCADE',
   })
   @JoinTable()
   ramassage: Ramassage[];
 
-  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {
-    eager: true,
-  })
+  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
   @JoinTable()
   conteneur: Conteneur[];
 
   @OneToMany(() => Historique, (historique) => historique.id, {
-    eager: true,
     onDelete: 'CASCADE',
   })
   @JoinTable()

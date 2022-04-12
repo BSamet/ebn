@@ -1,20 +1,18 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateConteneurDto {
+  @ApiProperty()
+  public id: number;
 
-    @ApiProperty()
-    public id:number;
+  @ApiProperty()
+  public poid: number;
 
-    @ApiProperty()
-    public poid:number;
+  @ApiProperty()
+  public typeDeDechet: string;
 
-    @ApiProperty()
-    public typeDeDechet:string;
+  @ApiProperty()
+  public clientId: number;
 
-    @ApiProperty()
-    public idClient:number;
-
-    @ApiProperty()
-    public idTournee:number;
-
+  @ApiProperty()
+  public tourneeId: number;
 }

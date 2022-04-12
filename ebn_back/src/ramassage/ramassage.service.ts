@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRamassageDto } from './dto/create-ramassage.dto';
 import { UpdateRamassageDto } from './dto/update-ramassage.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Ramassage } from './entities/ramassage.entity';
+import { Client } from '../client/entities/client.entity';
 
 @Injectable()
 export class RamassageService {
+  constructor(
+    @InjectRepository(Ramassage)
+    private readonly ramassageRepository: Repository<Ramassage>,
+  ) {}
+
   create(createRamassageDto: CreateRamassageDto) {
-    return 'This action adds a new ramassage';
+    const ramassage = new Ramassage();
+    ramassage.date = createRamassageDto.date;
+    ramassage.client = Object.assign(new Client(), {
+      id: createRamassageDto.clientId,
+    });
+    return this.ramassageRepository.save(ramassage);
   }
 
   findAll() {
-    return `This action returns all ramassage`;
+    return this.ramassageRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} ramassage`;
+    return this.ramassageRepository.findOne(id);
   }
 
   update(id: number, updateRamassageDto: UpdateRamassageDto) {
-    return `This action updates a #${id} ramassage`;
+    return this.ramassageRepository.update(id, updateRamassageDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} ramassage`;
+    return this.ramassageRepository.delete(id);
   }
 }

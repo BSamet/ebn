@@ -24,9 +24,7 @@ export class Historique {
   @Column()
   public idCollecteur: number;
 
-  @ManyToOne(() => Client, (client) => client.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Client, (client) => client.id, {})
   @JoinTable()
   client: Client;
 }

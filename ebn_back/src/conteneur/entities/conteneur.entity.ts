@@ -19,15 +19,11 @@ export class Conteneur {
   @Column()
   public typeDeDechet: string;
 
-  @ManyToOne(() => Client, (client) => client.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Client, (client) => client.id, {})
   @JoinTable()
   client: Client;
 
-  @ManyToOne(() => Tournee, (tournee) => tournee.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Tournee, (tournee) => tournee.id, {})
   @JoinTable()
   tournee: Tournee;
 }

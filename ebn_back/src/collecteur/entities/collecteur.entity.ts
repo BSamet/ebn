@@ -30,9 +30,7 @@ export class Collecteur {
   @Column()
   public numerovelo: number;
 
-  @OneToOne(() => Tournee, (tournee) => tournee.id, {
-    eager: true,
-  })
+  @OneToOne(() => Tournee, (tournee) => tournee.id, {})
   @JoinTable()
   tournee: Tournee;
 }
