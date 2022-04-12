@@ -1,15 +1,28 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {
+  Entity,
+  JoinColumn,
+  JoinTable,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Collecteur } from '../../collecteur/entities/collecteur.entity';
+import { Conteneur } from '../../conteneur/entities/conteneur.entity';
 
 @Entity()
 export class Tournee {
+  @PrimaryGeneratedColumn()
+  public id?: number;
 
-    @PrimaryGeneratedColumn()
-    public id?:number;
+  @OneToOne(() => Collecteur, {
+    eager: true,
+  })
+  @JoinColumn()
+  collecteur: Collecteur;
 
-    @Column()
-    public idCollecteur:number;
-
-    @Column()
-    public idConteneur:number;
-
+  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {
+    eager: true,
+  })
+  @JoinTable()
+  conteneur: Conteneur;
 }

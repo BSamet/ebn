@@ -1,11 +1,23 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Client } from '../../client/entities/client.entity';
 
 @Entity()
 export class Ramassage {
+  @PrimaryGeneratedColumn()
+  public id?: number;
 
-    @PrimaryGeneratedColumn()
-    public id?:number;
+  @Column()
+  public date: Date;
 
-    @Column()
-    public date:Date;
+  @ManyToOne(() => Client, (client) => client.id, {
+    eager: true,
+  })
+  @JoinTable()
+  client: Client;
 }
