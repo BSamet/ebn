@@ -5,15 +5,15 @@ export class Admin {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public nom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public prenom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public mail: string;
 
-  @Column()
+  @Column({ nullable: false })
   public telephone: string;
 }

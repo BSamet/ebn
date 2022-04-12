@@ -13,10 +13,10 @@ export class Conteneur {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public poid: number;
 
-  @Column()
+  @Column({ nullable: false })
   public typeDeDechet: string;
 
   @ManyToOne(() => Client, (client) => client.id, {})

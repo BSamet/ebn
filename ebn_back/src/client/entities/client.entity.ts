@@ -14,28 +14,28 @@ export class Client {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public nom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public prenom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public mail: string;
 
-  @Column()
+  @Column({ nullable: false })
   public telephone: number;
 
-  @Column()
+  @Column({ nullable: true })
   public siret: number;
 
-  @Column()
+  @Column({ nullable: true })
   public nomCommercial: string;
 
-  @Column()
+  @Column({ nullable: false })
   public adresse: string;
 
-  @Column()
+  @Column({ nullable: false })
   public typeDeDechets: string;
 
   @OneToMany(() => Ramassage, (ramassage) => ramassage.id, {

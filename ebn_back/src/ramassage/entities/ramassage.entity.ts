@@ -12,7 +12,7 @@ export class Ramassage {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public date: Date;
 
   @ManyToOne(() => Client, (client) => client.id, {})
