@@ -21,14 +21,14 @@ VALUES ('1'),
        ('2');
 
 INSERT INTO conteneur(poid, typeDeDechet, clientId, tourneeId)
-VALUES ('10', 'bio-dechets', '3', '1'),
-       ('7', 'Marc de café', '4', '2');
+VALUES ('10', 'bio-dechets', '1', '1'),
+       ('7', 'Marc de café', '2', '2');
 
 INSERT INTO historique(date, typeDeDechet, idConteneur, idCollecteur, clientId)
-VALUES ('2022-04-12T13:00:09.024Z', 'bio-dechet', '1', '1', '3'),
-       ('2022-04-12T13:12:09.024Z', 'Marc de café', '2', '2', '4');
+VALUES ('2022-04-12T13:00:09.024Z', 'bio-dechet', '1', '1', '1'),
+       ('2022-04-12T13:12:09.024Z', 'Marc de café', '2', '2', '2');
 
 INSERT INTO ramassage(date, clientId)
-VALUES ('2022-01-12T14:20:09.024Z', '3'),
-       ('2022-01-13T15:22:09.024Z', '4');
+VALUES ('2022-01-12T14:20:09.024Z', '1'),
+       ('2022-01-13T15:22:09.024Z', '2');
 
