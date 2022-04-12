@@ -1,9 +1,22 @@
 // setting de base , couleur , fonts 
-$color-primary : #32CCBC;
-$color-secondary :#0396FF;
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;800&family=Exo:ital,wght@0,300;1,200;1,400&display=swap');
+
+
+$font-1 : "Exo 2", sans-serif;
+
+$color-1 : #0096f0;
+$color-2 :#8ac997;
+$color-3 : black;
 h1 {
-    color: $color-primary;
+    color: $color-2;
     display: flex;
     justify-items: center;
     justify-content: space-around;
+    font-family: $font-1;
+    
+}
+
+body{
+   
+    font-family: $font-1;
 }
