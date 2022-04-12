@@ -14,45 +14,41 @@ export class Client {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public nom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public prenom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public mail: string;
 
-  @Column()
-  public telephone: string;
+  @Column({ nullable: false })
+  public telephone: number;
 
-  @Column()
+  @Column({ nullable: true })
   public siret: number;
 
-  @Column()
+  @Column({ nullable: true })
   public nomCommercial: string;
 
-  @Column()
+  @Column({ nullable: false })
   public adresse: string;
 
-  @Column()
+  @Column({ nullable: false })
   public typeDeDechets: string;
 
   @OneToMany(() => Ramassage, (ramassage) => ramassage.id, {
-    eager: true,
     onDelete: 'CASCADE',
   })
   @JoinTable()
   ramassage: Ramassage[];
 
-  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {
-    eager: true,
-  })
+  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
   @JoinTable()
   conteneur: Conteneur[];
 
   @OneToMany(() => Historique, (historique) => historique.id, {
-    eager: true,
     onDelete: 'CASCADE',
   })
   @JoinTable()

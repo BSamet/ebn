@@ -12,21 +12,19 @@ export class Historique {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public date: Date;
 
-  @Column()
+  @Column({ nullable: false })
   public typeDeDechet: string;
 
-  @Column()
+  @Column({ nullable: false })
   public idConteneur: number;
 
-  @Column()
+  @Column({ nullable: false })
   public idCollecteur: number;
 
-  @ManyToOne(() => Client, (client) => client.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Client, (client) => client.id, {})
   @JoinTable()
   client: Client;
 }

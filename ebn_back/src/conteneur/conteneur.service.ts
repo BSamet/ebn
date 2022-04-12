@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { CreateConteneurDto } from './dto/create-conteneur.dto';
 import { UpdateConteneurDto } from './dto/update-conteneur.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Conteneur } from './entities/conteneur.entity';
+import { Client } from '../client/entities/client.entity';
+import { Tournee } from '../tournee/entities/tournee.entity';
 
 @Injectable()
 export class ConteneurService {
+  constructor(
+    @InjectRepository(Conteneur)
+    private readonly conteneurRepository: Repository<Conteneur>,
+  ) {}
+
   create(createConteneurDto: CreateConteneurDto) {
-    return 'This action adds a new conteneur';
+    const conteneur = new Conteneur();
+    conteneur.poid = createConteneurDto.poid;
+    conteneur.typeDeDechet = createConteneurDto.typeDeDechet;
+    conteneur.client = Object.assign(new Client(), {
+      id: createConteneurDto.clientId,
+    });
+    conteneur.tournee = Object.assign(new Tournee(), {
+      id: createConteneurDto.tourneeId,
+    });
+    return this.conteneurRepository.save(conteneur);
   }
 
   findAll() {
-    return `This action returns all conteneur`;
+    return this.conteneurRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} conteneur`;
+    return this.conteneurRepository.findOne(id);
   }
 
   update(id: number, updateConteneurDto: UpdateConteneurDto) {
-    return `This action updates a #${id} conteneur`;
+    return this.conteneurRepository.update(id, updateConteneurDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} conteneur`;
+    return this.conteneurRepository.delete(id);
   }
 }

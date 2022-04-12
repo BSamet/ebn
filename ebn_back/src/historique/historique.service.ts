@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { CreateHistoriqueDto } from './dto/create-historique.dto';
 import { UpdateHistoriqueDto } from './dto/update-historique.dto';
+import { Historique } from './entities/historique.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Client } from '../client/entities/client.entity';
 
 @Injectable()
 export class HistoriqueService {
+  constructor(
+    @InjectRepository(Historique)
+    private readonly historiqueRepository: Repository<Historique>,
+  ) {}
+
   create(createHistoriqueDto: CreateHistoriqueDto) {
-    return 'This action adds a new historique';
+    const historique = new Historique();
+    historique.date = createHistoriqueDto.date;
+    historique.typeDeDechet = createHistoriqueDto.typeDeDechet;
+    historique.idConteneur = createHistoriqueDto.idConteneur;
+    historique.idCollecteur = createHistoriqueDto.idCollecteur;
+    historique.client = Object.assign(new Client(), {
+      id: createHistoriqueDto.clientId,
+    });
+    return this.historiqueRepository.save(historique);
   }
 
   findAll() {
-    return `This action returns all historique`;
+    return this.historiqueRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} historique`;
+    return this.historiqueRepository.findOne(id);
   }
 
   update(id: number, updateHistoriqueDto: UpdateHistoriqueDto) {
-    return `This action updates a #${id} historique`;
+    return this.historiqueRepository.update(id, updateHistoriqueDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} historique`;
+    return this.historiqueRepository.delete(id);
   }
 }

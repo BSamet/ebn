@@ -12,12 +12,10 @@ export class Ramassage {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public date: Date;
 
-  @ManyToOne(() => Client, (client) => client.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Client, (client) => client.id, {})
   @JoinTable()
   client: Client;
 }

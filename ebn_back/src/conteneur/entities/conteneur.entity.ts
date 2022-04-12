@@ -13,21 +13,17 @@ export class Conteneur {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public poid: number;
 
-  @Column()
+  @Column({ nullable: false })
   public typeDeDechet: string;
 
-  @ManyToOne(() => Client, (client) => client.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Client, (client) => client.id, {})
   @JoinTable()
   client: Client;
 
-  @ManyToOne(() => Tournee, (tournee) => tournee.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Tournee, (tournee) => tournee.id, {})
   @JoinTable()
   tournee: Tournee;
 }

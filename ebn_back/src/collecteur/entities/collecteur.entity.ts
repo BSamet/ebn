@@ -12,27 +12,25 @@ export class Collecteur {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({ nullable: false })
   public nom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public prenom: string;
 
-  @Column()
+  @Column({ nullable: false })
   public mail: string;
 
-  @Column()
+  @Column({ nullable: false })
   public telephone: string;
 
-  @Column()
+  @Column({ nullable: false })
   public numeroCollecteur: number;
 
-  @Column()
+  @Column({ nullable: false })
   public numerovelo: number;
 
-  @OneToOne(() => Tournee, (tournee) => tournee.id, {
-    eager: true,
-  })
+  @OneToOne(() => Tournee, (tournee) => tournee.id, {})
   @JoinTable()
   tournee: Tournee;
 }
