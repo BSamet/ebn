@@ -18,7 +18,8 @@ interface MainFeaturedPostProps {
 
 export default function MainFeaturedPost(props: MainFeaturedPostProps) {
   const { post } = props;
-
+  console.log(post.image);
+  
   
   
   return (

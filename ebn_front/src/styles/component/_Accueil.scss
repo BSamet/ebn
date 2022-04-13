@@ -1,4 +1,22 @@
-.logo{
+.logo {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  height: 120px;
+}
+
+.mainPost {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: stretch;
+    justify-content: space-evenly;
+    align-items: stretch;
+}
+
+
+.footer {
+  padding-top: 100px;
+  padding-bottom: 20px;
+  background-color: linear-gradient(to top, #c1dfc4 0%, #deecdd 100%);
 }
