@@ -11,6 +11,7 @@ import { HistoriqueModule } from './historique/historique.module';
 import { TourneeModule } from './tournee/tournee.module';
 import { ConteneurModule } from './conteneur/conteneur.module';
 import { TypeDechetsModule } from './type-dechets/type-dechets.module';
+import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TypeDechetsModule } from './type-dechets/type-dechets.module';
     TourneeModule,
     ConteneurModule,
     TypeDechetsModule,
+    UtilisateursModule,
   ],
   controllers: [AppController],
   providers: [AppService],
