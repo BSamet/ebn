@@ -1,8 +1,11 @@
+import { Collecteur } from 'src/collecteur/entities/collecteur.entity';
+import { Conteneur } from 'src/conteneur/entities/conteneur.entity';
 import {
   Column,
   Entity,
   JoinTable,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Client } from '../../client/entities/client.entity';
@@ -27,4 +30,12 @@ export class Historique {
   @ManyToOne(() => Client, (client) => client.id, {})
   @JoinTable()
   client: Client;
+
+  @OneToMany(() => Collecteur, (collecteur) => collecteur.id, {})
+  @JoinTable()
+  collecteur: Collecteur[];
+
+  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
+  @JoinTable()
+  conteneur: Conteneur[];
 }

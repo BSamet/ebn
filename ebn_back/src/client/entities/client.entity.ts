@@ -1,11 +1,14 @@
+import { RamassagePonctuel } from 'src/ramassagePonctuel/entities/ramassagePonctuel.entity';
+import { TypeDechet } from 'src/type-dechets/entities/type-dechet.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Ramassage } from '../../ramassage/entities/ramassage.entity';
+
 import { Conteneur } from '../../conteneur/entities/conteneur.entity';
 import { Historique } from '../../historique/entities/historique.entity';
 
@@ -38,11 +41,15 @@ export class Client {
   @Column({ nullable: false })
   public typeDeDechets: string;
 
-  @OneToMany(() => Ramassage, (ramassage) => ramassage.id, {
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(
+    () => RamassagePonctuel,
+    (ramassagePonctuel) => ramassagePonctuel.id,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   @JoinTable()
-  ramassage: Ramassage[];
+  ramassage: RamassagePonctuel[];
 
   @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
   @JoinTable()
@@ -53,4 +60,7 @@ export class Client {
   })
   @JoinTable()
   historique: Historique[];
+  @OneToMany(() => TypeDechet, (typedechet) => typedechet.id, {})
+  @JoinColumn()
+  typedechet: TypeDechet[];
 }

@@ -8,7 +8,7 @@ import {
 import { Client } from '../../client/entities/client.entity';
 
 @Entity()
-export class Ramassage {
+export class RamassagePonctuel {
   @PrimaryGeneratedColumn()
   public id?: number;
 

@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateRamassageDto {
+export class CreateTypeDechetDto {
   @ApiProperty()
-  public date: Date;
-
+  public id?: number;
   @ApiProperty()
-  public clientId: number;
+  public nom: string;
 }

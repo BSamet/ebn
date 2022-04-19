@@ -1,4 +1,6 @@
+import { Client } from 'src/client/entities/client.entity';
 import {
+  Column,
   Entity,
   JoinColumn,
   JoinTable,
@@ -7,12 +9,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Collecteur } from '../../collecteur/entities/collecteur.entity';
-import { Conteneur } from '../../conteneur/entities/conteneur.entity';
 
 @Entity()
 export class Tournee {
   @PrimaryGeneratedColumn()
   public id?: number;
+  @Column()
+  public date: Date;
 
   @OneToOne(() => Collecteur, {
     eager: true,
@@ -20,7 +23,7 @@ export class Tournee {
   @JoinColumn()
   collecteur: Collecteur;
 
-  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
+  @OneToMany(() => Client, (client) => client.id, {})
   @JoinTable()
-  conteneur: Conteneur;
+  client: Client[];
 }
