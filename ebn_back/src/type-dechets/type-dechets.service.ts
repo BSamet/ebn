@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTypeDechetDto } from './dto/create-type-dechet.dto';
-import { UpdateTypeDechetDto } from './dto/update-type-dechet.dto';
+import {Injectable} from '@nestjs/common';
+import {CreateTypeDechetDto} from './dto/create-type-dechet.dto';
+import {UpdateTypeDechetDto} from './dto/update-type-dechet.dto';
+import {InjectRepository} from "@nestjs/typeorm";
+import {RamassagePonctuel} from "../ramassagePonctuel/entities/ramassagePonctuel.entity";
+import {Repository} from "typeorm";
+import {TypeDechet} from "./entities/type-dechet.entity";
 
 @Injectable()
 export class TypeDechetsService {
+  constructor(
+      @InjectRepository(RamassagePonctuel)
+      private readonly typeDechetsRepository: Repository<TypeDechet>,
+  ) {
+  }
+
   create(createTypeDechetDto: CreateTypeDechetDto) {
-    return 'This action adds a new typeDechet';
+    const typeDechets = new TypeDechet();
+    typeDechets.typeDechets = createTypeDechetDto.typeDechets;
+    return this.typeDechetsRepository.save(typeDechets);
   }
 
   findAll() {
-    return `This action returns all typeDechets`;
+    return this.typeDechetsRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} typeDechet`;
+    return this.typeDechetsRepository.findOne(id);
   }
 
   update(id: number, updateTypeDechetDto: UpdateTypeDechetDto) {
-    return `This action updates a #${id} typeDechet`;
+    return this.typeDechetsRepository.update(
+        id,
+        updateTypeDechetDto,
+    );
   }
 
   remove(id: number) {
-    return `This action removes a #${id} typeDechet`;
+    return this.typeDechetsRepository.delete(id);
   }
 }
