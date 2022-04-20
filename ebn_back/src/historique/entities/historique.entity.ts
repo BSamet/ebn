@@ -1,6 +1,6 @@
 import {Collecteur} from 'src/collecteur/entities/collecteur.entity';
 import {Conteneur} from 'src/conteneur/entities/conteneur.entity';
-import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
 import {Client} from '../../client/entities/client.entity';
 
 @Entity()
@@ -14,21 +14,15 @@ export class Historique {
     @Column({nullable: false})
     public typeDeDechet: string;
 
-    @Column({nullable: false})
-    public idConteneur: number;
-
-    @Column({nullable: false})
-    public idCollecteur: number;
-
-    @ManyToOne(() => Client, (client) => client.historique, {})
+    @ManyToOne(() => Client, (client) => client.historique, {eager: true})
     @JoinTable()
     client: Client;
 
-    @OneToMany(() => Collecteur, (collecteur) => collecteur.id, {})
+    @ManyToOne(() => Collecteur, (collecteur) => collecteur.historique, {eager: true})
     @JoinTable()
-    collecteur: Collecteur[];
+    collecteur: Collecteur;
 
-    @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
+    @ManyToOne(() => Conteneur, (conteneur) => conteneur.historique, {eager: true})
     @JoinTable()
-    conteneur: Conteneur[];
+    conteneur: Conteneur;
 }

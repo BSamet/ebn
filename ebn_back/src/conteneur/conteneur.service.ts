@@ -5,7 +5,6 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Conteneur} from './entities/conteneur.entity';
 import {Client} from '../client/entities/client.entity';
-import {Tournee} from '../tournee/entities/tournee.entity';
 import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
 
 @Injectable()
@@ -24,9 +23,6 @@ export class ConteneurService {
         });
         conteneur.client = Object.assign(new Client(), {
             id: createConteneurDto.clientId,
-        });
-        conteneur.tournee = Object.assign(new Tournee(), {
-            id: createConteneurDto.tourneeId,
         });
         return this.conteneurRepository.save(conteneur);
     }

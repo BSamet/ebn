@@ -1,12 +1,14 @@
 import {Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Client} from "../../client/entities/client.entity";
-import {Admin} from "../../admin/entities/admin.entity";
 import {Collecteur} from "../../collecteur/entities/collecteur.entity";
 
 @Entity()
 export class Utilisateur {
     @PrimaryGeneratedColumn()
     public id?: number;
+
+    @Column()
+    public role: string;
 
     @Column()
     public utilisateur: string;
@@ -26,15 +28,11 @@ export class Utilisateur {
     @Column()
     public telephone: string;
 
-    @OneToMany(() => Client, (client) => client.utilisateur, {eager: true})
+    @OneToMany(() => Client, (client) => client.utilisateur, {eager: true, onDelete: "CASCADE"})
     @JoinTable()
     client: Client[];
 
-    @OneToMany(() => Admin, (admin) => admin.utilisateur, {eager: true})
-    @JoinTable()
-    admin: Admin[];
-
-    @OneToMany(() => Collecteur, (collecteur) => collecteur.utilisateur, {eager: true})
+    @OneToMany(() => Collecteur, (collecteur) => collecteur.utilisateur, {eager: true, onDelete: "CASCADE"})
     @JoinTable()
     collecteur: Collecteur[];
 }

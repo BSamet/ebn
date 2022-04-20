@@ -1,10 +1,12 @@
 import {RamassagePonctuel} from 'src/ramassag-ponctuel/entities/ramassagePonctuel.entity';
 import {TypeDechet} from 'src/type-dechets/entities/type-dechet.entity';
-import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
 
 import {Conteneur} from '../../conteneur/entities/conteneur.entity';
 import {Historique} from '../../historique/entities/historique.entity';
 import {Utilisateur} from "../../utilisateurs/entities/utilisateur.entity";
+import {Tournee} from "../../tournee/entities/tournee.entity";
+import {RamassageAbonnement} from "../../ramassage-abonnement/entities/ramassage-abonnement.entity";
 
 @Entity()
 export class Client {
@@ -29,17 +31,29 @@ export class Client {
         eager: true
     })
     @JoinTable()
-    ramassage: RamassagePonctuel[];
+    ramassagePonctuel: RamassagePonctuel[];
+
+    @OneToMany(() => RamassageAbonnement, (ramassageAbonnement) => ramassageAbonnement.client, {
+        onDelete: 'CASCADE',
+        eager: true
+    })
+    @JoinTable()
+    ramassageAbonnement: RamassageAbonnement[];
 
     @OneToMany(() => Conteneur, (conteneur) => conteneur.client, {})
     @JoinTable()
     conteneur: Conteneur[];
 
-    @OneToMany(() => Historique, (historique) => historique.client, {onDelete: 'CASCADE',})
+    @OneToMany(() => Historique, (historique) => historique.client, {onDelete: 'CASCADE'})
     @JoinTable()
     historique: Historique[];
 
-    @OneToMany(() => TypeDechet, (typeDechet) => typeDechet.client, {eager: true})
+    //TODO Tester la creation
+    @ManyToMany(() => TypeDechet, (typeDechet) => typeDechet.id, {eager: true})
     @JoinTable()
     typeDechet: TypeDechet[];
+
+    @ManyToOne(() => Tournee, (tournee) => tournee.client, {onDelete: 'CASCADE'})
+    @JoinTable()
+    tournee: Tournee;
 }

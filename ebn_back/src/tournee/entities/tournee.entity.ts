@@ -10,13 +10,11 @@ export class Tournee {
     @Column()
     public date: Date;
 
-    @OneToOne(() => Collecteur, {
-        eager: true,
-    })
+    @OneToOne(() => Collecteur, (collecteur) => collecteur.tournee)
     @JoinColumn()
     collecteur: Collecteur;
 
-    @OneToMany(() => Client, (client) => client.id, {})
+    @OneToMany(() => Client, (client) => client.tournee, {eager: true})
     @JoinTable()
     client: Client[];
 }

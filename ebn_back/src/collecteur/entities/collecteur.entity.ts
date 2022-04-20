@@ -1,6 +1,7 @@
 import {Column, Entity, JoinTable, ManyToOne, OneToOne, PrimaryGeneratedColumn,} from 'typeorm';
 import {Tournee} from '../../tournee/entities/tournee.entity';
 import {Utilisateur} from "../../utilisateurs/entities/utilisateur.entity";
+import {Historique} from "../../historique/entities/historique.entity";
 
 @Entity()
 export class Collecteur {
@@ -13,17 +14,15 @@ export class Collecteur {
     @Column({nullable: false})
     public numeroVelo: number;
 
-    @ManyToOne(
-        () => Utilisateur,
-        (utilisateur) => utilisateur.id,
-        {
-            onDelete: 'CASCADE',
-            eager: true
-        })
+    @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.collecteur,)
     @JoinTable()
     utilisateur: Utilisateur;
 
-    @OneToOne(() => Tournee, (tournee) => tournee.id, {})
+    @OneToOne(() => Historique, (historique) => historique.collecteur, {})
+    @JoinTable()
+    historique: Historique[];
+
+    @OneToOne(() => Tournee, (tournee) => tournee.collecteur, {eager: true})
     @JoinTable()
     tournee: Tournee;
 }

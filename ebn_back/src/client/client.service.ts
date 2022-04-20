@@ -5,6 +5,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Client} from './entities/client.entity';
 import {Repository} from 'typeorm';
 import {Utilisateur} from "../utilisateurs/entities/utilisateur.entity";
+import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
 
 @Injectable()
 export class ClientService {
@@ -14,6 +15,7 @@ export class ClientService {
     ) {
     }
 
+    //TODO Tester la creation avec un type de déchets
     create(createClientDto: CreateClientDto) {
         const client = new Client();
         client.siret = createClientDto.siret;
@@ -22,6 +24,10 @@ export class ClientService {
         client.utilisateur = Object.assign(new Utilisateur(), {
             id: createClientDto.utilisateurId,
         });
+        client.typeDechet = [Object.assign(new TypeDechet(), {
+            clientId: createClientDto.utilisateurId,
+            typeDechettId: createClientDto.typeDechetsId,
+        })];
         return this.clientRepository.save(client);
     }
 

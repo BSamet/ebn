@@ -1,7 +1,7 @@
 import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
 import {Client} from '../../client/entities/client.entity';
-import {Tournee} from '../../tournee/entities/tournee.entity';
 import {TypeDechet} from "../../type-dechets/entities/type-dechet.entity";
+import {Historique} from "../../historique/entities/historique.entity";
 
 @Entity()
 export class Conteneur {
@@ -11,7 +11,7 @@ export class Conteneur {
     @Column({nullable: false})
     public poid: number;
 
-    @OneToMany(() => TypeDechet, (typeDechet) => typeDechet.id, {})
+    @OneToMany(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {})
     @JoinTable()
     typeDechet: TypeDechet;
 
@@ -19,7 +19,7 @@ export class Conteneur {
     @JoinTable()
     client: Client;
 
-    @ManyToOne(() => Tournee, (tournee) => tournee.id, {})
+    @OneToMany(() => Historique, (historique) => historique.conteneur, {})
     @JoinTable()
-    tournee: Tournee;
+    historique: Historique[];
 }

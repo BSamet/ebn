@@ -1,4 +1,3 @@
-import {Client} from 'src/client/entities/client.entity';
 import {Conteneur} from 'src/conteneur/entities/conteneur.entity';
 import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
 
@@ -10,11 +9,7 @@ export class TypeDechet {
     @Column({nullable: false})
     public typeDechets: string;
 
-    @ManyToOne(() => Conteneur, (conteneur) => conteneur.id, {})
+    @ManyToOne(() => Conteneur, (conteneur) => conteneur.typeDechet, {})
     @JoinTable()
     conteneur: Conteneur[];
-
-    @ManyToOne(() => Client, (client) => client.typeDechet, {})
-    @JoinTable()
-    client: Client;
 }

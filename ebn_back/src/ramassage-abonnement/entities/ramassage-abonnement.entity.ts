@@ -12,7 +12,7 @@ export class RamassageAbonnement {
     @Column()
     public periodicite: number;
 
-    @ManyToOne(() => Client, (client) => client.id, {})
+    @ManyToOne(() => Client, (client) => client.ramassageAbonnement)
     @JoinTable()
     client: Client;
 }

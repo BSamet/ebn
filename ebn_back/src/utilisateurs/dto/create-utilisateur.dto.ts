@@ -2,7 +2,7 @@ import {ApiProperty} from "@nestjs/swagger";
 
 export class CreateUtilisateurDto {
     @ApiProperty()
-    public id?: number;
+    public role: string;
 
     @ApiProperty()
     public utilisateur: string;

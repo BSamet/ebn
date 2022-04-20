@@ -17,5 +17,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
-//TODO Table de lisaison typedechet -> Client ManytoMany; Conteneur oneToMany Typedechets; historique lisaison typedechet et collecteur, enlever idconteneur; tourneeid sur client; enlever tabble admin et rajouter rôle dans utilisateur;

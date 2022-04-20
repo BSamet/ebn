@@ -8,5 +8,5 @@ export class CreateRamassageAbonnementDto {
     public periodicite: number;
 
     @ApiProperty()
-    clientid: number;
+    public clientid: number;
 }

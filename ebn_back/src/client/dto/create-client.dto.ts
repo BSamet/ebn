@@ -2,9 +2,6 @@ import {ApiProperty} from '@nestjs/swagger';
 
 export class CreateClientDto {
     @ApiProperty()
-    public id?: number;
-
-    @ApiProperty()
     public siret: number;
 
     @ApiProperty()
@@ -15,4 +12,7 @@ export class CreateClientDto {
 
     @ApiProperty()
     public utilisateurId: number;
+
+    @ApiProperty()
+    public typeDechetsId: number;
 }

@@ -15,7 +15,8 @@ export class UtilisateursService {
 
     create(createUtilisateurDto: CreateUtilisateurDto) {
         const utilisateur = new Utilisateur();
-        utilisateur.utilisateur = createUtilisateurDto.utilisateur
+        utilisateur.role = createUtilisateurDto.role;
+        utilisateur.utilisateur = createUtilisateurDto.utilisateur;
         utilisateur.password = createUtilisateurDto.password;
         utilisateur.nom = createUtilisateurDto.nom;
         utilisateur.prenom = createUtilisateurDto.prenom;

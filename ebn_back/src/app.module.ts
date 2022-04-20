@@ -5,7 +5,6 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import {getConnectionOptions} from 'typeorm';
 import {ClientModule} from './client/client.module';
 import {CollecteurModule} from './collecteur/collecteur.module';
-import {AdminModule} from './admin/admin.module';
 import {RamassagePonctuelModule} from './ramassag-ponctuel/ramassagePonctuel.module';
 import {HistoriqueModule} from './historique/historique.module';
 import {TourneeModule} from './tournee/tournee.module';
@@ -24,7 +23,6 @@ import {RamassageAbonnementModule} from './ramassage-abonnement/ramassage-abonne
         }),
         ClientModule,
         CollecteurModule,
-        AdminModule,
         RamassagePonctuelModule,
         HistoriqueModule,
         TourneeModule,

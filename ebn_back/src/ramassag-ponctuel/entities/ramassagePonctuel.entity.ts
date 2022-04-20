@@ -9,7 +9,7 @@ export class RamassagePonctuel {
     @Column({nullable: false})
     public date: Date;
 
-    @ManyToOne(() => Client, (client) => client.ramassage, {onDelete: 'CASCADE'})
+    @ManyToOne(() => Client, (client) => client.ramassagePonctuel)
     @JoinTable()
     client: Client;
 }
