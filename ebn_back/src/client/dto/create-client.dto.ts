@@ -14,8 +14,5 @@ export class CreateClientDto {
     public adresse: string;
 
     @ApiProperty()
-    public typeDechetId: number;
-
-    @ApiProperty()
     public utilisateurId: number;
 }

@@ -1,19 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Utilisateur} from "../../utilisateurs/entities/utilisateur.entity";
 
 @Entity()
 export class Admin {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+    @PrimaryGeneratedColumn()
+    public id?: number;
 
-  @Column({ nullable: false })
-  public nom: string;
-
-  @Column({ nullable: false })
-  public prenom: string;
-
-  @Column({ nullable: false })
-  public mail: string;
-
-  @Column({ nullable: false })
-  public telephone: string;
+    @ManyToOne(
+        () => Utilisateur,
+        (utilisateur) => utilisateur.id,
+        {
+            onDelete: 'CASCADE',
+            eager: true
+        })
+    @JoinTable()
+    utilisateur: Utilisateur;
 }
