@@ -15,7 +15,7 @@ export class Conteneur {
     @JoinTable()
     typeDechet: TypeDechet;
 
-    @ManyToOne(() => Client, (client) => client.id, {})
+    @ManyToOne(() => Client, (client) => client.conteneur, {})
     @JoinTable()
     client: Client;
 

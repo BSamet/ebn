@@ -4,17 +4,17 @@ import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn,} from 'typ
 
 @Entity()
 export class TypeDechet {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+    @PrimaryGeneratedColumn()
+    public id?: number;
 
-  @Column({nullable: false})
-  public typeDechets: string;
+    @Column({nullable: false})
+    public typeDechets: string;
 
-  @ManyToOne(() => Conteneur, (conteneur) => conteneur.id, {})
-  @JoinTable()
-  conteneur: Conteneur[];
+    @ManyToOne(() => Conteneur, (conteneur) => conteneur.id, {})
+    @JoinTable()
+    conteneur: Conteneur[];
 
-  @ManyToOne(() => Client, (client) => client.id, {})
-  @JoinTable()
-  client: Client[];
+    @ManyToOne(() => Client, (client) => client.typeDechet, {})
+    @JoinTable()
+    client: Client;
 }

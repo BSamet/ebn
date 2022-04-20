@@ -6,13 +6,7 @@ export class Admin {
     @PrimaryGeneratedColumn()
     public id?: number;
 
-    @ManyToOne(
-        () => Utilisateur,
-        (utilisateur) => utilisateur.id,
-        {
-            onDelete: 'CASCADE',
-            eager: true
-        })
+    @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.admin, {onDelete: 'CASCADE'})
     @JoinTable()
     utilisateur: Utilisateur;
 }
