@@ -1,29 +1,25 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Client } from '../../client/entities/client.entity';
-import { Tournee } from '../../tournee/entities/tournee.entity';
+import {Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
+import {Client} from '../../client/entities/client.entity';
+import {TypeDechet} from "../../type-dechets/entities/type-dechet.entity";
+import {Historique} from "../../historique/entities/historique.entity";
 
 @Entity()
 export class Conteneur {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+    @PrimaryGeneratedColumn()
+    public id?: number;
 
-  @Column({ nullable: false })
-  public poid: number;
+    @Column({nullable: false})
+    public poid: number;
 
-  @Column({ nullable: false })
-  public typeDeDechet: string;
+    @OneToMany(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {})
+    @JoinTable()
+    typeDechet: TypeDechet;
 
-  @ManyToOne(() => Client, (client) => client.id, {})
-  @JoinTable()
-  client: Client;
+    @ManyToOne(() => Client, (client) => client.conteneur, {})
+    @JoinTable()
+    client: Client;
 
-  @ManyToOne(() => Tournee, (tournee) => tournee.id, {})
-  @JoinTable()
-  tournee: Tournee;
+    @OneToMany(() => Historique, (historique) => historique.conteneur, {})
+    @JoinTable()
+    historique: Historique[];
 }

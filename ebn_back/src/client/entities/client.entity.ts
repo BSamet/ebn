@@ -1,66 +1,59 @@
-import { RamassagePonctuel } from 'src/ramassagePonctuel/entities/ramassagePonctuel.entity';
-import { TypeDechet } from 'src/type-dechets/entities/type-dechet.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import {RamassagePonctuel} from 'src/ramassag-ponctuel/entities/ramassagePonctuel.entity';
+import {TypeDechet} from 'src/type-dechets/entities/type-dechet.entity';
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
 
-import { Conteneur } from '../../conteneur/entities/conteneur.entity';
-import { Historique } from '../../historique/entities/historique.entity';
+import {Conteneur} from '../../conteneur/entities/conteneur.entity';
+import {Historique} from '../../historique/entities/historique.entity';
+import {Utilisateur} from "../../utilisateurs/entities/utilisateur.entity";
+import {Tournee} from "../../tournee/entities/tournee.entity";
+import {RamassageAbonnement} from "../../ramassage-abonnement/entities/ramassage-abonnement.entity";
 
 @Entity()
 export class Client {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+    @PrimaryGeneratedColumn()
+    public id?: number;
 
-  @Column({ nullable: false })
-  public nom: string;
+    @Column({nullable: true})
+    public siret: number;
 
-  @Column({ nullable: false })
-  public prenom: string;
+    @Column({nullable: true})
+    public nomCommercial: string;
 
-  @Column({ nullable: false })
-  public mail: string;
+    @Column({nullable: false})
+    public adresse: string;
 
-  @Column({ nullable: false })
-  public telephone: number;
+    @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.client, {onDelete: 'CASCADE'})
+    @JoinTable()
+    utilisateur: Utilisateur;
 
-  @Column({ nullable: true })
-  public siret: number;
+    @OneToMany(() => RamassagePonctuel, (ramassagePonctuel) => ramassagePonctuel.client, {
+        onDelete: 'CASCADE',
+        eager: true
+    })
+    @JoinTable()
+    ramassagePonctuel: RamassagePonctuel[];
 
-  @Column({ nullable: true })
-  public nomCommercial: string;
+    @OneToMany(() => RamassageAbonnement, (ramassageAbonnement) => ramassageAbonnement.client, {
+        onDelete: 'CASCADE',
+        eager: true
+    })
+    @JoinTable()
+    ramassageAbonnement: RamassageAbonnement[];
 
-  @Column({ nullable: false })
-  public adresse: string;
+    @OneToMany(() => Conteneur, (conteneur) => conteneur.client, {})
+    @JoinTable()
+    conteneur: Conteneur[];
 
-  @Column({ nullable: false })
-  public typeDeDechets: string;
+    @OneToMany(() => Historique, (historique) => historique.client, {onDelete: 'CASCADE'})
+    @JoinTable()
+    historique: Historique[];
 
-  @OneToMany(
-    () => RamassagePonctuel,
-    (ramassagePonctuel) => ramassagePonctuel.id,
-    {
-      onDelete: 'CASCADE',
-    },
-  )
-  @JoinTable()
-  ramassage: RamassagePonctuel[];
+    //TODO Tester la creation
+    @ManyToMany(() => TypeDechet, (typeDechet) => typeDechet.id, {eager: true})
+    @JoinTable()
+    typeDechet: TypeDechet[];
 
-  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
-  @JoinTable()
-  conteneur: Conteneur[];
-
-  @OneToMany(() => Historique, (historique) => historique.id, {
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
-  historique: Historique[];
-  @OneToMany(() => TypeDechet, (typedechet) => typedechet.id, {})
-  @JoinColumn()
-  typedechet: TypeDechet[];
+    @ManyToOne(() => Tournee, (tournee) => tournee.client, {onDelete: 'CASCADE'})
+    @JoinTable()
+    tournee: Tournee;
 }

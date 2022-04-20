@@ -1,30 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import {ApiProperty} from '@nestjs/swagger';
 
 export class CreateClientDto {
-  @ApiProperty()
-  public id?: number;
+    @ApiProperty()
+    public siret: number;
 
-  @ApiProperty()
-  public nom: string;
+    @ApiProperty()
+    public nomCommercial: string;
 
-  @ApiProperty()
-  public prenom: string;
+    @ApiProperty()
+    public adresse: string;
 
-  @ApiProperty()
-  public mail: string;
+    @ApiProperty()
+    public utilisateurId: number;
 
-  @ApiProperty()
-  public telephone: number;
-
-  @ApiProperty()
-  public siret: number;
-
-  @ApiProperty()
-  public nomCommercial: string;
-
-  @ApiProperty()
-  public adresse: string;
-
-  @ApiProperty()
-  public typeDeDechets: string;
+    @ApiProperty()
+    public typeDechetsId: number;
 }

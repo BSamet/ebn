@@ -1,41 +1,28 @@
-import { Collecteur } from 'src/collecteur/entities/collecteur.entity';
-import { Conteneur } from 'src/conteneur/entities/conteneur.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Client } from '../../client/entities/client.entity';
+import {Collecteur} from 'src/collecteur/entities/collecteur.entity';
+import {Conteneur} from 'src/conteneur/entities/conteneur.entity';
+import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {Client} from '../../client/entities/client.entity';
 
 @Entity()
 export class Historique {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+    @PrimaryGeneratedColumn()
+    public id?: number;
 
-  @Column({ nullable: false })
-  public date: Date;
+    @Column({nullable: false})
+    public date: Date;
 
-  @Column({ nullable: false })
-  public typeDeDechet: string;
+    @Column({nullable: false})
+    public typeDeDechet: string;
 
-  @Column({ nullable: false })
-  public idConteneur: number;
+    @ManyToOne(() => Client, (client) => client.historique, {eager: true})
+    @JoinTable()
+    client: Client;
 
-  @Column({ nullable: false })
-  public idCollecteur: number;
+    @ManyToOne(() => Collecteur, (collecteur) => collecteur.historique, {eager: true})
+    @JoinTable()
+    collecteur: Collecteur;
 
-  @ManyToOne(() => Client, (client) => client.id, {})
-  @JoinTable()
-  client: Client;
-
-  @OneToMany(() => Collecteur, (collecteur) => collecteur.id, {})
-  @JoinTable()
-  collecteur: Collecteur[];
-
-  @OneToMany(() => Conteneur, (conteneur) => conteneur.id, {})
-  @JoinTable()
-  conteneur: Conteneur[];
+    @ManyToOne(() => Conteneur, (conteneur) => conteneur.historique, {eager: true})
+    @JoinTable()
+    conteneur: Conteneur;
 }

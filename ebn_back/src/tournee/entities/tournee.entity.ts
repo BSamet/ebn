@@ -1,29 +1,20 @@
-import { Client } from 'src/client/entities/client.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Collecteur } from '../../collecteur/entities/collecteur.entity';
+import {Client} from 'src/client/entities/client.entity';
+import {Column, Entity, JoinColumn, JoinTable, OneToMany, OneToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {Collecteur} from '../../collecteur/entities/collecteur.entity';
 
 @Entity()
 export class Tournee {
-  @PrimaryGeneratedColumn()
-  public id?: number;
-  @Column()
-  public date: Date;
+    @PrimaryGeneratedColumn()
+    public id?: number;
 
-  @OneToOne(() => Collecteur, {
-    eager: true,
-  })
-  @JoinColumn()
-  collecteur: Collecteur;
+    @Column()
+    public date: Date;
 
-  @OneToMany(() => Client, (client) => client.id, {})
-  @JoinTable()
-  client: Client[];
+    @OneToOne(() => Collecteur, (collecteur) => collecteur.tournee)
+    @JoinColumn()
+    collecteur: Collecteur;
+
+    @OneToMany(() => Client, (client) => client.tournee, {eager: true})
+    @JoinTable()
+    client: Client[];
 }

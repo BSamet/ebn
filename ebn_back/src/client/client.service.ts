@@ -1,43 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import { CreateClientDto } from './dto/create-client.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Client } from './entities/client.entity';
-import { Repository } from 'typeorm';
+import {Injectable} from '@nestjs/common';
+import {CreateClientDto} from './dto/create-client.dto';
+import {UpdateClientDto} from './dto/update-client.dto';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Client} from './entities/client.entity';
+import {Repository} from 'typeorm';
+import {Utilisateur} from "../utilisateurs/entities/utilisateur.entity";
+import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
 
 @Injectable()
 export class ClientService {
-  constructor(
-    @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>,
-  ) {}
+    constructor(
+        @InjectRepository(Client)
+        private readonly clientRepository: Repository<Client>,
+    ) {
+    }
 
-  create(createClientDto: CreateClientDto) {
-    const client = new Client();
-    client.nom = createClientDto.nom;
-    client.prenom = createClientDto.prenom;
-    client.mail = createClientDto.mail;
-    client.telephone = createClientDto.telephone;
-    client.siret = createClientDto.siret;
-    client.nomCommercial = createClientDto.nomCommercial;
-    client.adresse = createClientDto.adresse;
-    client.typeDeDechets = createClientDto.typeDeDechets;
-    return this.clientRepository.save(client);
-  }
+    //TODO Tester la creation avec un type de déchets
+    create(createClientDto: CreateClientDto) {
+        const client = new Client();
+        client.siret = createClientDto.siret;
+        client.nomCommercial = createClientDto.nomCommercial;
+        client.adresse = createClientDto.adresse;
+        client.utilisateur = Object.assign(new Utilisateur(), {
+            id: createClientDto.utilisateurId,
+        });
+        client.typeDechet = [Object.assign(new TypeDechet(), {
+            clientId: createClientDto.utilisateurId,
+            typeDechettId: createClientDto.typeDechetsId,
+        })];
+        return this.clientRepository.save(client);
+    }
 
-  findAll() {
-    return this.clientRepository.find();
-  }
+    findAll() {
+        return this.clientRepository.find();
+    }
 
-  findOne(id: number) {
-    return this.clientRepository.findOne(id);
-  }
+    findOne(id: number) {
+        return this.clientRepository.findOne(id);
+    }
 
-  update(id: number, updateClientDto: UpdateClientDto) {
-    return this.clientRepository.update(id, updateClientDto);
-  }
+    update(id: number, updateClientDto: UpdateClientDto) {
+        return this.clientRepository.update(id, updateClientDto);
+    }
 
-  remove(id: number) {
-    return this.clientRepository.delete(id);
-  }
+    remove(id: number) {
+        return this.clientRepository.delete(id);
+    }
 }

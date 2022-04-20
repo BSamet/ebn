@@ -1,27 +1,15 @@
-import { Client } from 'src/client/entities/client.entity';
-import { Conteneur } from 'src/conteneur/entities/conteneur.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import {Conteneur} from 'src/conteneur/entities/conteneur.entity';
+import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
 
 @Entity()
 export class TypeDechet {
-  @PrimaryGeneratedColumn()
-  public id?: number;
-  @Column({ nullable: false })
-  public typeDechets: string;
+    @PrimaryGeneratedColumn()
+    public id?: number;
 
-  @ManyToOne(() => Conteneur, (conteneur) => conteneur.id, {})
-  @JoinTable()
-  conteneur: Conteneur[];
+    @Column({nullable: false})
+    public typeDechets: string;
 
-  @ManyToOne(() => Client, (client) => client.id, {})
-  @JoinTable()
-  client: Client[];
+    @ManyToOne(() => Conteneur, (conteneur) => conteneur.typeDechet, {})
+    @JoinTable()
+    conteneur: Conteneur[];
 }
