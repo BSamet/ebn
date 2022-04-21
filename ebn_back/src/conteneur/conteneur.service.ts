@@ -18,6 +18,7 @@ export class ConteneurService {
     create(createConteneurDto: CreateConteneurDto) {
         const conteneur = new Conteneur();
         conteneur.capaciteMax = createConteneurDto.capaciteMax;
+        conteneur.isAvailable = createConteneurDto.isAvailable;
         conteneur.typeDechet = Object.assign(new TypeDechet(), {
             id: createConteneurDto.typeDechetId,
         });

@@ -8,6 +8,9 @@ export class CreateConteneurDto {
     public capaciteMax: number;
 
     @ApiProperty()
+    public isAvailable: boolean;
+    
+    @ApiProperty()
     public typeDechetId: number;
 
     @ApiProperty()

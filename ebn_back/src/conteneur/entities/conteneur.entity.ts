@@ -11,6 +11,9 @@ export class Conteneur {
     @Column({nullable: false})
     public capaciteMax: number;
 
+    @Column()
+    public isAvailable: boolean;
+
     @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {})
     @JoinTable()
     typeDechet: TypeDechet;
