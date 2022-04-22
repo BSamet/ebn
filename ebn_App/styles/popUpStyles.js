@@ -42,6 +42,11 @@ const popUpStyles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
+  modalTitre: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color: 'black',
+  },
   input: {
     marginBottom: 15,
     borderBottomColor: '#000000',

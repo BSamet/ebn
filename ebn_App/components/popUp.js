@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
 import {Alert, Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
+import InformationClient from './informationClient';
 
 const popUp = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const state = {
-    poids: ' ',
-    commentaire: ' ',
+  const [poids, setPoids] = useState(0);
+  const [commentaire, setCommentaire] = useState('');
+  const submit = () => {
+    console.log(poids, commentaire);
   };
   return (
     <View style={popUpStyles.centeredView}>
@@ -20,25 +22,28 @@ const popUp = () => {
         }}>
         <View style={popUpStyles.centeredView}>
           <View style={popUpStyles.modalView}>
-            <Text style={popUpStyles.modalText}> Information du seau </Text>
+            <InformationClient> </InformationClient>
+            <Text style={popUpStyles.modalTitre}> Information du seau </Text>
             <TextInput
               style={popUpStyles.input}
-              onChangeText={text => {
-                setState({poids: text});
-              }}
+              keyboardType="numeric"
+              onChangeText={pesser => setPoids(pesser)}
               placeholder="Entrer le poids"
             />
             <Text style={popUpStyles.modalText}>
-              {' '}
-              Le poids est de {state.poids}{' '}
+              Vous avez collecter {poids} kg
             </Text>
             <TextInput
               style={popUpStyles.input}
-              placeholder="Entrer un commentaire"
+              onChangeText={com => setCommentaire(com)}
+              placeholder="Entrer le commentaire"
             />
             <Pressable
               style={[popUpStyles.button, popUpStyles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                submit();
+              }}>
               <Text style={popUpStyles.textStyle}> Enregistrer </Text>
             </Pressable>
           </View>
