@@ -57,7 +57,7 @@ const Sidebar = () => {
           {/* signoutIcon */}
           <div className="menuItem">
             <UilSignOutAlt />
-            <span>déconnexion</span>
+            <span>Déconnexion</span>
           </div>
         </div>
       </motion.div>
