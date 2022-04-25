@@ -14,7 +14,7 @@ export class Collecteur {
     @Column({nullable: false})
     public numeroVelo: number;
 
-    @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.collecteur,)
+    @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.collecteur, {eager: true})
     @JoinTable()
     utilisateur: Utilisateur;
 

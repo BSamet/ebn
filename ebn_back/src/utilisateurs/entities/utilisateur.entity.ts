@@ -28,11 +28,11 @@ export class Utilisateur {
     @Column()
     public telephone: string;
 
-    @OneToMany(() => Client, (client) => client.utilisateur, {eager: true, onDelete: "CASCADE"})
+    @OneToMany(() => Client, (client) => client.utilisateur, {onDelete: "CASCADE"})
     @JoinTable()
     client: Client[];
 
-    @OneToMany(() => Collecteur, (collecteur) => collecteur.utilisateur, {eager: true, onDelete: "CASCADE"})
+    @OneToMany(() => Collecteur, (collecteur) => collecteur.utilisateur, {onDelete: "CASCADE"})
     @JoinTable()
     collecteur: Collecteur[];
 }
