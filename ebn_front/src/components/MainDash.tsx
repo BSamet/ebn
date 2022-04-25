@@ -3,6 +3,7 @@ import '../styles/component/_MainDash.scss'
 import Cards from '../components/Cards'
 import StatCollectAdmin from "./StatCollectAdmin";
 import RatioWasteCompost from "./RatioWasteCompost";
+import GraphWeightPerHour from "./GraphWeightPerHour";
 
 const MainDash = () => {
     return (
