@@ -65,7 +65,7 @@ export const CardsData =[
   },
 
   {
-    title:'Revenue',
+    title:'Revenus',
     color:{
       background:'#8ac997',
       boxShadow:'0px 10px 20px 0px #c1dfc4',
