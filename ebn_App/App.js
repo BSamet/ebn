@@ -25,7 +25,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import PopUp from './components/popUp';
+import PopUp from './src/components/popUp';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
