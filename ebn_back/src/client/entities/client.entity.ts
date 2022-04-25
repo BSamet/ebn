@@ -5,8 +5,8 @@ import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGene
 import {Conteneur} from '../../conteneur/entities/conteneur.entity';
 import {Historique} from '../../historique/entities/historique.entity';
 import {Utilisateur} from "../../utilisateurs/entities/utilisateur.entity";
-import {Tournee} from "../../tournee/entities/tournee.entity";
 import {RamassageAbonnement} from "../../ramassage-abonnement/entities/ramassage-abonnement.entity";
+import {Etape} from "../../etape/entities/etape.entity";
 
 @Entity()
 export class Client {
@@ -40,7 +40,7 @@ export class Client {
     @JoinTable()
     ramassageAbonnement: RamassageAbonnement[];
 
-    @OneToMany(() => Conteneur, (conteneur) => conteneur.client, {})
+    @OneToMany(() => Conteneur, (conteneur) => conteneur.client, {eager: true})
     @JoinTable()
     conteneur: Conteneur[];
 
@@ -48,12 +48,11 @@ export class Client {
     @JoinTable()
     historique: Historique[];
 
-    //TODO Tester la creation
     @ManyToMany(() => TypeDechet, (typeDechet) => typeDechet.id, {eager: true})
     @JoinTable()
     typeDechet: TypeDechet[];
 
-    @ManyToOne(() => Tournee, (tournee) => tournee.client, {onDelete: 'CASCADE'})
+    @OneToMany(() => Etape, etape => etape.client)
     @JoinTable()
-    tournee: Tournee;
+    etape: Etape[];
 }
