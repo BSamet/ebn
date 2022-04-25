@@ -9,7 +9,7 @@ const DashboardAdmin = () => {
       <div className="AppGlass">
         <Sidebar />
         <MainDash/>
-        <div></div>
+
       </div>
     </div>
   );

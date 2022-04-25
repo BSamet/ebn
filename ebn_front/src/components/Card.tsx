@@ -55,8 +55,8 @@ function CompactCard({ param, setExpanded }:any) {
             </div>
             <div className="detail">
                 <Png />
-                <span>${param.value}</span>
-                <span>Last 24 hours</span>
+                <span>€{param.value}</span>
+                <span>Dernières 24 heures</span>
             </div>
         </motion.div>
     );
@@ -95,6 +95,7 @@ function ExpandedCard({ param, setExpanded }:any) {
             tooltip: {
                 x: {
                     format: "dd/MM/yy HH:mm",
+
                 },
             },
             grid: {
@@ -106,13 +107,14 @@ function ExpandedCard({ param, setExpanded }:any) {
                 },
                 xaxis: {
                     categories: [
-                        "2018-09-19T00:00:00.000Z",
-                        "2018-09-19T01:30:00.000Z",
-                        "2018-09-19T02:30:00.000Z",
-                        "2018-09-19T03:30:00.000Z",
-                        "2018-09-19T04:30:00.000Z",
-                        "2018-09-19T05:30:00.000Z",
-                        "2018-09-19T06:30:00.000Z",
+
+                        "2022-03-19",
+                        "2022-03-19",
+                        "2022-03-19",
+                        "2022-03-19",
+                        "2022-03-19",
+                        "2022-03-19",
+                        "2022-03-19",
                     ],
                 },
             }
@@ -145,9 +147,10 @@ function ExpandedCard({ param, setExpanded }:any) {
                     }
                     type="line"
                     width="500"
+
                 />
             </div>
-            <span>Last 24 hours</span>
+            <span>Dernières 24 heures</span>
         </motion.div>
     );
 }

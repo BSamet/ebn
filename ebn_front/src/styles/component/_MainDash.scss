@@ -1,10 +1,14 @@
 .MainDash{
+  -webkit-box-shadow: 0px 0px 15px -1px rgba(0,0,0,0.34);
+  box-shadow: 0px 0px 15px -1px rgba(0,0,0,0.34);
+  background-color: #daebd3;
   padding-top: 1rem;
+  display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  align-items: center;
   h1{
-    color:black;
-    padding-left: 2rem;
+    color:seagreen;
+
   }
 
 }
