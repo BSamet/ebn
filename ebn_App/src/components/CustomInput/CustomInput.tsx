@@ -3,14 +3,26 @@ import {Text, View, TextInput, StyleSheet} from 'react-native';
 
 interface CustomInputprops {
   value: string;
-  setValue: string;
+  setValue: any;
   placeholder: string;
+  secureTextEntry: boolean;
 }
 
-const CustomInput = ({value, setValue, placeholder}: CustomInputprops) => {
+const CustomInput = ({
+  value,
+  setValue,
+  placeholder,
+  secureTextEntry,
+}: CustomInputprops) => {
   return (
     <View style={styles.container}>
-      <TextInput placeholder={placeholder} style={styles.input} value={''} />
+      <TextInput
+        placeholder={placeholder}
+        style={styles.input}
+        value={value}
+        onChangeText={setValue}
+        secureTextEntry={secureTextEntry}
+      />
     </View>
   );
 };
