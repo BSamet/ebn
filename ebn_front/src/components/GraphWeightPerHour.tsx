@@ -8,7 +8,7 @@ const GraphWeightPerHour = () => {
     const state = {
 
         series: [{
-            name: 'series1',
+            name: 'poids en kg',
             data: [31, 40, 28, 51, 42, 109, 100]
         },],
         options: {
@@ -20,18 +20,19 @@ const GraphWeightPerHour = () => {
             },
 
             xaxis: {
-                categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                categories: ["11/09/22", "12/09/22", "13/09/22", "14/09/22", "15/09/22", "16/09/22", "17/09/22"]
             },
             tooltip: {
                 x: {
-                    format: 'dd/MM/yy HH:mm'
+                    format: 'dd/MM/yy'
                 },
             },
         },
     }
     return (
-        <div id="chart">
-            <ReactApexChart options={state.options} series={state.series} type="area" height={350} />
+        <div className="graph">
+            <h4>Bio-déchets en kg collecté par jour</h4>
+            <ReactApexChart options={state.options} series={state.series} type="area" height={240} />
         </div>
     );
 };

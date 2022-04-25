@@ -2,6 +2,7 @@ import React from "react";
 import "../styles/component/_DashboardAdmin.scss";
 import Sidebar from "../components/Sidebar";
 import MainDash from "../components/MainDash";
+import RightSide from "../components/RightSide";
 
 const DashboardAdmin = () => {
   return (
@@ -9,6 +10,7 @@ const DashboardAdmin = () => {
       <div className="AppGlass">
         <Sidebar />
         <MainDash/>
+        <RightSide/>
 
       </div>
     </div>
