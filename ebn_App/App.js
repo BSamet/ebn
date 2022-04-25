@@ -25,7 +25,6 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import PopUp from './src/components/popUp';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -71,7 +70,6 @@ const App = () => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <PopUp></PopUp>
           <Section title="Step One">
             Edit <Text style={styles.highlight}>App.js</Text> Welcome BOYS
           </Section>
