@@ -4,12 +4,13 @@ import {Text, View, TextInput, StyleSheet} from 'react-native';
 interface CustomInputprops {
   value: string;
   setValue: string;
+  placeholder: string;
 }
 
-const CustomInput = (props: CustomInputprops) => {
+const CustomInput = ({value, setValue, placeholder}: CustomInputprops) => {
   return (
     <View style={styles.container}>
-      <TextInput placeholder={''} style={styles.input} value={''} />
+      <TextInput placeholder={placeholder} style={styles.input} value={''} />
     </View>
   );
 };

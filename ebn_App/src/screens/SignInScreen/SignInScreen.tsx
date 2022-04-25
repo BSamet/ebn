@@ -12,8 +12,8 @@ const SignInScreen = () => {
         style={[styles.Logo, {height: height * 0.3}]}
         resizeMode="contain"
       />
-      <CustomInput value={''} setValue={''} />
-      <CustomInput value={''} setValue={''} />
+      <CustomInput value={''} setValue={''} placeholder="Adresse Email" />
+      <CustomInput value={''} setValue={''} placeholder="Mot de Passe" />
     </View>
   );
 };
