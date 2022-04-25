@@ -3,16 +3,9 @@ import "../styles/component/_Cards.scss";
 import { CardsData } from "../Data/Data";
 import Card from '../components/Card';
 
-interface CardsProps{
-    title:string;
-    color:string;
-    barValue:number;
-    value:number;
-    png:any;
-    series:any;
-}
 
-const Cards = ({title, color, barValue, value, png , series}:CardsProps) => {
+
+const Cards = () => {
 
     return (
         <div className="Cards">
@@ -22,11 +15,13 @@ const Cards = ({title, color, barValue, value, png , series}:CardsProps) => {
                     <div className="parentContainer" key={id}>
                         <Card
                             title={card.title}
-                            color={card.color}
+                            colorBackground={card.color.background}
+                            colorBoxShadow={card.color.boxShadow}
                             barValue={card.barValue}
                             value={card.value}
                             png={card.png}
-                            series={card.series}
+                            seriesName={card.series.name}
+                            seriesData={card.series.data}
                         />
                     </div>
                 );

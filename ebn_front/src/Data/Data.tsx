@@ -57,14 +57,11 @@ export const CardsData =[
     barValue: 70,
     value: "25,970",
     png: UilUserSquare,
-    series:[
+    series:
       {
         name:"Ventes",
         data: [31,40,28,61,42,109,100],
       },
-
-    ],
-
   },
 
   {
@@ -76,13 +73,11 @@ export const CardsData =[
     barValue: 80,
     value: "14,270",
     png: UilMoneyWithdrawal,
-    series:[
+    series:
       {
         name:"Revenue",
         data: [10,100,50,70,80,30,40],
       },
-
-    ],
 
   },
 
@@ -95,13 +90,11 @@ export const CardsData =[
     barValue: 60,
     value: "4,270",
     png: UilClipboardAlt,
-    series:[
+    series:
       {
         name:"Depenses",
         data: [10,25,15,30,12,15,20],
       },
-
-    ],
 
   },
 ]

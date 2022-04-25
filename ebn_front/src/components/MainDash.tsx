@@ -6,7 +6,7 @@ const MainDash = () => {
     return (
         <div className="MainDash">
             <h1>Tableau de bord</h1>
-
+            <Cards/>
 
         </div>
     );
