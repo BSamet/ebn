@@ -5,8 +5,11 @@ export class CreateConteneurDto {
     public id: number;
 
     @ApiProperty()
-    public poid: number;
+    public capaciteMax: number;
 
+    @ApiProperty()
+    public isAvailable: boolean;
+    
     @ApiProperty()
     public typeDechetId: number;
 

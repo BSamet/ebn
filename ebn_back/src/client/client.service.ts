@@ -15,7 +15,6 @@ export class ClientService {
     ) {
     }
 
-    //TODO Tester la creation avec un type de déchets
     create(createClientDto: CreateClientDto) {
         const client = new Client();
         client.siret = createClientDto.siret;
@@ -25,8 +24,7 @@ export class ClientService {
             id: createClientDto.utilisateurId,
         });
         client.typeDechet = [Object.assign(new TypeDechet(), {
-            clientId: createClientDto.utilisateurId,
-            typeDechettId: createClientDto.typeDechetsId,
+            id: createClientDto.typeDechetsId,
         })];
         return this.clientRepository.save(client);
     }
