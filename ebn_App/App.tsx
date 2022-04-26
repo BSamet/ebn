@@ -1,12 +1,12 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import {} from 'react-native/Libraries/NewAppScreen';
-import Signinscreen from './src/screens/SignInScreen/SignInScreen';
+import RouteNavigator from './src/Navigation/RouteNavigator';
 
 const App = () => {
   return (
     <SafeAreaView style={styles.root}>
-      <Signinscreen />
+      <RouteNavigator />
     </SafeAreaView>
   );
 };
