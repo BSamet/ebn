@@ -60,32 +60,33 @@ const App = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <PopUp></PopUp>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> Welcome BOYS
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">salut les loulous</Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'}/>
+        <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={backgroundStyle}>
+          <Header/>
+          <View
+              style={{
+                backgroundColor: isDarkMode ? Colors.black : Colors.white,
+              }}>
+            <PopUp></PopUp>
+            <Section title="Step One">
+              Edit <Text style={styles.highlight}>App.js</Text> Welcome BOYS
+            </Section>
+            <Section title="See Your Changes">
+              <ReloadInstructions/>
+            </Section>
+            <Section title="Debug">
+              <DebugInstructions/>
+            </Section>
+            <Section title="Learn More">salut les loulous</Section>
+            <LearnMoreLinks/>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
   );
 };
 

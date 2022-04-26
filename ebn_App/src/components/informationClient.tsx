@@ -1,26 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import informationClientStyle from '../styles/informationClientStyle';
-import axios from "axios";
+import axios from 'axios';
 
 const informationClient = () => {
   const [client, setClient] = useState([]);
-  const url = 'http://localhost:5454/client/';
 
   useEffect(() => {
-      getInfoClient();
-      fetch(url + 1)
-          .then((response) => response.json())
-          .then((json) => setClient(json)
-              .cat ch}, []);
-
-    const getInfoClient =() => {
-        axios.get(url + 1)
-            .then(res => {
-                const persons = res.data;
-                this.setState({ persons });
-            })
-    }
+    axios
+      .get('http://10.3.0.138:5454/client')
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <View style={informationClientStyle.div}>

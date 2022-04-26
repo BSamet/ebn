@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@shopify/react-native-skia": "^0.1.121",
-    "axios": "^0.27.0",
+    "axios": "^0.27.1",
     "react": "17.0.2",
     "react-native": "0.68.1"
   },
