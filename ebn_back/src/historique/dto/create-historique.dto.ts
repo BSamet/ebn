@@ -17,6 +17,9 @@ export class CreateHistoriqueDto {
     public commentaire: string;
 
     @ApiProperty()
+    public poids: number;
+
+    @ApiProperty()
     public clientId: number;
 
     @ApiProperty()
