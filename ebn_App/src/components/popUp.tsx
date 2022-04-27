@@ -9,16 +9,20 @@ const popUp = () => {
   const [poids, setPoids] = useState(0);
   const [commentaire, setCommentaire] = useState('');
   const submit = () => {
+    postPoids();
     console.log(poids, commentaire);
   };
   const postPoids = () => {
     axios
-      .post('http://10.3.0.138:5454/conteneur/4', {poids, commentaire})
+      .patch('http://192.168.0.35:5454/historique/4', {
+        commentaire: commentaire,
+        poids: poids,
+      })
       .then(res => {
         console.log(res);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error + ' sur patch');
       });
   };
   return (
@@ -54,7 +58,6 @@ const popUp = () => {
               onPress={() => {
                 setModalVisible(!modalVisible);
                 submit();
-                postPoids();
               }}>
               <Text style={popUpStyles.textStyle}> Enregistrer </Text>
             </Pressable>
