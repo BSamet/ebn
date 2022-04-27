@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text} from 'react-native';
 
 interface buttonMdpForgotProps {
   text: string;
@@ -7,6 +7,7 @@ interface buttonMdpForgotProps {
 }
 
 const buttonMdpForgot = ({onPress, text}: buttonMdpForgotProps) => {
+  // eslint-disable-next-line no-lone-blocks
   {
     return (
       <Pressable onPress={onPress} style={[styles.container]}>
