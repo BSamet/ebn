@@ -34,10 +34,13 @@ const Sidebar = () => {
       >
         {/* logo */}
         <div className="logo">
+
           <img src={Logo} alt="logo" />
+          <a href="http://localhost:3000/">
           <span>
             E<span>B</span>N
           </span>
+          </a>
         </div>
 
         <div className="menu">
