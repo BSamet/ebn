@@ -1,25 +1,35 @@
 import * as React from "react";
 import QRCode from "qrcode.react";
+import "../styles/component/_QrCodeGen.scss"
 
 const icon = require("../assets/cycle.png")
 
 export default function QrCode() {
-    const [url , setUrl] = React.useState("");
+    const qrRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
+    const [text , setText] = React.useState("");
 
     const downloadQRCode = (evt: React.FormEvent) => {
         evt.preventDefault();
-        // TODO
 
-        setUrl("");
+        // let canvas = qrRef.current.querySelector("canvas");
+        
+
+        setText("");
     };
 
     const qrCode = (
     <QRCode
         size={500}
-        value={"https://google.com"}
+        value={text}
         bgColor="white"
         fgColor="black"
         level="H"
+        imageSettings={{
+            src: icon,
+            excavate: true,
+            width: 500 * 0.1,
+            height: 500 * 0.1
+        }}
         />
     )
     return (
@@ -27,15 +37,17 @@ export default function QrCode() {
             <form onSubmit={downloadQRCode} className="qr-container__form">
                 <input
                     type="text"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder="https://example.com"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="12345678"
                 />
 
-                <button type="submit">Download QR Code</button>
+                <button type="submit">Imprimer le QR Code</button>
             </form>
 
-            <div className="qr-container__qr-code">{qrCode}</div>
+            <div className="qr-container__qr-code" ref={qrRef}>
+                {qrCode}
+                </div>
         </div>
     );
 }
