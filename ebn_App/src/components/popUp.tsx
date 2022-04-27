@@ -12,12 +12,14 @@ const popUp = () => {
     console.log(poids, commentaire);
   };
   const postPoids = () => {
-    axios.post('http://10.3.0.138:5454/conteneur/4').then(response =>
-      poids({
-        capaciteMax: poids,
-        isAvailable: true,
-      }),
-    );
+    axios
+      .post('http://10.3.0.138:5454/conteneur/4', {poids, commentaire})
+      .then(res => {
+        console.log(res);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
   return (
     <View style={popUpStyles.centeredView}>

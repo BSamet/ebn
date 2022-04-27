@@ -9,12 +9,14 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
+import PopUp from '../../components/popUp';
 
 export interface dashboardClient {
   Day: string;
   Month: string;
   Year: string;
 }
+
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordClient = () => {
   const list = [
@@ -88,6 +90,7 @@ const DashBordClient = () => {
             <Text style={styles.poids}>poids collecté : {item.weight} KG </Text>
           </View>
         ))}
+        <PopUp></PopUp>
       </View>
     </ScrollView>
   );
