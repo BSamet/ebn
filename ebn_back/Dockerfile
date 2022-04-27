@@ -1,0 +1,11 @@
+FROM node:current-alpine as development
+
+WORKDIR /usr/src/app
+
+ADD package*.json ./
+
+RUN npm install
+
+ADD . .
+
+CMD ["node", "dist/src/main"]
