@@ -10,7 +10,51 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 
+export interface dashboardClient {
+  Day: string;
+  Month: string;
+  Year: string;
+}
+// TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordClient = () => {
+  const list = [
+    {
+      Day: 'Vendredi 13',
+      Month: 'Novembre',
+      Year: '2022',
+      weight: 67,
+    },
+    {
+      Day: 'Samedi 14',
+      Month: 'Novembre',
+      Year: '2022',
+      weight: 98,
+    },
+    {
+      Day: 'Lundi 16',
+      Month: 'Novembre',
+      Year: '2022',
+      weight: 34,
+    },
+    {
+      Day: 'Jeudi 19',
+      Month: 'Novembre',
+      Year: '2022',
+      weight: 23,
+    },
+    {
+      Day: 'Vendredi 20',
+      Month: 'Novembre',
+      Year: '2022',
+      weight: 12,
+    },
+    {
+      Day: 'Samedi 21',
+      Month: 'Novembre',
+      Year: '2022',
+      weight: 35,
+    },
+  ];
   const {height} = useWindowDimensions();
   return (
     <ScrollView>
@@ -35,14 +79,20 @@ const DashBordClient = () => {
             <Text style={styles.topText}>Bonjour, Nom Client</Text>
           </LinearGradient>
         </View>
-
-        <View style={styles.body}>
-          <Text style={styles.titleText}>Historique de collecte</Text>
-        </View>
+        <Text style={styles.titleText}>Historique de collecte</Text>
+        {list.map(item => (
+          <View style={styles.body}>
+            <Text style={styles.date}>
+              {item.Day} {item.Month} {item.Year}
+            </Text>
+            <Text style={styles.poids}>poids collecté : {item.weight} KG </Text>
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   box: {
     width: '100%',
@@ -51,7 +101,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 25,
   },
   page: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
   header: {},
 
@@ -59,6 +109,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 20,
     marginLeft: 20,
+    fontWeight: 'bold',
   },
 
   Logo: {
@@ -68,12 +119,25 @@ const styles = StyleSheet.create({
     marginLeft: 120,
   },
   body: {
-    paddingHorizontal: 10,
-    marginVertical: 100,
+    paddingHorizontal: 30,
+    marginVertical: 15,
+    marginRight: 20,
   },
   titleText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginTop: 20,
+    paddingHorizontal: 10,
+    color: 'black',
+  },
+  date: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#8AC997',
+  },
+  poids: {
+    color: 'black',
+    marginLeft: 10,
   },
 });
 

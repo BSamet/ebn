@@ -7,6 +7,7 @@ interface buttonMdpForgotProps {
 }
 
 const buttonMdpForgot = ({onPress, text}: buttonMdpForgotProps) => {
+  // eslint-disable-next-line no-lone-blocks
   {
     return (
       <Pressable onPress={onPress} style={[styles.container]}>
