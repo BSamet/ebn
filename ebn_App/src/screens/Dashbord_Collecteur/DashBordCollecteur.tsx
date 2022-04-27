@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {
   Image,
   ScrollView,
@@ -17,6 +18,8 @@ export interface dashboardCollecteur {
 }
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
+  const navigation = useNavigation();
+
   const list = [
     {
       Client: 'Baccio',
@@ -75,8 +78,8 @@ const DashBordCollecteur = () => {
           </LinearGradient>
           <CustomButton
             text={'Flasher QRcode'}
-            onPress={function (): void {
-              throw new Error('Function not implemented.');
+            onPress={() => {
+              navigation.navigate('QrCodeScan');
             }}
           />
         </View>
