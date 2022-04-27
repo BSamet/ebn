@@ -1,22 +1,9 @@
-.logo {
-  display: flex;
-  justify-content: center;
-  padding-top: 20px;
-  height: 120px;
+body{
+background-color: seagreen;
 }
 
-.mainPost {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: stretch;
-    justify-content: space-evenly;
-    align-items: stretch;
-}
+.logo1{
+ height:12rem;
+  width: 12rem;
 
-
-.footer {
-  padding-top: 100px;
-  padding-bottom: 20px;
-  background-color: linear-gradient(to top, #c1dfc4 0%, #deecdd 100%);
 }

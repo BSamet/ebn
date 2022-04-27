@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles/component/_MainDashClient.scss'
 
 
 const MainDashClient = () => {
