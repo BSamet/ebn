@@ -7,9 +7,12 @@ services:
       - SYS_NICE  # CAP_SYS_NICE
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    build:
+      context: database
+      dockerfile: Dockerfile
     environment:
       MYSQL_ROOT_PASSWORD: ebnroot
-      MYSQL_DATABASE: nestjs
+      MYSQL_DATABASE: ebn_database
       MYSQL_USER: ebn
       MYSQL_PASSWORD: ebnroot
     ports:

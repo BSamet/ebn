@@ -4,8 +4,10 @@
   "port": 3306,
   "username": "ebn",
   "password": "ebnroot",
-  "database": "nestjs",
-  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "database": "ebn_database",
+  "entities": [
+    "dist/**/*.entity{.ts,.js}"
+  ],
   "synchronize": true,
   "logging": true,
   "ssl": false

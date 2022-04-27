@@ -37,7 +37,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 10,
   },
-  input: {},
+  input: {
+    color: 'black',
+  },
 });
 
 export default CustomInput;
