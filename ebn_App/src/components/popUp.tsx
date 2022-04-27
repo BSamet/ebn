@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Alert, Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
 import InformationClient from './informationClient';
+import axios from 'axios';
 
 const popUp = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -9,6 +10,14 @@ const popUp = () => {
   const [commentaire, setCommentaire] = useState('');
   const submit = () => {
     console.log(poids, commentaire);
+  };
+  const postPoids = () => {
+    axios.post('http://10.3.0.138:5454/conteneur/4').then(response =>
+      poids({
+        capaciteMax: poids,
+        isAvailable: true,
+      }),
+    );
   };
   return (
     <View style={popUpStyles.centeredView}>
@@ -43,6 +52,7 @@ const popUp = () => {
               onPress={() => {
                 setModalVisible(!modalVisible);
                 submit();
+                postPoids();
               }}>
               <Text style={popUpStyles.textStyle}> Enregistrer </Text>
             </Pressable>
