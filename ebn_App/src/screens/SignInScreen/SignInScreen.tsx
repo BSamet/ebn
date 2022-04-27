@@ -44,7 +44,12 @@ const SignInScreen = () => {
           navigation.navigate('Client');
         }}
       />
-      <CustomButton text={'Inscription'} onPress={onSignUpPressed} />
+      <CustomButton
+        text={'Inscription'}
+        onPress={() => {
+          navigation.navigate('Collecteur');
+        }}
+      />
       <ButtonMdpForgot
         text={'Mot de passe oublié'}
         onPress={onForgotPasswordPressed}
