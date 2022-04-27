@@ -9,10 +9,19 @@ export class Historique {
     public id?: number;
 
     @Column({nullable: false})
+    public typeAction: string;
+
+    @Column({nullable: false})
     public date: Date;
 
     @Column({nullable: false})
     public typeDeDechet: string;
+
+    @Column({nullable: false})
+    public commentaire: string;
+
+    @Column({nullable: false})
+    public poids: number;
 
     @ManyToOne(() => Client, (client) => client.historique, {eager: true})
     @JoinTable()

@@ -3,8 +3,8 @@ import {ClientController} from './client.controller';
 import {ClientService} from './client.service';
 import {Client} from './entities/client.entity';
 import {getRepositoryToken} from '@nestjs/typeorm';
-import {CreateClientDto} from './dto/create-client.dto';
-import axios from 'axios';
+import {CreateClientDto} from "./dto/create-client.dto";
+import axios from "axios";
 
 describe('ClientController', () => {
     let controller: ClientController;
@@ -21,10 +21,6 @@ describe('ClientController', () => {
 
         controller = module.get<ClientController>(ClientController);
         service = module.get<ClientService>(ClientService);
-    });
-
-    it('should be defined', () => {
-        expect(controller).toBeDefined();
     });
 
     it('Should create one client', async () => {

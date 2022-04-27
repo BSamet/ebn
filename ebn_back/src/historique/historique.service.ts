@@ -18,8 +18,11 @@ export class HistoriqueService {
 
     create(createHistoriqueDto: CreateHistoriqueDto) {
         const historique = new Historique();
+        historique.typeAction = createHistoriqueDto.typeAction;
         historique.date = createHistoriqueDto.date;
         historique.typeDeDechet = createHistoriqueDto.typeDeDechet;
+        historique.commentaire = createHistoriqueDto.commentaire;
+        historique.poids = createHistoriqueDto.poids;
         historique.client = Object.assign(new Client(), {
             id: createHistoriqueDto.clientId,
         });

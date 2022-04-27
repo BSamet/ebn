@@ -9,9 +9,12 @@ export class Conteneur {
     public id?: number;
 
     @Column({nullable: false})
-    public poid: number;
+    public capaciteMax: number;
 
-    @OneToMany(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {})
+    @Column()
+    public isAvailable: boolean;
+
+    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {})
     @JoinTable()
     typeDechet: TypeDechet;
 
