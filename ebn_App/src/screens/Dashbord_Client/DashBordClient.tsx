@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 20,
     marginLeft: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Confortaa-Bold',
   },
 
   Logo: {
@@ -125,19 +125,21 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 22,
-    fontWeight: 'bold',
     marginTop: 20,
     paddingHorizontal: 10,
     color: 'black',
+    fontFamily: 'Confortaa-Regular',
   },
   date: {
     fontSize: 18,
-    fontWeight: 'bold',
     color: '#8AC997',
+    fontFamily: 'Confortaa-Regular',
   },
   poids: {
     color: 'black',
     marginLeft: 10,
+    fontFamily: 'Confortaa-Bold',
+    fontSize: 16,
   },
 });
 
