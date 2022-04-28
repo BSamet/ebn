@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "../styles/component/_Sidebar.scss";
 import Logo from "../assets/logo.png";
 import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
@@ -35,10 +34,13 @@ const Sidebar = () => {
       >
         {/* logo */}
         <div className="logo">
+
           <img src={Logo} alt="logo" />
+          <a href="http://localhost:3000/">
           <span>
             E<span>B</span>N
           </span>
+          </a>
         </div>
 
         <div className="menu">

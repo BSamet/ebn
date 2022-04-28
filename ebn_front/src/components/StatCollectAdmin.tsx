@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles/component/_StatCollectAdmin.scss'
 import '../Data/Data'
 import ReactApexChart from "react-apexcharts";
 
