@@ -11,7 +11,7 @@ const informationClient = () => {
 
   useEffect(() => {
     axios
-      .get('http://192.168.0.35:5454/client/1')
+      .get('http://10.3.0.138:5454/client/1')
       .then(res => {
         console.log(res.data);
         setClient(res.data);

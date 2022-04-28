@@ -14,7 +14,7 @@ const popUp = () => {
   };
   const postPoids = () => {
     axios
-      .patch('http://192.168.0.35:5454/historique/4', {
+      .patch('http://10.3.0.138:5454/historique/4', {
         commentaire: commentaire,
         poids: poids,
       })
