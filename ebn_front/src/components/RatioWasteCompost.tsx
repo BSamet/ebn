@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles/component/_RatioWasteCompost.scss'
 import ReactApexChart from "react-apexcharts";
 
 

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import '../styles/component/_Card.scss'
 import {motion, AnimateSharedLayout} from "framer-motion";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { UilTimes } from "@iconscout/react-unicons";

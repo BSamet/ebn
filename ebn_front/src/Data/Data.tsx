@@ -7,7 +7,8 @@ import {
   UilCalendarAlt,
   UilMessage,
   UilUserSquare,
-  UilMoneyWithdrawal
+  UilMoneyWithdrawal,
+  UilQrcodeScan 
 } from "@iconscout/react-unicons";
 
 export const SidebarData = [
@@ -37,12 +38,43 @@ export const SidebarData = [
     heading: "Clients",
   },
   {
+    icon:  UilQrcodeScan,
+    heading: "Qr Code"
+  },
+  {
     icon: UilMessage,
     heading: "Messages",
   },
 
+];
 
+export const SidebarClientData = [
+  {
+    icon: UilEstate,
+    heading: "Tableau de bord",
+  },
+  {
+    icon: UilUserSquare,
+    heading: "Gestion du compte",
+  },
+  {
+    icon: UilCalendarAlt,
+    heading: "Agenda",
+  },
+  {
+    icon: UilClipboardAlt,
+    heading: "Abonnement",
+  },
 
+  {
+    icon: UilPackage,
+    heading: "Suspension de collecte",
+  },
+
+  {
+    icon: UilMessage,
+    heading: "Messages",
+  },
 
 ];
 

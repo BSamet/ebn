@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles/component/_GraphWeightPerHour.scss'
 import ReactApexChart from "react-apexcharts";
 
 
