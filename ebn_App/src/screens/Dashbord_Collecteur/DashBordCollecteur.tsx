@@ -84,8 +84,8 @@ const DashBordCollecteur = () => {
           />
         </View>
         <Text style={styles.titleText}>Historique de collecte</Text>
-        {list.map(item => (
-          <View style={styles.body}>
+        {list.map((item, index) => (
+          <View style={styles.body} key={index}>
             <Text style={styles.date}>
               {item.Client} {item.Street}
             </Text>
