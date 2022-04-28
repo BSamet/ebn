@@ -12,7 +12,10 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.2",
+    "@rneui/base": "^4.0.0-rc.1",
+    "@rneui/themed": "^4.0.0-rc.1",
     "@shopify/react-native-skia": "^0.1.121",
+    "axios": "^0.27.1",
     "react": "17.0.2",
     "react-native": "0.68.1",
     "react-native-camera": "^4.2.1",
