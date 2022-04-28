@@ -47,7 +47,7 @@ const QrCodeScanner = () => {
                         {!scan && (
                             <View style={styles.sectionContainer}>
                                 <Button
-                                    title="Start Scan"
+                                    title="commencer le scan"
                                     color="#f194ff"
                                     onPress={startScan}
                                 />
@@ -63,13 +63,13 @@ const QrCodeScanner = () => {
                                     }}
                                     onRead={onSuccess}
                                     topContent={
-                                        <Text style={styles.centerText}>Scan your QRCode!</Text>
+                                        <Text style={styles.centerText}>Scannez votre QRCode!</Text>
                                     }
                                     bottomContent={
                                         <TouchableOpacity
                                             style={styles.buttonTouchable}
                                             onPress={() => setScan(false)}>
-                                            <Text style={styles.buttonText}>Cancel Scan</Text>
+                                            <Text style={styles.buttonText}>Annuler Scan</Text>
                                         </TouchableOpacity>
                                     }
                                 />
