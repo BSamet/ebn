@@ -1,18 +1,18 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, Image, useWindowDimensions} from 'react-native';
+import {View, StyleSheet, Image, useWindowDimensions} from 'react-native';
 import Logo from '../../../assets/images/logo.png';
 import ButtonMdpForgot from '../../components/ButtonMdpForgot';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
 
 const SignInScreen = () => {
+  const navigation = useNavigation();
   const [userMail, setUserMail] = useState('');
   const [userPassword, setUserPassword] = useState('');
-  const [passwordForgot, setpasswordForgot] = useState('');
+  // const [passwordForgot, setpasswordForgot] = useState(''); // TODO redirection vers modal reset password
   const {height} = useWindowDimensions();
-  const onSignInPressed = () => {
-    console.warn('Connecter');
-  };
+
   const onSignUpPressed = () => {
     console.warn('Inscrit !');
   };
@@ -38,8 +38,18 @@ const SignInScreen = () => {
         placeholder="Mot de Passe"
         secureTextEntry={true}
       />
-      <CustomButton text={'Connexion'} onPress={onSignInPressed} />
-      <CustomButton text={'Inscription'} onPress={onSignUpPressed} />
+      <CustomButton
+        text={'Connexion'}
+        onPress={() => {
+          navigation.navigate('Client');
+        }}
+      />
+      <CustomButton
+        text={'Inscription'}
+        onPress={() => {
+          navigation.navigate('Collecteur');
+        }}
+      />
       <ButtonMdpForgot
         text={'Mot de passe oublié'}
         onPress={onForgotPasswordPressed}
@@ -52,6 +62,8 @@ const styles = StyleSheet.create({
   root: {
     alignItems: 'center',
     padding: 20,
+    flex: 1,
+    backgroundColor: '#8AC997',
   },
   Logo: {
     width: '70%',

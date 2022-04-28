@@ -20,6 +20,9 @@ export class Historique {
     @Column({nullable: false})
     public commentaire: string;
 
+    @Column({nullable: false})
+    public poids: number;
+
     @ManyToOne(() => Client, (client) => client.historique, {eager: true})
     @JoinTable()
     client: Client;

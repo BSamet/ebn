@@ -1,0 +1,26 @@
+.qr-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 42px;
+    width: calc(900px - 42px);
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 21px;
+
+        input {
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--primary);
+            outline: none;
+            width: 100%;
+            transition: 0.5s ease-in-out;
+            height: fit-content;
+
+            &:focus {
+                border: 2px solid var(--highlight);
+            }
+        }
+    }
+}

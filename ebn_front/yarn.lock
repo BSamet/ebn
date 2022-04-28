@@ -2560,7 +2560,7 @@
     "normalize-path" "^3.0.0"
     "picomatch" "^2.0.4"
 
-"apexcharts@^3.18.0", "apexcharts@^3.35.0":
+"apexcharts@^3.18.0":
   "integrity" "sha512-oipJRkaxt8DPGRmn1kur6aPzML1JSpf2M3ecu+gyw+8xiNmT2C0p1uuuqPZrk+Lr2hmDxzNBPR7TvxwRl3ozgw=="
   "resolved" "https://registry.npmjs.org/apexcharts/-/apexcharts-3.35.0.tgz"
   "version" "3.35.0"
@@ -3107,15 +3107,6 @@
   "resolved" "https://registry.npmjs.org/charcodes/-/charcodes-0.2.0.tgz"
   "version" "0.2.0"
 
-"chart@^0.1.2":
-  "integrity" "sha1-adnpFsJqi+2Fsp34Asdjq1KX0xg="
-  "resolved" "https://registry.npmjs.org/chart/-/chart-0.1.2.tgz"
-  "version" "0.1.2"
-  dependencies:
-    "hashish" ""
-    "hat" ""
-    "mrcolor" "https://github.com/rook2pawn/mrcolor/archive/master.tar.gz"
-
 "check-types@^11.1.1":
   "integrity" "sha512-tzWzvgePgLORb9/3a0YenggReLKAIb2owL03H2Xdoe5pKcUyWRSEQ8xfCar8t2SIAuEDwtmx2da1YB52YuHQMQ=="
   "resolved" "https://registry.npmjs.org/check-types/-/check-types-11.1.2.tgz"
@@ -3204,11 +3195,6 @@
   "version" "2.0.1"
   dependencies:
     "color-name" "~1.1.4"
-
-"color-convert@0.2.x":
-  "integrity" "sha1-NjyrI8lLMaDWTbcQSLjGqUD4xow="
-  "resolved" "https://registry.npmjs.org/color-convert/-/color-convert-0.2.1.tgz"
-  "version" "0.2.1"
 
 "color-name@^1.1.4", "color-name@~1.1.4":
   "integrity" "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA=="
@@ -4599,10 +4585,10 @@
   "resolved" "https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz"
   "version" "4.2.0"
 
-"framer-motion@^6.3.0":
-  "integrity" "sha512-Nm6l2cemuFeSC1fmq9R32sCQs1eplOuZ3r14/PxRDewpE3NUr+ul5ulGRRzk8K0Aa5p76Tedi3sfCUaTPa5fRg=="
-  "resolved" "https://registry.npmjs.org/framer-motion/-/framer-motion-6.3.0.tgz"
-  "version" "6.3.0"
+"framer-motion@^6.3.2":
+  "integrity" "sha512-z+W9LyFCrQwn8Q9vTPm9RM+jYdn2WH6NM2/h1qPtsYzDsMvT50quU8RKwG4Iq2pVeojVuY1WADCuNiIln9Y6dQ=="
+  "resolved" "https://registry.npmjs.org/framer-motion/-/framer-motion-6.3.2.tgz"
+  "version" "6.3.2"
   dependencies:
     "framesync" "6.0.1"
     "hey-listen" "^1.0.8"
@@ -4848,18 +4834,6 @@
   "version" "1.0.3"
   dependencies:
     "function-bind" "^1.1.1"
-
-"hashish@":
-  "integrity" "sha1-bWC8b/r3Ebav1g5CbQd5iAFOZVQ="
-  "resolved" "https://registry.npmjs.org/hashish/-/hashish-0.0.4.tgz"
-  "version" "0.0.4"
-  dependencies:
-    "traverse" ">=0.2.4"
-
-"hat@":
-  "integrity" "sha1-uwFKnmSzeIrtgAWRdBPU/z1QLYo="
-  "resolved" "https://registry.npmjs.org/hat/-/hat-0.0.3.tgz"
-  "version" "0.0.3"
 
 "he@^1.2.0":
   "integrity" "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw=="
@@ -6224,13 +6198,6 @@
   dependencies:
     "minimist" "^1.2.6"
 
-"mrcolor@https://github.com/rook2pawn/mrcolor/archive/master.tar.gz":
-  "integrity" "sha512-feteSepg0FRp0fW3RafigAjU7gXiiaa4OlMW39FEmcvQPbD7Zlpc2PSu4hVBPSBR4XNee8n6EjCTfK0O37DL5A=="
-  "resolved" "https://github.com/rook2pawn/mrcolor/archive/master.tar.gz"
-  "version" "0.0.1"
-  dependencies:
-    "color-convert" "0.2.x"
-
 "ms@^2.1.1", "ms@2.1.2":
   "integrity" "sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w=="
   "resolved" "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz"
@@ -7301,6 +7268,11 @@
   "resolved" "https://registry.npmjs.org/q/-/q-1.5.1.tgz"
   "version" "1.5.1"
 
+"qrcode.react@^3.0.1":
+  "integrity" "sha512-uCNm16ClMCrdM2R20c/zqmdwHcbMQf3K7ey39EiK/UgEKbqWeM0iH2QxW3iDVFzjQKFzH23ICgOyG4gNsJ0/gw=="
+  "resolved" "https://registry.npmjs.org/qrcode.react/-/qrcode.react-3.0.1.tgz"
+  "version" "3.0.1"
+
 "qs@6.9.7":
   "integrity" "sha512-IhMFgUmuNpyRfxA90umL7ByLlgRXu6tIfKPpF5TmcfRLlLCckfP/g3IQmju6jjpu+Hh8rA+2p6A27ZSPOOHdKw=="
   "resolved" "https://registry.npmjs.org/qs/-/qs-6.9.7.tgz"
@@ -7522,7 +7494,7 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^17.0.0 || ^18.0.0", "react@^18.0.0", "react@>= 16", "react@>= 16.8.0", "react@>=0.13", "react@>=16.6.0", "react@>=16.8", "react@>=16.8 || ^17.0.0 || ^18.0.0", "react@>=16.8.0":
+"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17.0.0 || ^18.0.0", "react@^18.0.0", "react@>= 16", "react@>= 16.8.0", "react@>=0.13", "react@>=16.6.0", "react@>=16.8", "react@>=16.8 || ^17.0.0 || ^18.0.0", "react@>=16.8.0":
   "integrity" "sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.0.0.tgz"
   "version" "18.0.0"
@@ -8654,11 +8626,6 @@
   "version" "2.1.0"
   dependencies:
     "punycode" "^2.1.1"
-
-"traverse@>=0.2.4":
-  "integrity" "sha1-y99WD9e5r2MlAv7UD5GMFX6pcTc="
-  "resolved" "https://registry.npmjs.org/traverse/-/traverse-0.6.6.tgz"
-  "version" "0.6.6"
 
 "tryer@^1.0.1":
   "integrity" "sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA=="

@@ -7,7 +7,8 @@ import {
   UilCalendarAlt,
   UilMessage,
   UilUserSquare,
-  UilMoneyWithdrawal
+  UilMoneyWithdrawal,
+  UilQrcodeScan 
 } from "@iconscout/react-unicons";
 
 export const SidebarData = [
@@ -35,6 +36,10 @@ export const SidebarData = [
   {
     icon: UilUsersAlt,
     heading: "Clients",
+  },
+  {
+    icon:  UilQrcodeScan,
+    heading: "Qr Code"
   },
   {
     icon: UilMessage,
