@@ -5,9 +5,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "jsx": "react-native",
-    "lib": [
-      "es2017"
-    ],
+    "lib": ["es2017"],
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
@@ -23,8 +21,6 @@
   "compilerOptions": {
     "strict": true
   },
-  "typeRoots": [
-    "./types"
-  ]
+  "typeRoots": ["./types"]
   // <------ you need to add this
 }
