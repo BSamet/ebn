@@ -1,8 +1,6 @@
 import React from "react";
 
 import Sidebar from "../components/Sidebar";
-import MainDash from "../components/MainDash";
-import RightSide from "../components/RightSide";
 import ConteneursList from "../components/ConteneursList";
 import RightSideQrcode from "../components/RightSideQrcode";
 
