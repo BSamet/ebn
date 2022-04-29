@@ -12,13 +12,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 import CustomButton from '../../components/CustomButton';
 
-export interface dashboardCollecteur {
-  Client: string;
-  Rue: string;
-}
+import {AuthRootParamList} from '../../Navigation/RouteNavigator';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
+
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthScreenNavigate>();
 
   const list = [
     {

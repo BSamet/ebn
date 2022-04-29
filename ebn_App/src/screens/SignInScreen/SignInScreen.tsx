@@ -1,21 +1,25 @@
 import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack/lib/typescript/src/types';
 import React, {useState} from 'react';
 import {View, StyleSheet, Image, useWindowDimensions} from 'react-native';
 import Logo from '../../../assets/images/logo.png';
 import ButtonMdpForgot from '../../components/ButtonMdpForgot';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
+import {AuthRootParamList} from '../../Navigation/RouteNavigator';
+
+type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
 
 const SignInScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthScreenNavigate>();
   const [userMail, setUserMail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   // const [passwordForgot, setpasswordForgot] = useState(''); // TODO redirection vers modal reset password
   const {height} = useWindowDimensions();
 
-  const onSignUpPressed = () => {
-    console.warn('Inscrit !');
-  };
+  // const onSignUpPressed = () => {
+  //   console.warn('Inscrit !');
+  // };
   const onForgotPasswordPressed = () => {
     console.warn('Mot de passe oublié');
   };

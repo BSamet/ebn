@@ -6,7 +6,13 @@ import DashBordClient from '../screens/Dashbord_Client/DashBordClient';
 import DashBordCollecteur from '../screens/Dashbord_Collecteur/DashBordCollecteur';
 import QrCodeScan from '../screens/QrCodeScan';
 
-const RootStack = createNativeStackNavigator();
+export type AuthRootParamList = {
+  Login: undefined;
+  Client: undefined;
+  Collecteur: undefined;
+  QrCodeScan: undefined;
+};
+const RootStack = createNativeStackNavigator<AuthRootParamList>();
 
 export const RouteNavigator = () => {
   return (
