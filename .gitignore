@@ -45,6 +45,7 @@ ebn_front/.next/
 ebn_back/node_modules/
 jspm_packages/
 .idea
+.vscode
 ebn_front/.idea
 ebn_back/.idea
 
