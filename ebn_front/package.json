@@ -15,12 +15,14 @@
     "@types/node": "^16.7.13",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
+    "axios": "^0.27.2",
     "framer-motion": "^6.3.2",
     "qrcode.react": "^3.0.1",
     "react": "^18.0.0",
     "react-apexcharts": "^1.4.0",
     "react-circular-progressbar": "^2.0.4",
     "react-dom": "^18.0.0",
+    "react-native-dotenv": "^3.3.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.0",
     "sass": "^1.50.0",
@@ -53,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-native-dotenv": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "eslint": "^8.13.0",

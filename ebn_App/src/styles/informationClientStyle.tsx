@@ -10,6 +10,10 @@ const informationClientStyle = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15,
   },
+  error: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
 });
 
 export default informationClientStyle;

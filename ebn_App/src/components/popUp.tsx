@@ -9,17 +9,22 @@ const popUp = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [poids, setPoids] = useState(0);
   const [commentaire, setCommentaire] = useState('');
+  let data = {
+    typeAction: 'récupération du saut',
+    date: '2022-05-01T18:57:30.295Z',
+    typeDeDechet: 'Biodéchets',
+    commentaire: commentaire,
+    poids: poids,
+    clientId: 1,
+    collecteurId: 1,
+    conteneurId: 3,
+  };
   const submit = () => {
     postPoids();
-    console.log(poids, commentaire);
-    console.log(URL_API);
   };
   const postPoids = () => {
     axios
-      .patch(URL_API + 'historique/4', {
-        commentaire: commentaire,
-        poids: poids,
-      })
+      .post(URL_API + 'historique', data)
       .then(res => {
         console.log(res);
       })

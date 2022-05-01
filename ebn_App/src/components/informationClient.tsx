@@ -6,28 +6,30 @@ import {URL_API} from '@env';
 
 const informationClient = () => {
   const [client, setClient] = useState([]);
-  const state = URL_API;
-
+  const [errorGet, setErrorGet] = useState(false);
   useEffect(() => {
     axios
       .get(URL_API + 'client/1')
       .then(res => {
-        console.log(res.data);
         setClient(res.data);
-        console.log(client);
+        console.log(res + 'format json');
       })
       .catch(function (error) {
-        console.log(error + ' sur get');
+        setErrorGet(true);
       });
-    console.log(state);
   }, []);
 
   return (
     <View style={informationClientStyle.div}>
       <Text style={informationClientStyle.text}>Information sur le client</Text>
-      <Text>client</Text>
+      <Text>client {console.log('affichage ' + client)}</Text>
       <Text>0690033900</Text>
       <Text>Type de dechet:</Text>
+      {errorGet ? (
+        <Text style={informationClientStyle.error}>
+          Il 'a eu une erreur lors de la récupération des informations{' '}
+        </Text>
+      ) : null}
     </View>
   );
 };
