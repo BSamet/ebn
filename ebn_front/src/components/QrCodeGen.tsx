@@ -8,10 +8,8 @@ export default function QrCode() {
     const qrRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
     const [text , setText] = React.useState("");
 
-    const downloadQRCode = (evt: React.FormEvent) => {
+    const printQRCode = (evt: React.FormEvent) => {
         evt.preventDefault();
-
-        // let canvas = qrRef.current.querySelector("canvas");
         
 
         setText("");
@@ -34,13 +32,14 @@ export default function QrCode() {
     )
     return (
         <div className="qr-container">
-            <form onSubmit={downloadQRCode} className="qr-container__form">
+            <form onSubmit={printQRCode} className="qr-container__form">
                 <input
                     type="text"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="12345678"
                 />
+
 
                 <button type="submit">Imprimer le QR Code</button>
             </form>
