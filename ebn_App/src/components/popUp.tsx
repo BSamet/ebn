@@ -25,11 +25,9 @@ const popUp = () => {
   const postPoids = () => {
     axios
       .post(URL_API + 'historique', data)
-      .then(res => {
-        console.log(res);
-      })
+      .then(res => {})
       .catch(function (error) {
-        console.log(error + ' sur patch');
+        console.log(error + ' sur post');
       });
   };
   return (
