@@ -3,6 +3,7 @@ import {Alert, Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
 import InformationClient from './informationClient';
 import axios from 'axios';
+import {URL_API} from '@env';
 
 const popUp = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -11,10 +12,11 @@ const popUp = () => {
   const submit = () => {
     postPoids();
     console.log(poids, commentaire);
+    console.log(URL_API);
   };
   const postPoids = () => {
     axios
-      .patch('http://10.3.0.138:5454/historique/4', {
+      .patch(URL_API + 'historique/4', {
         commentaire: commentaire,
         poids: poids,
       })
