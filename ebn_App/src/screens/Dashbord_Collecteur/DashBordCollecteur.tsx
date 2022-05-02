@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {
   Image,
@@ -14,46 +14,74 @@ import CustomButton from '../../components/CustomButton';
 
 import {AuthRootParamList} from '../../Navigation/RouteNavigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useState} from 'react';
+
+import axios from 'axios';
 
 type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
+interface EtapeCollecteur {
+  id: number;
+  date: string;
+  isCollected: boolean;
+  commentaire: string;
+  client: {
+    id: number;
+    siret: number;
+    nomCommercial: string;
+    adresse: string;
+
+    utilisateur: {
+      id: number;
+      role: string;
+      utilisateur: string;
+      password: string;
+      nom: string;
+      prenom: string;
+      mail: string;
+      telephone: string;
+    };
+  };
+  collecteur: {
+    id: number;
+    numeroCollecteur: number;
+    numeroVelo: number;
+    utilisateur: {
+      id: number;
+      role: string;
+      utilisateur: string;
+      password: string;
+      nom: string;
+      prenom: string;
+      mail: string;
+      telephone: string;
+    };
+  };
+}
+
+// type EtapeCollecteurs = EtapeCollecteur[] | any;
 
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
   const navigation = useNavigation<AuthScreenNavigate>();
 
-  const list = [
-    {
-      Client: 'Baccio',
-      Street: '13 rue de moselle',
-      Hour: '10H40',
-    },
-    {
-      Client: 'Winstub Factory',
-      Street: '13 rue de moselle',
-      Hour: '10H40',
-    },
-    {
-      Client: 'Chez Aness',
-      Street: '13 rue de moselle',
-      Hour: '10H40',
-    },
-    {
-      Client: 'Merguez Party',
-      Street: '13 rue de moselle',
-      Hour: '10H40',
-    },
-    {
-      Client: 'KojoSenpai',
-      Street: '13 rue de moselle',
-      Hour: '10H40',
-    },
-    {
-      Client: 'ChaudFLo',
-      Street: '13 rue de moselle',
-      Hour: '10H40',
-    },
-  ];
   const {height} = useWindowDimensions();
+  const [etapes, setEtapes] = useState<EtapeCollecteur>();
+  const [fetchOnce, setFetchOnce] = useState(true);
+
+  useEffect(() => {
+    if (fetchOnce) {
+      axios.get('http://10.8.251.221:5454/etape/1').then(res => {
+        // appel de l'api
+
+        setEtapes(res.data);
+        console.warn(res.data);
+
+        // on cherche une seul fois
+        setFetchOnce(false);
+      });
+    }
+  }, [etapes, fetchOnce]);
+
   return (
     <ScrollView>
       <View style={styles.page}>
@@ -74,8 +102,12 @@ const DashBordCollecteur = () => {
               style={[styles.Logo, {height: height * 0.3}]}
               resizeMode="contain"
             />
-
-            <Text style={styles.topText}>Bonjour, Nom Collecteur</Text>
+            {/* TODO remetre les map une fois le query builder tourné par ID collecteur */}
+            {/* {etapes?.map(showName => ( */}
+            <Text style={styles.topText}>
+              Bonjour,{etapes?.collecteur.utilisateur.nom}
+            </Text>
+            {/* ))} */}
           </LinearGradient>
           <CustomButton
             text={'Flasher QRcode'}
@@ -85,16 +117,16 @@ const DashBordCollecteur = () => {
           />
         </View>
         <Text style={styles.titleText}>Historique de collecte</Text>
-        {list.map((item, index) => (
-          <View style={styles.body} key={index}>
-            <Text style={styles.date}>
-              {item.Client} {item.Street}
-            </Text>
-            <Text style={styles.poids}>
-              Heure estimé de passage : {item.Hour}
-            </Text>
-          </View>
-        ))}
+        {/* TODO remetre les map une fois le query builder tourné par ID collecteur */}
+        {/* {etapes?.map(data => ( */}
+        <View style={styles.body}>
+          <Text style={styles.date}>{etapes?.client.nomCommercial}</Text>
+
+          <Text style={styles.poids}>
+            Heure estimé de passage : {etapes?.date}{' '}
+          </Text>
+        </View>
+        {/* ))} */}
       </View>
     </ScrollView>
   );
