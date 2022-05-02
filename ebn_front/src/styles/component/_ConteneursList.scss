@@ -1,13 +1,27 @@
-.liste{
+.liste {
     display: flex;
     justify-content: center;
-    padding-top: 50px;
+    padding-top: 20px;
 }
 
-h1{
+h1 {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.listItem {
+    width: 20%;
+}
+
+.bouton {
+    padding-top: 20px;
     text-align: center;
 }
 
-.listItem{
-    width: 20%;
+.conteneurs {
+    -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+    box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+    background-color: #daebd3;
+    padding-top: 1rem;
 }

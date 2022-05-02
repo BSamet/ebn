@@ -2,9 +2,9 @@ import React from 'react'
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
+import AddConteneur from './AddConteneur';
 
 
 function ConteneursList() {
@@ -19,8 +19,11 @@ function ConteneursList() {
     };
 
     return (
-        <div>
+        <div className='conteneurs'>
             <h1>LISTE DES CONTENEURS</h1>
+            <div className='bouton'>
+                <AddConteneur />
+            </div>
             <div className='liste'>
                 <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
                     <List component="nav" aria-label="Liste des conteneurs">
@@ -28,7 +31,7 @@ function ConteneursList() {
                             selected={selectedIndex === 0}
                             onClick={(event) => handleListItemClick(event, 0)}
                         >
-                            <ListItemText className='listItem' primary="Conteneur ID: 1"/>
+                            <ListItemText className='listItem' primary="Conteneur ID: 1" />
                             <ListItemText className='listItem' primary="Type de déchet : Bio-déchet" />
                             <ListItemText className='listItem' primary="Capacité maximum : 12kg" />
                             <ListItemText className='listItem' primary="Client : Restaurant Le Bacio" />
