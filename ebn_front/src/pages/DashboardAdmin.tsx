@@ -2,6 +2,7 @@ import React from "react";
 import Sidebar from "../components/Sidebar";
 import MainDash from "../components/MainDash";
 import RightSide from "../components/RightSide";
+import DashboardAdminHistory from "../components/DashboardAdminHistory";
 
 const DashboardAdmin = () => {
   return (
@@ -10,8 +11,8 @@ const DashboardAdmin = () => {
         <Sidebar />
         <MainDash/>
         <RightSide/>
-
       </div>
+        <DashboardAdminHistory/>
     </div>
   );
 };
