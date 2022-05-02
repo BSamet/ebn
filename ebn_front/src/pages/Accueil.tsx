@@ -30,7 +30,7 @@ const Accueil = () => {
             <Button variant="contained" color="success">
                 Section Admin
             </Button></a>
-            <a href="http://localhost:3000/Client">
+            <a href="http://localhost:3000/Client/1">
             <Button variant="contained" color="success">
                 Section Client
             </Button></a>
