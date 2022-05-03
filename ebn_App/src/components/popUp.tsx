@@ -5,7 +5,7 @@ import InformationClient from './informationClient';
 import axios from 'axios';
 import {URL_API} from '@env';
 
-const popUp = () => {
+const PopUp = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [poids, setPoids] = useState(0);
   const [commentaire, setCommentaire] = useState('');
@@ -39,7 +39,7 @@ const popUp = () => {
         }}>
         <View style={popUpStyles.centeredView}>
           <View style={popUpStyles.modalView}>
-            <InformationClient> </InformationClient>
+            <InformationClient />
             <Text style={popUpStyles.modalTitre}> Information du seau </Text>
             <TextInput
               style={popUpStyles.input}
@@ -75,4 +75,4 @@ const popUp = () => {
   );
 };
 
-export default popUp;
+export default PopUp;

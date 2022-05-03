@@ -4,7 +4,7 @@ import informationClientStyle from '../styles/informationClientStyle';
 import axios from 'axios';
 import {URL_API} from '@env';
 
-const informationClient = () => {
+const InformationClient = () => {
   const [client, setClient] = useState([]);
   const state = URL_API;
 
@@ -31,4 +31,4 @@ const informationClient = () => {
     </View>
   );
 };
-export default informationClient;
+export default InformationClient;

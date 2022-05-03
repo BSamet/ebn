@@ -1,2 +1,1 @@
-let HOST_DIRECTORY = window.location.protocol + '//' + window.location.hostname;
-export let HOST_BACK = HOST_DIRECTORY + ':5454';
+export const HOST_BACK = 'http://10.8.251.221:5454';
