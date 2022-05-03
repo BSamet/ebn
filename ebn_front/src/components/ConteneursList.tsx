@@ -5,6 +5,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import AddConteneur from './AddConteneur';
+import ListItem from '@mui/material/ListItem';
 
 
 function ConteneursList() {
@@ -26,45 +27,56 @@ function ConteneursList() {
             </div>
             <div className='liste'>
                 <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
-                    <List component="nav" aria-label="Liste des conteneurs">
+                <List component="nav" aria-label="Liste des conteneurs">
+                        <ListItem className='listItemHeader'>
+                            <ListItemText className='listHeader' primary="Conteneur N°" />
+                            <ListItemText className='listHeader' primary="Type de déchet" />
+                            <ListItemText className='listHeader' primary="Capacité maximum" />
+                            <ListItemText className='listHeader' primary="Client" />
+                            
+                        </ListItem>
+                        <ListItem className='listItemHeader'>
+                        <ListItemText className='listHeader' primary=" " />
+                        </ListItem>
+                        <Divider />
                         <ListItemButton
                             selected={selectedIndex === 0}
                             onClick={(event) => handleListItemClick(event, 0)}
                         >
-                            <ListItemText className='listItem' primary="Conteneur ID: 1" />
-                            <ListItemText className='listItem' primary="Type de déchet : Bio-déchet" />
-                            <ListItemText className='listItem' primary="Capacité maximum : 12kg" />
-                            <ListItemText className='listItem' primary="Client : Restaurant Le Bacio" />
+                            <ListItemText className='listItem' primary="1" />
+                            <ListItemText className='listItem' primary="Bio-déchet" />
+                            <ListItemText className='listItem' primary="12kg" />
+                            <ListItemText className='listItem' primary="Restaurant Le Bacio" />
                         </ListItemButton>
                         <Divider />
                         <ListItemButton
                             selected={selectedIndex === 1}
                             onClick={(event) => handleListItemClick(event, 1)}
                         >
-                            <ListItemText className='listItem' primary="Conteneur ID: 2" />
-                            <ListItemText className='listItem' primary="Type de déchet : Café" />
-                            <ListItemText className='listItem' primary="Capacité maximum : 8kg" />
-                            <ListItemText className='listItem' primary="Client : Restaurant Le Bacio" />
+                            <ListItemText className='listItem' primary="2" />
+                            <ListItemText className='listItem' primary="Café" />
+                            <ListItemText className='listItem' primary="8kg" />
+                            <ListItemText className='listItem' primary="Restaurant Le Bacio" />
                         </ListItemButton>
                         <Divider />
                         <ListItemButton
                             selected={selectedIndex === 2}
                             onClick={(event) => handleListItemClick(event, 2)}
                         >
-                            <ListItemText className='listItem' primary="Conteneur ID: 3" />
-                            <ListItemText className='listItem' primary="Type de déchet : Bio-déchet" />
-                            <ListItemText className='listItem' primary="Capacité maximum : 12kg" />
-                            <ListItemText className='listItem' primary="Client : Restaurant Hug" />
+                            <ListItemText className='listItem' primary="3" />
+                            <ListItemText className='listItem' primary="Bio-déchet" />
+                            <ListItemText className='listItem' primary="12kg" />
+                            <ListItemText className='listItem' primary="Restaurant Hug" />
                         </ListItemButton>
                         <Divider />
                         <ListItemButton
                             selected={selectedIndex === 3}
                             onClick={(event) => handleListItemClick(event, 3)}
                         >
-                            <ListItemText className='listItem' primary="Conteneur ID: 4" />
-                            <ListItemText className='listItem' primary="Type de déchet : Café" />
-                            <ListItemText className='listItem' primary="Capacité maximum : 10kg" />
-                            <ListItemText className='listItem' primary="Client : Starbucks" />
+                            <ListItemText className='listItem' primary="4" />
+                            <ListItemText className='listItem' primary="Café" />
+                            <ListItemText className='listItem' primary="10kg" />
+                            <ListItemText className='listItem' primary="Starbucks" />
                         </ListItemButton>
                         <Divider />
                     </List>

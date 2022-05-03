@@ -17,7 +17,7 @@ export default function FormConteneur() {
             <div className='popupConteneurs'>
                 <h1 className='titleConteneurs'>Ajouter un conteneur</h1>
                 <TextField className='field' id="dechet" label="Type de déchet" variant="outlined" />
-                <TextField className='field' id="capacite" label="Capacité maximum" variant="outlined" />
+                <TextField className='field' id="capacite" label="Capacité maximum (kg)" variant="outlined" />
                 <Button type='submit'>Valider</Button>
             </div>
         </Box>
