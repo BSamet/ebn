@@ -5,6 +5,7 @@ import Inscription from "./pages/Inscription";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import DashboardClient from "./pages/DashboardClient";
 import AdminQRcodeGen from "./pages/AdminQRcodeGen";
+import { HOST_BACK } from "./environment/environment";
 
 function App() {
   return (
