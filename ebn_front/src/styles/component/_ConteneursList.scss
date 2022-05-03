@@ -31,4 +31,10 @@ h1 {
     box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
     background-color: #daebd3;
     padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.pagination{
+    display: flex;
+    padding-top: 10px;
 }

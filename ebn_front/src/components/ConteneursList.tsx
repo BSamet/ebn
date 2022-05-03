@@ -6,6 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import AddConteneur from './AddConteneur';
 import ListItem from '@mui/material/ListItem';
+import ListConteneursPagination from './ListConteneursPagination'
 
 
 function ConteneursList() {
@@ -82,6 +83,7 @@ function ConteneursList() {
                     </List>
                 </Box>
             </div>
+            <ListConteneursPagination/>
         </div>
     )
 }
