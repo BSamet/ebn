@@ -14,11 +14,11 @@ export class Conteneur {
     @Column()
     public isAvailable: boolean;
 
-    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {})
+    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {onUpdate: 'CASCADE'})
     @JoinTable()
     typeDechet: TypeDechet;
 
-    @ManyToOne(() => Client, (client) => client.conteneur, {})
+    @ManyToOne(() => Client, (client) => client.conteneur, {onUpdate: 'CASCADE', nullable: true})
     @JoinTable()
     client: Client;
 

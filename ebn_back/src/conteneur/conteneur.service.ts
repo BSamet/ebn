@@ -9,6 +9,7 @@ import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
 
 @Injectable()
 export class ConteneurService {
+
     constructor(
         @InjectRepository(Conteneur)
         private readonly conteneurRepository: Repository<Conteneur>,
@@ -22,9 +23,11 @@ export class ConteneurService {
         conteneur.typeDechet = Object.assign(new TypeDechet(), {
             id: createConteneurDto.typeDechetId,
         });
-        conteneur.client = Object.assign(new Client(), {
-            id: createConteneurDto.clientId,
-        });
+        if (createConteneurDto.clientId) {
+            conteneur.client = Object.assign(new Client(), {
+                id: createConteneurDto.clientId,
+            });
+        }
         return this.conteneurRepository.save(conteneur);
     }
 
@@ -34,6 +37,22 @@ export class ConteneurService {
 
     findOne(id: number) {
         return this.conteneurRepository.findOne(id);
+    }
+
+    findAllConteneurPagination(take: number, skip: number) {
+        return this.conteneurRepository
+            .createQueryBuilder("conteneur")
+            .leftJoinAndSelect("conteneur.client", "client")
+            .leftJoinAndSelect("client.utilisateur", "utilisateur")
+            .leftJoinAndSelect("conteneur.typeDechet", "typeDechet")
+            .select("conteneur")
+            .addSelect("client.nomCommercial")
+            .addSelect("utilisateur.nom")
+            .addSelect("utilisateur.prenom")
+            .addSelect("typeDechet.typeDechets")
+            .take(take)
+            .skip(skip)
+            .getMany()
     }
 
     update(id: number, updateConteneurDto: UpdateConteneurDto) {
