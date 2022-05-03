@@ -1,0 +1,34 @@
+.liste {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+.listItemHeader{
+    background-color: #8ac997;
+}
+.listHeader{
+    color: white;
+    font-weight:bolder;
+    width: 20%;
+}
+.listItem {
+    width: 20%;
+}
+
+.bouton {
+    padding-top: 20px;
+    text-align: center;
+}
+
+.conteneurs {
+    -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+    box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+    background-color: #daebd3;
+    padding-top: 1rem;
+}
