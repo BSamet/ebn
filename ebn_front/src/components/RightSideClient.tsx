@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {HOST_BACK} from "../environment/environment";
+import {useParams} from "react-router-dom";
+import moment from "moment";
 
 interface historyCustomerInterface{
     typeAction:string;
@@ -10,13 +12,18 @@ interface historyCustomerInterface{
 
 }
 
+
+
 const RightSideClient = () => {
-    const [history, setHistory] = useState<historyCustomerInterface>();
+    const [history, setHistory] = useState<historyCustomerInterface[]>([]);
+    const {id} = useParams();
+
+
 
 
     useEffect(() => {
         axios
-            .get(HOST_BACK +'/historique/1')
+            .get(HOST_BACK +'/historique/customer/' + id)
             .then(res => {
                 setHistory(res.data);
             })
@@ -25,17 +32,19 @@ const RightSideClient = () => {
             });
     }, []);
 
+    const formatDate = moment().format('DD-MM-YYYY')
+
     return (
-        <div className="historique">
-            <h2>Historique</h2>
-            <ul>
-                <li>{history?.typeAction}</li>
-                <li>{history?.commentaire}</li>
-                <li>poids : {history?.poids} kg</li>
-                <li>{history?.date}</li>
+        <div>
+            <h3>MON HISTORIQUE</h3>
+            {history.map((data) => (
+                <div className="historique">
 
-
-            </ul>
+                    <h3>{data.typeAction}</h3>
+                    <p>{moment(data.date).format('DD.MM.YYYY à HH [h] mm')} </p>
+                    <p>{data.commentaire}</p>
+                </div>
+            ))}
         </div>
     );
 };

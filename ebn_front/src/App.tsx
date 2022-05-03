@@ -19,6 +19,7 @@ return (
         <Route path="/Admin" element={<DashboardAdmin />} />
         <Route path="/Client/:id" element={<DashboardClient />} />
         <Route path="/QRcodeGen" element={<AdminQRcodeGen />} />
+        <Route path="/Admin/History"  />
       </Routes>
     </BrowserRouter>
   );

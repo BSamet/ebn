@@ -15,6 +15,7 @@ export const SidebarData = [
   {
     icon: UilEstate,
     heading: "Tableau de bord",
+    path:"/",
   },
   {
     icon: UilUserSquare,
@@ -35,7 +36,8 @@ export const SidebarData = [
   },
   {
     icon: UilUsersAlt,
-    heading: "Clients",
+    heading: "Historique",
+    path: "/Admin/History"
   },
   {
     icon:  UilQrcodeScan,

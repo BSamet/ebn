@@ -3,6 +3,8 @@ import Logo from "../assets/logo.png";
 import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
+
 
 const Sidebar = () => {
   const [selected, setSelected] = useState(0);
@@ -22,7 +24,7 @@ const Sidebar = () => {
       <div
         className="bars"
         style={expanded ? { left: "60%" } : { left: "5%" }}
-        onClick={() => setExpaned(!expanded)}
+        onClick={() =>setExpaned(!expanded)}
       >
         <UilBars />
       </div>
@@ -55,6 +57,9 @@ const Sidebar = () => {
               </div>
             );
           })}
+
+
+
           {/* signoutIcon */}
           <div className="menuItem">
             <UilSignOutAlt />

@@ -12,7 +12,7 @@ const DashboardAdmin = () => {
         <MainDash/>
         <RightSide/>
       </div>
-        <DashboardAdminHistory/>
+
     </div>
   );
 };

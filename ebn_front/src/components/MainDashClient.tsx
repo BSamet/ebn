@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {HOST_BACK} from "../environment/environment";
 import {useParams} from "react-router-dom";
+import moment from "moment";
+
 
 interface clientInterface {
     siret: number;
@@ -19,12 +21,22 @@ interface clientInterface {
     }];
     typeDechet: [{
         typeDechets: string;
-    }]
+    }];
+    ramassagePonctuel: [{
+        date: Date;
+    }
+
+    ]
+
+
 }
 
 const MainDashClient = () => {
     const {id} = useParams();
     const [client, setClient] = useState<clientInterface>();
+    const formatDate = moment().format('DD-MM-YYYY')
+
+
 
 
     useEffect(() => {
@@ -53,12 +65,21 @@ const MainDashClient = () => {
             </div>
             {/*TODO: gérer les multiples abonnement via une message*/}
             <div className="abonnement">
-                <h4>Abonnement</h4>
+                <h4>Ramassage</h4>
+                <h3>Abonnement</h3>
                 {client?.ramassageAbonnement?.map((abonnement) => (
                     <div>
-                        <p>Vous avez un abonnement actif depuis le: {abonnement.dateReference}</p>
+                        <p>Vous avez un abonnement actif depuis le: {moment(abonnement.dateReference).format('DD.MM.YYYY à HH [h] mm')} </p>
                         <p>Collecte tout les {abonnement.periodicite} jours</p>
                     </div>
+                ))}
+
+                <h3>Ponctuel</h3>
+                {client?.ramassagePonctuel.map((ponctuel) => (
+                <div>
+                    <p>Vous avez demandé un ramassage ponctuel le : {moment(ponctuel.date).format('DD.MM.YYYY à HH [h] mm')} </p>
+
+                </div>
                 ))}
 
 
