@@ -8,7 +8,7 @@ import {
   UilMessage,
   UilUserSquare,
   UilMoneyWithdrawal,
-  UilQrcodeScan 
+  UilTrash 
 } from "@iconscout/react-unicons";
 import Sidebar from "../components/Sidebar";
 
@@ -44,8 +44,8 @@ export const SidebarData = [
     path: "/Admin/History"
   },
   {
-    icon:  UilQrcodeScan,
-    heading: "Qr Code",
+    icon:  UilTrash,
+    heading: "Conteneurs",
     path:"/",
   },
   {

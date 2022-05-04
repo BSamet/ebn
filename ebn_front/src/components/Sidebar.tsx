@@ -4,7 +4,7 @@ import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { motion } from "framer-motion";
 
-const Sidebar = ({setSelectNav}:any) => {
+const Sidebar = ({setSelectNav, setSelectRight}:any) => {
   const [selected, setSelected] = useState(0);
 
   const [expanded, setExpaned] = useState(true);
@@ -12,6 +12,7 @@ const Sidebar = ({setSelectNav}:any) => {
   function onClickOnNav(index:number, heading:string) {
     setSelected(index);
     setSelectNav(heading);
+    setSelectRight(heading);
   }
   const sidebarVariants = {
     true: {
