@@ -3,17 +3,29 @@ import Logo from "../assets/logo.png";
 import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { motion } from "framer-motion";
+import {useNavigate} from "react-router-dom";
 
 const Sidebar = ({setSelectNav, setSelectRight}:any) => {
+
+  const navigate = useNavigate();
+
   const [selected, setSelected] = useState(0);
 
   const [expanded, setExpaned] = useState(true);
+
 
   function onClickOnNav(index:number, heading:string) {
     setSelected(index);
     setSelectNav(heading);
     setSelectRight(heading);
   }
+  function logOut() {
+    sessionStorage.clear();
+    setTimeout(() => {
+      navigate("/")
+    }, 100);
+  }
+
   const sidebarVariants = {
     true: {
       left: "0",
@@ -40,11 +52,7 @@ const Sidebar = ({setSelectNav, setSelectRight}:any) => {
         <div className="logo">
 
           <img src={Logo} alt="logo" onClick={() => onClickOnNav(0, "Tableau de bord") }/>
-          <a href="http://localhost:3000/">
-          <span>
-            E<span>B</span>N
-          </span>
-          </a>
+
         </div>
 
         <div className="menu">
@@ -64,7 +72,10 @@ const Sidebar = ({setSelectNav, setSelectRight}:any) => {
 
 
           {/* signoutIcon */}
-          <div className="menuItem">
+          <div className="menuItem"
+               onClick={() =>
+                   logOut()
+          }>
             <UilSignOutAlt />
             <span>Déconnexion</span>
           </div>
