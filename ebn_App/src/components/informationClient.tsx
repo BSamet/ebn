@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import informationClientStyle from '../styles/informationClientStyle';
 import axios from 'axios';
-import * as base from '../../environment/environment';
+import {HOST_BACK} from '../../environment/environment';
 
 interface infoClientInterface {
   nomCommercial: string;
@@ -23,7 +23,7 @@ const informationClient = () => {
 
   useEffect(() => {
     axios
-      .get(base.TEST_URL_API + '/client/1')
+      .get(HOST_BACK + '/client/1')
       .then(res => {
         setClient(res.data);
       })
@@ -38,6 +38,7 @@ const informationClient = () => {
       <Text> {client?.nomCommercial}</Text>
       <Text> {client?.adresse}</Text>
       <Text> {client?.utilisateur?.telephone}</Text>
+      {/*TODO mettre des icones a coté du test*/}
       <Text>
         {' '}
         Type de dechet:{' '}

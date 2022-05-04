@@ -5,7 +5,8 @@ import InformationClient from './informationClient';
 import axios from 'axios';
 import {URL_API} from '@env';
 
-const popUp = () => {
+const popUp = (props: {scaleValue: any}) => {
+  const scaleValue = props.scaleValue;
   const [modalVisible, setModalVisible] = useState(false);
   const [poids, setPoids] = useState(0);
   const [commentaire, setCommentaire] = useState('');
@@ -35,7 +36,7 @@ const popUp = () => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={scaleValue}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
