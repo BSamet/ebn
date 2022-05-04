@@ -23,7 +23,7 @@ const RightSideClient = () => {
 
     useEffect(() => {
         axios
-            .get(HOST_BACK +'/historique/customer/' + id)
+            .get(HOST_BACK +'/historique/customer/' + sessionStorage.getItem("id"))
             .then(res => {
                 setHistory(res.data);
             })

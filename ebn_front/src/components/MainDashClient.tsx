@@ -41,7 +41,7 @@ const MainDashClient = () => {
 
     useEffect(() => {
         axios
-            .get(HOST_BACK + '/client/' + id)
+            .get(HOST_BACK + '/client/' + sessionStorage.getItem("id"))
             .then(res => {
                 setClient(res.data);
             })

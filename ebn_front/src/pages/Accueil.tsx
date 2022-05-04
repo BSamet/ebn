@@ -76,7 +76,7 @@ const Accueil = () => {
                 Section Admin
             </Button>
             <Button variant="contained" color="success" onClick={() =>
-                setSessionStorage(2, "Client")
+                setSessionStorage(1, "Client")
             }>
                 Section Client
             </Button>
