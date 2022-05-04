@@ -1,13 +1,15 @@
 .qr-container {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 42px;
-    width: calc(900px - 42px);
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+
 
     &__form {
         display: flex;
         flex-direction: column;
-        gap: 21px;
+        padding-bottom: 20px;
+        padding-top: 20px;
 
         input {
             padding: 8px 15px;

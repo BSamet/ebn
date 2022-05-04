@@ -43,6 +43,14 @@ export class HistoriqueService {
         return this.historiqueRepository.findOne(id);
     }
 
+    findByClient(id: number) {
+        return this.historiqueRepository
+            .createQueryBuilder('historique')
+            .where('historique.client.id = :id', {id})
+            .orderBy('historique.date', 'DESC')
+            .getMany()
+    }
+
     update(id: number, updateHistoriqueDto: UpdateHistoriqueDto) {
         return this.historiqueRepository.update(id, updateHistoriqueDto);
     }
