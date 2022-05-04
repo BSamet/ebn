@@ -3,10 +3,9 @@ import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
 import axios from 'axios';
 import {URL_API} from '@env';
-import InformationClient from "./informationClient";
 
 const popUp = () => {
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
     let data = {
@@ -40,7 +39,6 @@ const popUp = () => {
             >
                 <View style={popUpStyles.centeredView}>
                     <View style={popUpStyles.modalView}>
-                        <InformationClient></InformationClient>
                         <Text style={popUpStyles.modalTitre}> Information du seau </Text>
                         <Text> </Text>
                         <Text> </Text>
