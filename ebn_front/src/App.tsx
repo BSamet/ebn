@@ -5,6 +5,7 @@ import Inscription from "./pages/Inscription";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import DashboardClient from "./pages/DashboardClient";
 import AdminQRcodeGen from "./pages/AdminQRcodeGen";
+import DashboardAdminHistory from "./components/DashboardAdminHistory";
 
 
 
@@ -19,7 +20,7 @@ return (
         <Route path="/Admin" element={<DashboardAdmin />} />
         <Route path="/Client/:id" element={<DashboardClient />} />
         <Route path="/QRcodeGen" element={<AdminQRcodeGen />} />
-        <Route path="/Admin/History"  />
+        <Route path="/Admin/History" element={<DashboardAdminHistory/>}  />
       </Routes>
     </BrowserRouter>
   );

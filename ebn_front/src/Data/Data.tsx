@@ -10,29 +10,33 @@ import {
   UilMoneyWithdrawal,
   UilQrcodeScan 
 } from "@iconscout/react-unicons";
+import Sidebar from "../components/Sidebar";
 
 export const SidebarData = [
   {
     icon: UilEstate,
     heading: "Tableau de bord",
-    path:"/",
   },
   {
     icon: UilUserSquare,
     heading: "Collecteur",
+    path:"/",
   },
   {
     icon: UilCalendarAlt,
     heading: "Agenda",
+    path:"/",
   },
   {
     icon: UilClipboardAlt,
     heading: "Commande",
+    path:"/",
   },
 
   {
     icon: UilPackage,
     heading: "Produits",
+    path:"/",
   },
   {
     icon: UilUsersAlt,
@@ -41,11 +45,13 @@ export const SidebarData = [
   },
   {
     icon:  UilQrcodeScan,
-    heading: "Qr Code"
+    heading: "Qr Code",
+    path:"/",
   },
   {
     icon: UilMessage,
     heading: "Messages",
+    path:"/",
   },
 
 ];
@@ -132,3 +138,5 @@ export const CardsData =[
 
   },
 ]
+
+

@@ -3,7 +3,7 @@ import Logo from "../assets/logo.png";
 import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { motion } from "framer-motion";
-import { NavLink } from "react-router-dom";
+import { Link, Routes, Route } from "react-router-dom";
 
 
 const Sidebar = () => {
@@ -45,15 +45,15 @@ const Sidebar = () => {
         </div>
 
         <div className="menu">
-          {SidebarData.map((item, index) => {
+          {SidebarData.map((route, index) => {
             return (
               <div
                 className={selected === index ? "menuItem active" : "menuItem"}
                 key={index}
                 onClick={() => setSelected(index)}
               >
-                <item.icon />
-                <span>{item.heading}</span>
+                <route.icon />
+                <span>{route.heading}</span>
               </div>
             );
           })}
