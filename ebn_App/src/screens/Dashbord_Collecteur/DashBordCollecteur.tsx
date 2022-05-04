@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {
+  GestureResponderEvent,
   Image,
   Modal,
   Pressable,
+  PressableProps,
   ScrollView,
   StyleSheet,
   Text,
@@ -61,16 +63,40 @@ interface collecteurInterface {
     telephone: string;
   };
 }
+let dataClient: EtapeCollecteur = {
+  id: 0,
+  date: '',
+  isCollected: false,
+  commentaire: '',
+  client: {
+    id: 0,
+    siret: 0,
+    nomCommercial: '',
+    adresse: '',
+    utilisateur: {
+      id: 0,
+      role: '',
+      utilisateur: '',
+      password: '',
+      nom: '',
+      prenom: '',
+      mail: '',
+      telephone: '',
+    },
+  },
+};
 
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
   // navigation typé
+
   const navigation = useNavigation<AuthScreenNavigate>();
   const {height} = useWindowDimensions();
   const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
   const [userCollecteur, setUserCollecteur] = useState<collecteurInterface>();
   const [fetchOnce, setFetchOnce] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectClient, setSelectCLient] = useState(1);
 
   useEffect(() => {
     if (fetchOnce) {
@@ -79,12 +105,31 @@ const DashBordCollecteur = () => {
 
         setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
         setEtapes(res.data); // recuperation des etapes pour map
+        setSelectCLient(res.data);
 
         // on cherche une seul fois
         setFetchOnce(false);
       });
     }
-  }, [etapes, userCollecteur, fetchOnce]);
+  }, [etapes, selectClient, userCollecteur, fetchOnce]);
+
+  const showModal = (
+    event: GestureResponderEvent,
+    index: number,
+    idClient: any,
+  ) => {
+    setSelectCLient(index);
+    setModalOpen(true);
+    console.log(idClient);
+
+    for (const etape of etapes) {
+      if (etape.client.id === idClient) {
+        dataClient = etape.client;
+
+        break;
+      }
+    }
+  };
 
   return (
     <ScrollView>
@@ -119,8 +164,9 @@ const DashBordCollecteur = () => {
             }}
           />
         </View>
+
         <Text style={styles.titleText}>Etape de votre collecte</Text>
-        {/* TODO remetre les map une fois le query builder tourné par ID collecteur */}
+
         {etapes?.map((client, index) => (
           <Modal animationType="slide" transparent={true} visible={modalOpen}>
             <View style={styles.centeredView}>
@@ -149,7 +195,7 @@ const DashBordCollecteur = () => {
 
         {etapes?.map((data, index) => (
           <View style={styles.body} key={index}>
-            <Pressable onPress={() => setModalOpen(true)}>
+            <Pressable onPress={event => showModal(event, 0, data.client.id)}>
               <Text style={styles.date}>{data.client.nomCommercial}</Text>
 
               <Text style={styles.poids}>
