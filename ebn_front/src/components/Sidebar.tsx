@@ -3,14 +3,16 @@ import Logo from "../assets/logo.png";
 import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { motion } from "framer-motion";
-import { Link, Routes, Route } from "react-router-dom";
 
-
-const Sidebar = () => {
+const Sidebar = ({setSelectNav}:any) => {
   const [selected, setSelected] = useState(0);
 
   const [expanded, setExpaned] = useState(true);
 
+  function onClickOnNav(index:number, heading:string) {
+    setSelected(index);
+    setSelectNav(heading);
+  }
   const sidebarVariants = {
     true: {
       left: "0",
@@ -36,7 +38,7 @@ const Sidebar = () => {
         {/* logo */}
         <div className="logo">
 
-          <img src={Logo} alt="logo" />
+          <img src={Logo} alt="logo" onClick={() => onClickOnNav(0, "Tableau de bord") }/>
           <a href="http://localhost:3000/">
           <span>
             E<span>B</span>N
@@ -45,15 +47,15 @@ const Sidebar = () => {
         </div>
 
         <div className="menu">
-          {SidebarData.map((route, index) => {
+          {SidebarData.map((item, index) => {
             return (
               <div
                 className={selected === index ? "menuItem active" : "menuItem"}
                 key={index}
-                onClick={() => setSelected(index)}
+                onClick={() => onClickOnNav(index, item.heading) }
               >
-                <route.icon />
-                <span>{route.heading}</span>
+                <item.icon />
+                <span>{item.heading}</span>
               </div>
             );
           })}
