@@ -1,1 +1,1 @@
-export const HOST_BACK = 'http://10.8.251.221:5454';
+export const HOST_BACK = 'http://192.168.1.19:5454';

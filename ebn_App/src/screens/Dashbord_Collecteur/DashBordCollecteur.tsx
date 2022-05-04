@@ -63,28 +63,6 @@ interface collecteurInterface {
     telephone: string;
   };
 }
-let dataClient: EtapeCollecteur = {
-  id: 0,
-  date: '',
-  isCollected: false,
-  commentaire: '',
-  client: {
-    id: 0,
-    siret: 0,
-    nomCommercial: '',
-    adresse: '',
-    utilisateur: {
-      id: 0,
-      role: '',
-      utilisateur: '',
-      password: '',
-      nom: '',
-      prenom: '',
-      mail: '',
-      telephone: '',
-    },
-  },
-};
 
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
@@ -96,7 +74,7 @@ const DashBordCollecteur = () => {
   const [userCollecteur, setUserCollecteur] = useState<collecteurInterface>();
   const [fetchOnce, setFetchOnce] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectClient, setSelectCLient] = useState(1);
+  const [ClientModal, setClientModal] = useState<EtapeCollecteur>();
 
   useEffect(() => {
     if (fetchOnce) {
@@ -105,30 +83,16 @@ const DashBordCollecteur = () => {
 
         setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
         setEtapes(res.data); // recuperation des etapes pour map
-        setSelectCLient(res.data);
 
         // on cherche une seul fois
         setFetchOnce(false);
       });
     }
-  }, [etapes, selectClient, userCollecteur, fetchOnce]);
+  }, [etapes, userCollecteur, fetchOnce]);
 
-  const showModal = (
-    event: GestureResponderEvent,
-    index: number,
-    idClient: any,
-  ) => {
-    setSelectCLient(index);
+  const showModal = (Client: any) => {
     setModalOpen(true);
-    console.log(idClient);
-
-    for (const etape of etapes) {
-      if (etape.client.id === idClient) {
-        dataClient = etape.client;
-
-        break;
-      }
-    }
+    setClientModal(Client);
   };
 
   return (
@@ -157,49 +121,47 @@ const DashBordCollecteur = () => {
               {userCollecteur?.utilisateur.prenom}
             </Text>
           </LinearGradient>
-          <QrcodeButton
-            text={'Flasher QRcode'}
-            onPress={() => {
-              navigation.navigate('QrCodeScan');
-            }}
-          />
         </View>
 
         <Text style={styles.titleText}>Etape de votre collecte</Text>
 
-        {etapes?.map((client, index) => (
-          <Modal animationType="slide" transparent={true} visible={modalOpen}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView} key={index}>
-                <Text style={styles.modalText}>
-                  Nom : {client.client.utilisateur.nom}
-                </Text>
-                <Text style={styles.modalText}>
-                  Prénom: {client.client.utilisateur.prenom}
-                </Text>
-                <Text style={styles.modalText}>
-                  Téléphone : {client.client.utilisateur.telephone}
-                </Text>
-                <Text style={styles.modalText}>
-                  Adresse: {client.client.adresse}
-                </Text>
-                <Pressable
-                  style={[styles.buttonModal, styles.buttonClose]}
-                  onPress={() => setModalOpen(!modalOpen)}>
-                  <Text style={styles.textStyle}>Fermer</Text>
-                </Pressable>
-              </View>
+        <Modal animationType="slide" transparent={true} visible={modalOpen}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Nom : {ClientModal?.client.utilisateur.nom}
+              </Text>
+              <Text style={styles.modalText}>
+                Prénom: {ClientModal?.client.utilisateur.prenom}
+              </Text>
+              <Text style={styles.modalText}>
+                Téléphone : {ClientModal?.client.utilisateur.telephone}
+              </Text>
+              <Text style={styles.modalText}>
+                Adresse: {ClientModal?.client.adresse}
+              </Text>
+              <QrcodeButton
+                text={'Flasher QRcode'}
+                onPress={() => {
+                  navigation.navigate('QrCodeScan');
+                }}
+              />
+              <Pressable
+                style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() => setModalOpen(!modalOpen)}>
+                <Text style={styles.textStyle}>Fermer</Text>
+              </Pressable>
             </View>
-          </Modal>
-        ))}
+          </View>
+        </Modal>
 
         {etapes?.map((data, index) => (
           <View style={styles.body} key={index}>
-            <Pressable onPress={event => showModal(event, 0, data.client.id)}>
+            <Pressable onPress={() => showModal(data)}>
               <Text style={styles.date}>{data.client.nomCommercial}</Text>
 
               <Text style={styles.poids}>
-                Heure estimé de passage : {data.date}{' '}
+                Heure estimé de passage : {data.date}
               </Text>
             </Pressable>
           </View>
