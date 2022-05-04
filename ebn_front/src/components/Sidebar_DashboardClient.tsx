@@ -4,11 +4,21 @@ import {UilBars, UilSignOutAlt} from "@iconscout/react-unicons";
 import {motion} from "framer-motion";
 import Logo from "../assets/logo.png";
 import {SidebarClientData} from "../Data/Data";
+import {useNavigate} from "react-router-dom";
 
 const SidebarDashboardClient = () => {
+    const navigate = useNavigate();
+
     const [selected, setSelected] = useState(0);
 
     const [expanded, setExpaned] = useState(true);
+
+    function logOut() {
+        sessionStorage.clear();
+        setTimeout(() => {
+            navigate("/")
+        }, 100);
+    }
 
     const sidebarVariants = {
         true: {
@@ -23,10 +33,10 @@ const SidebarDashboardClient = () => {
         <>
             <div
                 className="bars"
-                style={expanded ? { left: "60%" } : { left: "5%" }}
+                style={expanded ? {left: "60%"} : {left: "5%"}}
                 onClick={() => setExpaned(!expanded)}
             >
-                <UilBars />
+                <UilBars/>
             </div>
             <motion.div
                 className="_sidebar"
@@ -35,12 +45,7 @@ const SidebarDashboardClient = () => {
             >
                 {/* logo */}
                 <div className="logo">
-                    <img src={Logo} alt="logo" />
-                    <a href="http://localhost:3000/">
-          <span>
-            E<span>B</span>N
-          </span>
-                    </a>
+                    <img src={Logo} alt="logo"/>
                 </div>
 
                 <div className="menu">
@@ -51,14 +56,16 @@ const SidebarDashboardClient = () => {
                                 key={index}
                                 onClick={() => setSelected(index)}
                             >
-                                <item.icon />
+                                <item.icon/>
                                 <span>{item.heading}</span>
                             </div>
                         );
                     })}
                     {/* signoutIcon */}
-                    <div className="menuItem">
-                        <UilSignOutAlt />
+                    <div className="menuItem" onClick={() =>
+                        logOut()
+                    }>
+                        <UilSignOutAlt/>
                         <span>Déconnexion</span>
                     </div>
                 </div>
