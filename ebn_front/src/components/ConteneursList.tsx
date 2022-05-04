@@ -48,12 +48,13 @@ const ConteneursList = () => {
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
-        idConteneur: any,
+        idConteneur: any,        
     ) => {
         setSelectedIndex(index);
         console.log(idConteneur);
         
-    };
+    }
+    
 
     return (
         <div className='conteneurs'>
@@ -70,7 +71,6 @@ const ConteneursList = () => {
                             <ListItemText className='listHeader' primary="Type de déchet" />
                             <ListItemText className='listHeader' primary="Capacité maximum" />
                             <ListItemText className='listHeader' primary="Client" />
-
                         </ListItem>
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary=" " />
