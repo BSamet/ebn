@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import {Alert, Modal, Pressable, Text, TextInput, View} from 'react-native';
+import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
-import InformationClient from './informationClient';
 import axios from 'axios';
 import {URL_API} from '@env';
+import InformationClient from "./informationClient";
 
-const popUp = (props: { scaleValue: any }) => {
-    const scaleValue = props.scaleValue;
+const popUp = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
@@ -37,15 +36,14 @@ const popUp = (props: { scaleValue: any }) => {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={scaleValue}
-                onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
-                    setModalVisible(!modalVisible);
-                }}>
+                visible={modalVisible}
+            >
                 <View style={popUpStyles.centeredView}>
                     <View style={popUpStyles.modalView}>
-                        <InformationClient> </InformationClient>
+                        <InformationClient></InformationClient>
                         <Text style={popUpStyles.modalTitre}> Information du seau </Text>
+                        <Text> </Text>
+                        <Text> </Text>
                         <TextInput
                             style={popUpStyles.input}
                             keyboardType="numeric"
@@ -60,7 +58,6 @@ const popUp = (props: { scaleValue: any }) => {
                             onChangeText={com => setCommentaire(com)}
                             placeholder="Entrer le commentaire"
                         />
-                        TODO
                         <Pressable
                             style={[popUpStyles.button, popUpStyles.buttonClose]}
                             onPress={() => {
