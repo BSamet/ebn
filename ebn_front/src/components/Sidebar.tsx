@@ -4,11 +4,15 @@ import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { motion } from "framer-motion";
 
-const Sidebar = () => {
+const Sidebar = ({setSelectNav}:any) => {
   const [selected, setSelected] = useState(0);
 
   const [expanded, setExpaned] = useState(true);
 
+  function onClickOnNav(index:number, heading:string) {
+    setSelected(index);
+    setSelectNav(heading);
+  }
   const sidebarVariants = {
     true: {
       left: "0",
@@ -22,7 +26,7 @@ const Sidebar = () => {
       <div
         className="bars"
         style={expanded ? { left: "60%" } : { left: "5%" }}
-        onClick={() => setExpaned(!expanded)}
+        onClick={() =>setExpaned(!expanded)}
       >
         <UilBars />
       </div>
@@ -34,7 +38,7 @@ const Sidebar = () => {
         {/* logo */}
         <div className="logo">
 
-          <img src={Logo} alt="logo" />
+          <img src={Logo} alt="logo" onClick={() => onClickOnNav(0, "Tableau de bord") }/>
           <a href="http://localhost:3000/">
           <span>
             E<span>B</span>N
@@ -48,13 +52,16 @@ const Sidebar = () => {
               <div
                 className={selected === index ? "menuItem active" : "menuItem"}
                 key={index}
-                onClick={() => setSelected(index)}
+                onClick={() => onClickOnNav(index, item.heading) }
               >
                 <item.icon />
                 <span>{item.heading}</span>
               </div>
             );
           })}
+
+
+
           {/* signoutIcon */}
           <div className="menuItem">
             <UilSignOutAlt />
