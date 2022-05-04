@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {
-  Alert,
   Image,
   Modal,
   Pressable,
