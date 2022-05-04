@@ -1,23 +1,21 @@
-import * as React from "react";
+import React from 'react'
 import QRCode from "qrcode.react";
 import "../styles/component/_QrCodeGen.scss"
 
 const icon = require("../assets/cycle.png")
 
-export default function QrCode() {
+const RightSideQrcode = () => {
     const qrRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
     const [text , setText] = React.useState("");
 
     const printQRCode = (evt: React.FormEvent) => {
         evt.preventDefault();
-        
-
         setText("");
     };
 
     const qrCode = (
     <QRCode
-        size={500}
+        size={250}
         value={text}
         bgColor="white"
         fgColor="black"
@@ -25,13 +23,13 @@ export default function QrCode() {
         imageSettings={{
             src: icon,
             excavate: true,
-            width: 500 * 0.1,
-            height: 500 * 0.1
+            width: 250 * 0.1,
+            height: 250 * 0.1
         }}
         />
     )
-    return (
-        <div className="qr-container">
+        return (
+            <div className="qr-container">
             <form onSubmit={printQRCode} className="qr-container__form">
                 <input
                     type="text"
@@ -39,7 +37,6 @@ export default function QrCode() {
                     onChange={(e) => setText(e.target.value)}
                     placeholder="12345678"
                 />
-
 
                 <button type="submit">Imprimer le QR Code</button>
             </form>
@@ -49,4 +46,5 @@ export default function QrCode() {
                 </div>
         </div>
     );
-}
+    }
+    export default RightSideQrcode
