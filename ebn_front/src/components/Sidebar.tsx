@@ -1,75 +1,76 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Logo from "../assets/logo.png";
-import {UilBars, UilSignOutAlt} from "@iconscout/react-unicons";
-import {SidebarData} from "../Data/Data";
-import {motion} from "framer-motion";
-import {useNavigate} from "react-router-dom";
+import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
+import { SidebarData } from "../Data/Data";
+import { motion } from "framer-motion";
 
-const Sidebar = () => {
-    const navigate = useNavigate();
+const Sidebar = ({setSelectNav}:any) => {
+  const [selected, setSelected] = useState(0);
 
-    const [selected, setSelected] = useState(0);
+  const [expanded, setExpaned] = useState(true);
 
-    const [expanded, setExpaned] = useState(true);
+  function onClickOnNav(index:number, heading:string) {
+    setSelected(index);
+    setSelectNav(heading);
+  }
+  const sidebarVariants = {
+    true: {
+      left: "0",
+    },
+    false: {
+      left: "-60%",
+    },
+  };
+  return (
+    <>
+      <div
+        className="bars"
+        style={expanded ? { left: "60%" } : { left: "5%" }}
+        onClick={() =>setExpaned(!expanded)}
+      >
+        <UilBars />
+      </div>
+      <motion.div
+        className="sidebar"
+        variants={sidebarVariants}
+        animate={window.innerWidth <= 768 ? `${expanded}` : ""}
+      >
+        {/* logo */}
+        <div className="logo">
 
-    function logOut() {
-        sessionStorage.clear();
-        setTimeout(() => {
-            navigate("/")
-        }, 100);
-    }
+          <img src={Logo} alt="logo" onClick={() => onClickOnNav(0, "Tableau de bord") }/>
+          <a href="http://localhost:3000/">
+          <span>
+            E<span>B</span>N
+          </span>
+          </a>
+        </div>
 
-    const sidebarVariants = {
-        true: {
-            left: "0",
-        },
-        false: {
-            left: "-60%",
-        },
-    };
-    return (
-        <>
-            <div
-                className="bars"
-                style={expanded ? {left: "60%"} : {left: "5%"}}
-                onClick={() => setExpaned(!expanded)}
-            >
-                <UilBars/>
-            </div>
-            <motion.div
-                className="sidebar"
-                variants={sidebarVariants}
-                animate={window.innerWidth <= 768 ? `${expanded}` : ""}
-            >
-                {/* logo */}
-                <div className="logo">
-                    <img src={Logo} alt="logo"/>
-                </div>
+        <div className="menu">
+          {SidebarData.map((item, index) => {
+            return (
+              <div
+                className={selected === index ? "menuItem active" : "menuItem"}
+                key={index}
+                onClick={() => onClickOnNav(index, item.heading) }
+              >
+                <item.icon />
+                <span>{item.heading}</span>
+              </div>
+            );
+          })}
 
-                <div className="menu">
-                    {SidebarData.map((item, index) => {
-                        return (
-                            <div
-                                className={selected === index ? "menuItem active" : "menuItem"}
-                                key={index}
-                                onClick={() => setSelected(index)}
-                            >
-                                <item.icon/>
-                                <span>{item.heading}</span>
-                            </div>
-                        );
-                    })}
-                    {/* signoutIcon */}
-                    <div className="menuItem" onClick={() =>
-                        logOut()
-                    }>
-                        <UilSignOutAlt/>
-                        <span>Déconnexion</span>
-                    </div>
-                </div>
-            </motion.div>
-        </>
-    );
+
+
+          {/* signoutIcon */}
+          <div className="menuItem">
+            <UilSignOutAlt />
+            <span>Déconnexion</span>
+          </div>
+        </div>
+      </motion.div>
+    </>
+  );
 };
 
 export default Sidebar;
