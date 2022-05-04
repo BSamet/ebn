@@ -6,7 +6,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import AddConteneur from './AddConteneur';
 import ListItem from '@mui/material/ListItem';
-import ListConteneursPagination from './ListConteneursPagination'
+import Stack from '@mui/material/Stack';
+import Pagination from '@mui/material/Pagination';
 
 
 function ConteneursList() {
@@ -28,16 +29,16 @@ function ConteneursList() {
             </div>
             <div className='liste'>
                 <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
-                <List component="nav" aria-label="Liste des conteneurs">
+                    <List component="nav" aria-label="Liste des conteneurs">
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary="Conteneur N°" />
                             <ListItemText className='listHeader' primary="Type de déchet" />
                             <ListItemText className='listHeader' primary="Capacité maximum" />
                             <ListItemText className='listHeader' primary="Client" />
-                            
+
                         </ListItem>
                         <ListItem className='listItemHeader'>
-                        <ListItemText className='listHeader' primary=" " />
+                            <ListItemText className='listHeader' primary=" " />
                         </ListItem>
                         <Divider />
                         <ListItemButton
@@ -83,7 +84,11 @@ function ConteneursList() {
                     </List>
                 </Box>
             </div>
-            <ListConteneursPagination/>
+            <div className='pagination'>
+                <Stack spacing={2}>
+                    <Pagination count={10} color="primary" />
+                </Stack>
+            </div>
         </div>
     )
 }
