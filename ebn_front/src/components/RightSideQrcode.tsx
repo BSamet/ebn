@@ -4,7 +4,7 @@ import "../styles/component/_QrCodeGen.scss"
 
 const icon = require("../assets/cycle.png")
 
-export default function RightSideQrcode(){
+const RightSideQrcode = () => {
     const qrRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
     const [text , setText] = React.useState("");
 
@@ -47,3 +47,4 @@ export default function RightSideQrcode(){
         </div>
     );
     }
+    export default RightSideQrcode
