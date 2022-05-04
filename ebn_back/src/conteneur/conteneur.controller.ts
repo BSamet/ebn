@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ConteneurService} from './conteneur.service';
 import {CreateConteneurDto} from './dto/create-conteneur.dto';
