@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
 import axios from 'axios';
-import {URL_API} from '@env';
+import {HOST_BACK} from "../../environment/environment";
 
 const popUp = () => {
     const [modalVisible, setModalVisible] = useState(true);
@@ -10,7 +10,7 @@ const popUp = () => {
     const [commentaire, setCommentaire] = useState('');
     let data = {
         typeAction: 'récupération du saut',
-        date: '2022-05-01T18:57:30.295Z',
+        date: '2022-05-05T18:57:30.295Z',
         typeDeDechet: 'Biodéchets',
         commentaire: commentaire,
         poids: poids,
@@ -23,8 +23,9 @@ const popUp = () => {
     };
     const postPoids = () => {
         axios
-            .post(URL_API + 'historique', data)
+            .post(HOST_BACK + '/historique', data)
             .then(res => {
+                console.log(res)
             })
             .catch(function (error) {
                 console.log(error + ' sur post');
