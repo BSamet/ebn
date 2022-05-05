@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
+
 import {
   Image,
   Modal,
@@ -20,6 +21,7 @@ import {useState} from 'react';
 import axios from 'axios';
 import {HOST_BACK} from '../../../environment/environment';
 import QrcodeButton from '../../components/QrcodeButton';
+import moment from 'moment';
 
 type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
 interface EtapeCollecteur {
@@ -160,7 +162,8 @@ const DashBordCollecteur = () => {
               <Text style={styles.date}>{data.client.nomCommercial}</Text>
 
               <Text style={styles.poids}>
-                Heure estimé de passage : {data.date}
+                Heure estimé de passage :{' '}
+                {moment(data.date).format('DD.MM.YYYY à    HH[h] mm')}
               </Text>
             </Pressable>
           </View>
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: 'transparent',
   },
   textStyle: {
     color: 'white',
@@ -193,6 +196,9 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+    fontFamily: 'Confortaa-Bold',
+    color: '#8AC997',
+    fontSize: 20,
   },
   button: {},
   box: {
