@@ -90,7 +90,7 @@ const DashBordClient = () => {
             <Text style={styles.poids}>poids collecté : {item.weight} KG </Text>
           </View>
         ))}
-        <PopUp></PopUp>
+        <PopUp />
       </View>
     </ScrollView>
   );
