@@ -17,7 +17,7 @@ interface infoClientInterface {
   ];
 }
 
-const informationClient = () => {
+const InformationClient = () => {
   const [client, setClient] = useState<infoClientInterface>();
   const [errorGet, setErrorGet] = useState(false);
 
@@ -54,4 +54,4 @@ const informationClient = () => {
     </View>
   );
 };
-export default informationClient;
+export default InformationClient;

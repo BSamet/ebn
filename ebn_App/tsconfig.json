@@ -24,8 +24,6 @@
   "compilerOptions": {
     "strict": true
   },
-  "typeRoots": [
-    "./types"
-  ]
+  "typeRoots": ["./types"]
   // <------ you need to add this
 }

@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { EtapeService } from './etape.service';
 import { CreateEtapeDto } from './dto/create-etape.dto';
 import { UpdateEtapeDto } from './dto/update-etape.dto';
+import { get } from 'http';
 
 @Controller('etape')
 export class EtapeController {
@@ -18,17 +27,20 @@ export class EtapeController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.etapeService.findOne(+id);
   }
-
+  @Get('collecteur/:id')
+  findByCollecteur(@Param('id') id: number) {
+    return this.etapeService.findByCollecteur(+id);
+  }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEtapeDto: UpdateEtapeDto) {
     return this.etapeService.update(+id, updateEtapeDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.etapeService.remove(+id);
   }
 }
