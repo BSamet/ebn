@@ -5,16 +5,17 @@ import ConteneursList from './ConteneursList';
 
 interface ViewAdminDashInterface {
     selectNav: string;
+    setSelectConteneurId: any;
 }
 
-const ViewAdminDash = ({selectNav}: ViewAdminDashInterface) => {
+const ViewAdminDash = ({selectNav, setSelectConteneurId}: ViewAdminDashInterface) => {
     if(selectNav === 'Historique') {
         return (
             <DashboardAdminHistory/>
         )
     } else if(selectNav === 'Conteneurs'){
         return (
-            <ConteneursList/>
+            <ConteneursList setSelectConteneurId={setSelectConteneurId}/>
         )
     } else {
         return (

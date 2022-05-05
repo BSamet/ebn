@@ -27,10 +27,10 @@ interface conteneursInterface {
         }
 }
 
-const ConteneursList = () => {
+const ConteneursList = ({setSelectConteneurId}:any) => {
 
 
-    const [selectedIndex, setSelectedIndex] = React.useState(1);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
 
     const [conteneursList, setConteneurslist] = useState<conteneursInterface[]>();
     const [fetchOnce, setFetchOnce] = useState(true);
@@ -48,10 +48,9 @@ const ConteneursList = () => {
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
-        idConteneur: any,        
     ) => {
         setSelectedIndex(index);
-        console.log(idConteneur);
+        setSelectConteneurId(index);
         
     }
     
@@ -78,8 +77,8 @@ const ConteneursList = () => {
                         <Divider />
                         {conteneursList?.map((list, index) =>
                         <ListItemButton
-                            selected={selectedIndex === 0}
-                            onClick={(event) => handleListItemClick(event, 0, list.id)}
+                            selected={selectedIndex === list.id}
+                            onClick={(event) => handleListItemClick(event, list.id)}
                             key={index}
                         >
                             

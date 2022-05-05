@@ -1,22 +1,27 @@
 import React from 'react'
 import QRCode from "qrcode.react";
 import "../styles/component/_QrCodeGen.scss"
-
 const icon = require("../assets/cycle.png")
 
-const RightSideQrcode = () => {
+interface idConteneurInterface {
+    selectConteneurId : string;
+}
+
+
+const RightSideQrcode = ({selectConteneurId}: idConteneurInterface) => {
     const qrRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
     const [text , setText] = React.useState("");
-
+    
     const printQRCode = (evt: React.FormEvent) => {
         evt.preventDefault();
         setText("");
     };
-
+    console.log(text);
+    
     const qrCode = (
     <QRCode
         size={250}
-        value={text}
+        value={selectConteneurId}
         bgColor="white"
         fgColor="black"
         level="H"
@@ -28,6 +33,8 @@ const RightSideQrcode = () => {
         }}
         />
     )
+    console.log(qrCode);
+    
         return (
             <div className="qr-container">
             <form onSubmit={printQRCode} className="qr-container__form">
