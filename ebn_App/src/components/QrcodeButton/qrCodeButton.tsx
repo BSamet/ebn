@@ -16,15 +16,15 @@ const qrCodeButton = ({onPress, text}: qrCodeButtontprops) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0096f0',
-    width: '35%',
-    marginVertical: 5,
+    backgroundColor: '#8AC997',
+    width: '65%',
+    marginVertical: 10,
     alignItems: 'center',
     borderRadius: 5,
-    borderColor: '#0096f0',
+    borderColor: 'transparent',
     borderWidth: 1,
-    padding: 2,
-    marginLeft: 120,
+    padding: 9,
+    marginLeft: 5,
   },
 
   text: {
