@@ -1,11 +1,9 @@
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {
-  GestureResponderEvent,
   Image,
   Modal,
   Pressable,
-  PressableProps,
   ScrollView,
   StyleSheet,
   Text,
@@ -83,6 +81,7 @@ const DashBordCollecteur = () => {
 
         setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
         setEtapes(res.data); // recuperation des etapes pour map
+        console.log(res.data);
 
         // on cherche une seul fois
         setFetchOnce(false);
