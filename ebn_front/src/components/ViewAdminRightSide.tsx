@@ -4,13 +4,14 @@ import RightSideQrcode from './RightSideQrcode';
 
 interface ViewAdminRightSideInterface {
     selectRight: string;
+    selectConteneurId : string;
 }
 
-const ViewAdminRightSide = ({selectRight}: ViewAdminRightSideInterface) => {
+const ViewAdminRightSide = ({selectRight, selectConteneurId}: ViewAdminRightSideInterface) => {
     
     if (selectRight === 'Conteneurs'){
         return (
-        <RightSideQrcode />
+        <RightSideQrcode selectConteneurId={selectConteneurId}/>
         )
     } else {
         return(

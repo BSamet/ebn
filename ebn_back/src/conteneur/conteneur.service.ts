@@ -9,7 +9,6 @@ import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
 
 @Injectable()
 export class ConteneurService {
-
     constructor(
         @InjectRepository(Conteneur)
         private readonly conteneurRepository: Repository<Conteneur>,
@@ -39,8 +38,12 @@ export class ConteneurService {
         return this.conteneurRepository.findOne(id);
     }
 
-    findAllConteneurPagination(take: number, skip: number) {
-        return this.conteneurRepository
+    async findAllConteneurPagination(take: number, skip: number) {
+        const countedConteneur = await this.conteneurRepository.count();
+
+        const totalPages = Math.ceil(countedConteneur / take);
+
+        const allConteneur = await this.conteneurRepository
             .createQueryBuilder("conteneur")
             .leftJoinAndSelect("conteneur.client", "client")
             .leftJoinAndSelect("client.utilisateur", "utilisateur")
@@ -53,6 +56,12 @@ export class ConteneurService {
             .take(take)
             .skip(skip)
             .getMany()
+
+        return {
+            "totalPages": totalPages,
+            "totalConteneur": countedConteneur,
+            "conteneurs": allConteneur
+        }
     }
 
     update(id: number, updateConteneurDto: UpdateConteneurDto) {
