@@ -34,13 +34,24 @@ const ConteneursList = ({setSelectConteneurId}:any) => {
 
     const [conteneursList, setConteneurslist] = useState<conteneursInterface[]>();
     const [fetchOnce, setFetchOnce] = useState(true);
+    //Paginations des conteneurs
+    const [totalPages, setTotalPages] = React.useState('')
+    const [page, setPage] = React.useState(1);
+    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+        axios.get(HOST_BACK + '/conteneur/all/'+value+"?take=2").then(res => {
+            setConteneurslist(res.data.conteneurs)           
+        });
+    };
+    //Fin pagination des conteneurs
 
     useEffect(() => {
         if (fetchOnce) {
-            axios.get(HOST_BACK + '/conteneur/all/1').then(res => {
-                setConteneurslist(res.data)
+            axios.get(HOST_BACK + '/conteneur/all/'+page+"?take=2").then(res => {
+                setConteneurslist(res.data.conteneurs)
                 // appel de l'api
-                setFetchOnce(false);                
+                setFetchOnce(false);   
+                setTotalPages(res.data.totalPages)             
             });
         }
     }, [conteneursList, fetchOnce]);
@@ -93,7 +104,7 @@ const ConteneursList = ({setSelectConteneurId}:any) => {
             </div>
             <div className='pagination'>
                 <Stack spacing={2}>
-                    <Pagination count={10} color="primary" />
+                    <Pagination count={totalPages} color="primary" page={page} onChange={handleChange} />
                 </Stack>
                 {}
             </div>
