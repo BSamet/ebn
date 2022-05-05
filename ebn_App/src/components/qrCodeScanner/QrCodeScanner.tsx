@@ -1,47 +1,45 @@
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line prettier/prettier
-import React, { useState } from 'react';
-import {
-    SafeAreaView,
-    StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    StatusBar,
-    TouchableOpacity,
-    Button,
-} from 'react-native';
+import React, {useState} from 'react';
+import {Button, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 
-import { Header, Colors } from 'react-native/Libraries/NewAppScreen';
+import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import PopUp from "../popUp";
 
 const QrCodeScanner = () => {
     const [scan, setScan] = useState(false);
     const [result, setResult] = useState();
-
+    const [affichage, setaffichage] = useState(false);
+    const [res, setRes] = useState(false);
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
+        setaffichage(true);
+
     };
 
     const startScan = () => {
         setScan(true);
         setResult;
+        setaffichage(true);
     };
+
 
     return (
         <>
-            <StatusBar barStyle="dark-content" />
+            <StatusBar barStyle="dark-content"/>
             <SafeAreaView>
                 <ScrollView
                     contentInsetAdjustmentBehavior="automatic"
                     style={styles.scrollView}>
-                    <Header />
+                    <Header/>
                     <View style={styles.body}>
                         {result && (
                             <View style={styles.sectionContainer}>
-                                <Text style={styles.centerText}>{result}</Text>
+                                <Text>{result}</Text>
+                                <PopUp/>
                             </View>
                         )}
                         {!scan && (
@@ -59,7 +57,7 @@ const QrCodeScanner = () => {
                                     reactivate={true}
                                     showMarker={true}
                                     ref={node => {
-                                    scanner = node;
+                                        scanner = node;
                                     }}
                                     onRead={onSuccess}
                                     topContent={

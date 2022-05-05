@@ -2,32 +2,55 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import informationClientStyle from '../styles/informationClientStyle';
 import axios from 'axios';
-import {URL_API} from '@env';
+import {HOST_BACK} from '../../environment/environment';
+
+interface infoClientInterface {
+  nomCommercial: string;
+  adresse: string;
+  utilisateur: {
+    telephone: string;
+  };
+  typeDechet: [
+    {
+      typeDechets: string;
+    },
+  ];
+}
 
 const InformationClient = () => {
-  const [client, setClient] = useState([]);
-  const state = URL_API;
+  const [client, setClient] = useState<infoClientInterface>();
+  const [errorGet, setErrorGet] = useState(false);
 
   useEffect(() => {
     axios
-      .get(URL_API + 'client/1')
+      .get(HOST_BACK + '/client/1')
       .then(res => {
-        console.log(res.data);
         setClient(res.data);
-        console.log(client);
       })
       .catch(function (error) {
-        console.log(error + ' sur get');
+        setErrorGet(true);
       });
-    console.log(state);
-  }, []);
+  }, [client]);
 
   return (
     <View style={informationClientStyle.div}>
       <Text style={informationClientStyle.text}>Information sur le client</Text>
-      <Text>client</Text>
-      <Text>0690033900</Text>
-      <Text>Type de dechet:</Text>
+      <Text> {client?.nomCommercial}</Text>
+      <Text> {client?.adresse}</Text>
+      <Text> {client?.utilisateur?.telephone}</Text>
+      {/*TODO mettre des icones a coté du test*/}
+      <Text>
+        {' '}
+        Type de dechet:{' '}
+        {client?.typeDechet.map(dechets => (
+          <Text>{dechets.typeDechets}</Text>
+        ))}{' '}
+      </Text>
+      {errorGet ? (
+        <Text style={informationClientStyle.error}>
+          Il 'a eu une erreur lors de la récupération des informations{' '}
+        </Text>
+      ) : null}
     </View>
   );
 };
