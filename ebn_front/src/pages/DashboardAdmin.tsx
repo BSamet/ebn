@@ -8,16 +8,20 @@ import ViewAdminRightSide from "../components/ViewAdminRightSide";
 
 
 const DashboardAdmin = () => {
+  // séléction du composant central
     const [selectNav, setSelectNav] = useState('');
+  // séléction du composant de droite
     const [selectRight, setSelectRight] = useState('');
-
+  // passage de l'ID du conteneur de la liste centrale au QRcode sittué à droite
+    const [selectConteneurId, setSelectConteneurId] = useState('');
 
   return (
     <div className="App">
       <div className="AppGlass">
         <Sidebar setSelectNav={setSelectNav} setSelectRight={setSelectRight}/>
-        <ViewAdminDash selectNav={selectNav} />
-        <ViewAdminRightSide selectRight={selectRight}/>
+        <ViewAdminDash selectNav={selectNav} setSelectConteneurId={setSelectConteneurId}/>
+        <ViewAdminRightSide selectRight={selectRight} selectConteneurId={selectConteneurId}/>
+      
       </div>
 
     </div>
