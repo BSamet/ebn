@@ -11,7 +11,6 @@ const Conteneurs = () => {
         <Sidebar />
         <ConteneursList/>
         <RightSideQrcode/>
-
       </div>
     </div>
   );

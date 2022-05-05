@@ -8,8 +8,9 @@ import {
   UilMessage,
   UilUserSquare,
   UilMoneyWithdrawal,
-  UilTrash, 
+  UilTrash 
 } from "@iconscout/react-unicons";
+import Sidebar from "../components/Sidebar";
 
 export const SidebarData = [
   {
@@ -19,31 +20,38 @@ export const SidebarData = [
   {
     icon: UilUserSquare,
     heading: "Collecteur",
+    path:"/",
   },
   {
     icon: UilCalendarAlt,
     heading: "Agenda",
+    path:"/",
   },
   {
     icon: UilClipboardAlt,
     heading: "Commande",
+    path:"/",
   },
 
   {
     icon: UilPackage,
     heading: "Produits",
+    path:"/",
   },
   {
     icon: UilUsersAlt,
-    heading: "Clients",
+    heading: "Historique",
+    path: "/Admin/History"
   },
   {
     icon:  UilTrash,
-    heading: "Conteneurs"
+    heading: "Conteneurs",
+    path:"/",
   },
   {
     icon: UilMessage,
     heading: "Messages",
+    path:"/",
   },
 
 ];
@@ -130,3 +138,5 @@ export const CardsData =[
 
   },
 ]
+
+
