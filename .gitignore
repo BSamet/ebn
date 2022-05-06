@@ -127,3 +127,4 @@ yarn.lock
 .idea\yarn.lock
  #chemin d'accès sdk
 .ebn_App/android/.local.properties
+/ebn_App/environment/
