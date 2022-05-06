@@ -12,7 +12,7 @@ const QrCodeScanner = () => {
     const [scan, setScan] = useState(false);
     const [result, setResult] = useState();
     const [affichage, setaffichage] = useState(false);
-    const [res, setRes] = useState(false);
+
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
@@ -39,7 +39,7 @@ const QrCodeScanner = () => {
                         {result && (
                             <View style={styles.sectionContainer}>
                                 <Text>{result}</Text>
-                                <PopUp/>
+                                <PopUp data={result}/>
                             </View>
                         )}
                         {!scan && (

@@ -1,10 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
 import axios from 'axios';
 import {HOST_BACK} from "../../environment/environment";
 
-const popUp = () => {
+interface conteneurInterface: {
+    id:
+}
+
+const popUp = (props) => {
+
+    const scanValue = props.data ;
+    const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
@@ -18,6 +25,16 @@ const popUp = () => {
         collecteurId: 1,
         conteneurId: 3,
     };
+    useEffect(() => {
+        axios
+            .get(HOST_BACK + '/conteneur/' + scanValue )
+            .then(res => {
+
+            })
+            .catch(function (error) {
+                setErrorGet(true);
+            });
+    }, [client]);
     const submit = () => {
         postPoids();
     };
