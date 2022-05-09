@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import PopUp from '../popUp';
@@ -21,7 +21,7 @@ const QrCodeScanner = () => {
   const [scan, setScan] = useState(false);
   const [result, setResult] = useState();
   const [affichage, setaffichage] = useState(false);
-  const [res, setRes] = useState(false);
+  // const [res, setRes] = useState(false);
   const onSuccess = (e: any) => {
     setResult(e.data);
     setScan(false);
@@ -49,35 +49,31 @@ const QrCodeScanner = () => {
               </View>
             )}
             {!scan && (
-              <View style={styles.sectionContainer}>
-                <Button
-                  title="commencer le scan"
-                  color="#f194ff"
-                  onPress={startScan}
-                />
-              </View>
+              <Button
+                title="commencer le scan"
+                color="#8AC997"
+                onPress={startScan}
+              />
             )}
             {scan && (
-              <View style={styles.sectionContainer}>
-                <QRCodeScanner
-                  reactivate={true}
-                  showMarker={true}
-                  ref={node => {
-                    scanner = node;
-                  }}
-                  onRead={onSuccess}
-                  topContent={
-                    <Text style={styles.centerText}>Scannez votre QRCode!</Text>
-                  }
-                  bottomContent={
-                    <TouchableOpacity
-                      style={styles.buttonTouchable}
-                      onPress={() => setScan(false)}>
-                      <Text style={styles.buttonText}>Annuler Scan</Text>
-                    </TouchableOpacity>
-                  }
-                />
-              </View>
+              <QRCodeScanner
+                reactivate={true}
+                showMarker={true}
+                ref={node => {
+                  scanner = node;
+                }}
+                onRead={onSuccess}
+                topContent={
+                  <Text style={styles.centerText}>Scannez votre QRCode!</Text>
+                }
+                bottomContent={
+                  <TouchableOpacity
+                    style={styles.buttonTouchable}
+                    onPress={() => setScan(false)}>
+                    <Text style={styles.buttonText}>Annuler Scan</Text>
+                  </TouchableOpacity>
+                }
+              />
             )}
           </View>
         </ScrollView>
@@ -93,7 +89,15 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   sectionContainer: {
-    marginTop: 32,
+    backgroundColor: '#8AC997',
+    width: '65%',
+    marginVertical: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    padding: 9,
+    marginLeft: 5,
   },
   sectionTitle: {
     fontSize: 24,
