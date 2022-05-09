@@ -11,7 +11,6 @@ const DashboardClient = () => {
                 <Sidebar_DashboardClient/>
                 <MainDashClient/>
                 <RightSideClient/>
-
             </div>
         </div>
     );
