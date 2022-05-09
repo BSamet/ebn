@@ -4,13 +4,15 @@ import popUpStyles from '../styles/popUpStyles';
 import axios from 'axios';
 import {HOST_BACK} from "../../environment/environment";
 
-interface conteneurInterface: {
-    id:
+interface conteneurInterface {
+    id: number,
+    capaciteMax: number,
+    isAvailable: boolean
 }
 
-const popUp = (props) => {
-
-    const scanValue = props.data ;
+const popUp = (props: any) => {
+    const [info, setInfo] = useState<conteneurInterface>();
+    const scanValue = props.data;
     const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
@@ -27,17 +29,19 @@ const popUp = (props) => {
     };
     useEffect(() => {
         axios
-            .get(HOST_BACK + '/conteneur/' + scanValue )
+            .get(HOST_BACK + '/conteneur/' + scanValue)
             .then(res => {
-
+                console.log(res)
             })
             .catch(function (error) {
-                setErrorGet(true);
+                console.log("erreur get info scan")
             });
-    }, [client]);
+    }, [info]);
+
     const submit = () => {
         postPoids();
     };
+
     const postPoids = () => {
         axios
             .post(HOST_BACK + '/historique', data)
