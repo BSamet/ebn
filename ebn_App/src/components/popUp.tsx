@@ -5,9 +5,15 @@ import axios from 'axios';
 import {HOST_BACK} from "../../environment/environment";
 
 interface conteneurInterface {
-    id: number,
-    capaciteMax: number,
-    isAvailable: boolean
+    "id": number,
+    "capaciteMax": number,
+    "isAvailable": boolean,
+    "client": {
+        "id": number
+    },
+    "typeDechet": {
+        "typeDechets": string
+    }
 }
 
 const popUp = (props: any) => {
@@ -19,22 +25,23 @@ const popUp = (props: any) => {
     const [commentaire, setCommentaire] = useState('');
     let data = {
         typeAction: 'récupération du saut',
-        date: '2022-05-05T18:57:30.295Z',
-        typeDeDechet: 'Biodéchets',
+        date: '2022-05-09T18:57:30.295Z',
+        typeDeDechet: info?.typeDechet,
         commentaire: commentaire,
         poids: poids,
-        clientId: 1,
+        clientId: info?.client,
         collecteurId: 1,
-        conteneurId: 3,
+        conteneurId: scanValue,
     };
     useEffect(() => {
         axios
-            .get(HOST_BACK + '/conteneur/' + scanValue)
+            .get(HOST_BACK + '/conteneur/' + scanValue + 'infos')
             .then(res => {
                 console.log(res)
             })
             .catch(function (error) {
-                console.log("erreur get info scan")
+                console.log("erreur get info scan");
+                console.log(scanValue)
             });
     }, [info]);
 
@@ -63,7 +70,7 @@ const popUp = (props: any) => {
                     <View style={popUpStyles.modalView}>
                         <Text style={popUpStyles.modalTitre}> Information du seau </Text>
                         <Text> </Text>
-                        <Text> </Text>
+                        
                         <TextInput
                             style={popUpStyles.input}
                             keyboardType="numeric"
