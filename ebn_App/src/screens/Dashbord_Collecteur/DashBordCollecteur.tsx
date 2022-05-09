@@ -20,8 +20,9 @@ import {useState} from 'react';
 
 import axios from 'axios';
 import {HOST_BACK} from '../../../environment/environment';
-import QrcodeButton from '../../components/QrcodeButton';
+
 import moment from 'moment';
+import QrCodeScanner from '../../components/qrCodeScanner';
 
 type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
 interface EtapeCollecteur {
@@ -68,7 +69,7 @@ interface collecteurInterface {
 const DashBordCollecteur = () => {
   // navigation typé
 
-  const navigation = useNavigation<AuthScreenNavigate>();
+  // const navigation = useNavigation<AuthScreenNavigate>();
   const {height} = useWindowDimensions();
   const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
   const [userCollecteur, setUserCollecteur] = useState<collecteurInterface>();
@@ -83,7 +84,6 @@ const DashBordCollecteur = () => {
 
         setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
         setEtapes(res.data); // recuperation des etapes pour map
-        console.log(res.data);
 
         // on cherche une seul fois
         setFetchOnce(false);
@@ -141,12 +141,7 @@ const DashBordCollecteur = () => {
               <Text style={styles.modalText}>
                 Adresse: {ClientModal?.client.adresse}
               </Text>
-              <QrcodeButton
-                text={'Flasher QRcode'}
-                onPress={() => {
-                  navigation.navigate('QrCodeScan');
-                }}
-              />
+
               <Pressable
                 style={[styles.buttonModal, styles.buttonClose]}
                 onPress={() => setModalOpen(!modalOpen)}>
@@ -165,6 +160,7 @@ const DashBordCollecteur = () => {
                 Heure estimé de passage :{' '}
                 {moment(data.date).format('DD.MM.YYYY à    HH[h] mm')}
               </Text>
+              <QrCodeScanner />
             </Pressable>
           </View>
         ))}
