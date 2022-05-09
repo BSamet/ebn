@@ -10,6 +10,9 @@ import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
 import { HOST_BACK } from '../environment/environment';
 import axios from 'axios';
+import Fab from '@mui/material/Fab';
+import EditIcon from '@mui/icons-material/Edit';
+import UpdateConteneur from './UpdateConteneur';
 
 interface conteneursInterface {
     id: number;
@@ -24,10 +27,10 @@ interface conteneursInterface {
     }
     typeDechet: {
         typeDechets: string;
-        }
+    }
 }
 
-const ConteneursList = ({setSelectConteneurId}:any) => {
+const ConteneursList = ({ setSelectConteneurId }: any) => {
 
 
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -39,19 +42,19 @@ const ConteneursList = ({setSelectConteneurId}:any) => {
     const [page, setPage] = React.useState(1);
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
-        axios.get(HOST_BACK + '/conteneur/all/'+value+"?take=2").then(res => {
-            setConteneurslist(res.data.conteneurs)           
+        axios.get(HOST_BACK + '/conteneur/all/' + value + "?take=2").then(res => {
+            setConteneurslist(res.data.conteneurs)
         });
     };
     //Fin pagination des conteneurs
 
     useEffect(() => {
         if (fetchOnce) {
-            axios.get(HOST_BACK + '/conteneur/all/'+page+"?take=2").then(res => {
+            axios.get(HOST_BACK + '/conteneur/all/' + page).then(res => {
                 setConteneurslist(res.data.conteneurs)
                 // appel de l'api
-                setFetchOnce(false);   
-                setTotalPages(res.data.totalPages)             
+                setFetchOnce(false);
+                setTotalPages(res.data.totalPages)
             });
         }
     }, [conteneursList, fetchOnce]);
@@ -62,9 +65,9 @@ const ConteneursList = ({setSelectConteneurId}:any) => {
     ) => {
         setSelectedIndex(index);
         setSelectConteneurId(index);
-        
+
     }
-    
+
 
     return (
         <div className='conteneurs'>
@@ -74,7 +77,7 @@ const ConteneursList = ({setSelectConteneurId}:any) => {
             </div>
             <div className='liste'>
                 <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
-                    
+
                     <List component="nav" aria-label="Liste des conteneurs">
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary="Conteneur N°" />
@@ -87,17 +90,17 @@ const ConteneursList = ({setSelectConteneurId}:any) => {
                         </ListItem>
                         <Divider />
                         {conteneursList?.map((list, index) =>
-                        <ListItemButton
-                            selected={selectedIndex === list.id}
-                            onClick={(event) => handleListItemClick(event, list.id)}
-                            key={index}
-                        >
-                            
-                            <ListItemText className='listItem' primary={list.id} />
-                            <ListItemText className='listItem' primary={list.typeDechet.typeDechets} />
-                            <ListItemText className='listItem' primary={list.capaciteMax} />
-                            <ListItemText className='listItem' primary={list.client.nomCommercial} />
-                        </ListItemButton>
+                            <ListItemButton
+                                selected={selectedIndex === list.id}
+                                onClick={(event) => handleListItemClick(event, list.id)}
+                                key={index}
+                            >
+                                <ListItemText className='listItem' primary={list.id} />
+                                <ListItemText className='listItem' primary={list.typeDechet.typeDechets} />
+                                <ListItemText className='listItem' primary={list.capaciteMax} />
+                                <ListItemText className='listItem' primary={list.client.nomCommercial} />
+                                <UpdateConteneur/>
+                            </ListItemButton>
                         )}
                     </List>
                 </Box>
@@ -106,7 +109,7 @@ const ConteneursList = ({setSelectConteneurId}:any) => {
                 <Stack spacing={2}>
                     <Pagination count={totalPages} color="primary" page={page} onChange={handleChange} />
                 </Stack>
-                {}
+                { }
             </div>
         </div>
     )
