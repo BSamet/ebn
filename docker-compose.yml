@@ -5,14 +5,13 @@ services:
     container_name: database_ebn
     image: mysql:8.0
     cap_add:
-      - SYS_NICE  # CAP_SYS_NICE
+      - SYS_NICE
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     build:
-      context: database
-      dockerfile: Dockerfile
+      context: ebn_back/database
     env_file:
-      - .env.docker
+      - ebn_back/.env.docker
     ports:
       - "3306:3306"
 
@@ -25,21 +24,31 @@ services:
       - "8088:80"
     environment:
       PMA_HOST: database_ebn
-      MYSQL_ROOT_PASSWORD: ebnroot
+      MYSQL_ROOT_PASSWORD: ebnrootd
 
   dev:
     container_name: ebn-dev
     env_file:
-      - .env.docker
+      - ebn_back/.env.docker
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      context: ebn_back
     command: npm run start:dev
     depends_on:
       - database_ebn
+    volumes:
+      - ./ebn_back:/usr/src/app
     ports:
       - "5454:5454"
+    restart: always
+
+  front:
+    container_name: ebn-front
+    build:
+      context: ebn_front
+    depends_on:
+      - dev
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./ebn_front:/app
+    ports:
+      - "3000:3000"
     restart: always
