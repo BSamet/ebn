@@ -14,6 +14,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 import {HOST_BACK} from '../../../environment/environment';
+import CustomButton from '../../components/CustomButton';
 
 export interface dashboardClient {
   id: number;
@@ -68,15 +69,17 @@ const DashBordClient = () => {
   const [fetchOnce, setFetchOnce] = useState(true);
   const [tourner, setTouner] = useState<dashboardClient[]>();
   const [myclient, setMyClient] = useState<ShowClient>();
-  const [historiqueModal, setHistoriqueModal] = useState<HistoriqueClient>();
+  const [historique, setHistorique] = useState<HistoriqueClient[]>();
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
+  const [modalOpenHisto, setModalOpenHisto] = useState(false);
   useEffect(() => {
     if (fetchOnce) {
       axios.get(HOST_BACK + '/etape/client/1').then(res => {
         // appel de l'api
 
         setMyClient(res.data[0]);
+        // setHistoriqueModal(res.data[0]);
 
         setTouner(res.data); // recuperer les infos du collecteur sans map
 
@@ -86,9 +89,14 @@ const DashBordClient = () => {
     }
   }, [tourner, myclient, fetchOnce]);
 
-  const showModal = (Historique: any) => {
+  const showModal = (Collecteur: any) => {
     setModalOpen(true);
-    setHistoriqueModal(Historique);
+    setMyCollecteurModal(Collecteur);
+  };
+  const HistoriqueModal = (Historique: any) => {
+    setModalOpenHisto(true);
+    setHistorique(Historique);
+    console.log(historique);
   };
 
   const {height} = useWindowDimensions();
@@ -117,13 +125,54 @@ const DashBordClient = () => {
             </Text>
           </LinearGradient>
         </View>
-        <Text style={styles.titleText}>Historique de collecte</Text>
+
+        {/* gestion modal historique  */}
+
+        <CustomButton
+          text={'Voir votre historique'}
+          onPress={() => HistoriqueModal(historique)}
+        />
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalOpenHisto}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {historique?.map((hist, index) => (
+                <View key={index}>
+                  <Text style={styles.modalText}>
+                    {hist.historique.commentaire}
+                  </Text>
+                  <Text style={styles.modalText}>{hist.historique.poids}</Text>
+                  <Text style={styles.modalText}></Text>
+                </View>
+              ))}
+
+              <Pressable
+                style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() => setModalOpenHisto(!modalOpenHisto)}>
+                <Text style={styles.textStyle}>Fermer</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <Text style={styles.titleText}>Vos collecte</Text>
+
+        {/* modal afficher les collecteur  */}
 
         <Modal animationType="slide" transparent={true} visible={modalOpen}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>
-                Nom : {historiqueModal?.historique.commentaire}
+                Nom : {myCollecteurModal?.collecteur.utilisateur.nom}
+              </Text>
+              <Text style={styles.modalText}>
+                Prénom : {myCollecteurModal?.collecteur.utilisateur.prenom}
+              </Text>
+              <Text style={styles.modalText}>
+                Numéro: {myCollecteurModal?.collecteur.utilisateur.telephone}
               </Text>
 
               <Pressable
