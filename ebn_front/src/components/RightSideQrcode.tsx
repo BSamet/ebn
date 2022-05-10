@@ -10,12 +10,7 @@ interface idConteneurInterface {
 
 const RightSideQrcode = ({ selectConteneurId }: idConteneurInterface) => {
     const qrRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
-    const [text, setText] = React.useState("");
 
-    const printQRCode = (evt: React.FormEvent) => {
-        evt.preventDefault();
-        setText("");
-    };
 
     const qrCode = (
         <QRCode
@@ -36,12 +31,8 @@ const RightSideQrcode = ({ selectConteneurId }: idConteneurInterface) => {
     if(selectConteneurId !== "") {
         return (
             <div className="qr-container">
-                {selectConteneurId}
-                <form onSubmit={printQRCode} className="qr-container__form">
-    
-                    <button type="submit">Imprimer le QR Code</button>
-                </form>
-    
+                {selectConteneurId}   
+                    <button>Imprimer le QR Code</button>    
                 <div className="qr-container__qr-code" ref={qrRef}>
                     {qrCode}
                 </div>
