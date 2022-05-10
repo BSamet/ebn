@@ -21,14 +21,15 @@ interface conteneurInterface {
 const popUp = (props: any) => {
     const [info, setInfo] = useState<conteneurInterface>();
     const scanValue = props.data;
+    const date = Date.now()
     const [selectedValue, setSelectedValue] = useState();
     const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
     let data = {
-        typeAction: 'récupération du saut',
-        date: '2022-05-09T18:57:30.295Z',
+        typeAction: selectedValue,
+        date: date,
         typeDeDechet: info?.typeDechet.typeDechets,
         commentaire: commentaire,
         poids: poids,
