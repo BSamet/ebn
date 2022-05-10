@@ -16,6 +16,7 @@ interface conteneurInterface {
     }
 }
 
+
 const popUp = (props: any) => {
     const [info, setInfo] = useState<conteneurInterface>();
     const scanValue = props.data;
@@ -26,18 +27,18 @@ const popUp = (props: any) => {
     let data = {
         typeAction: 'récupération du saut',
         date: '2022-05-09T18:57:30.295Z',
-        typeDeDechet: info?.typeDechet,
+        typeDeDechet: info?.typeDechet.typeDechets,
         commentaire: commentaire,
         poids: poids,
-        clientId: info?.client,
+        clientId: info?.client.id,
         collecteurId: 1,
         conteneurId: scanValue,
     };
     useEffect(() => {
         axios
-            .get(HOST_BACK + '/conteneur/' + scanValue + 'infos')
+            .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
             .then(res => {
-                console.log(res)
+                setInfo(res.data);
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
@@ -46,6 +47,7 @@ const popUp = (props: any) => {
     }, [info]);
 
     const submit = () => {
+        console.warn(data)
         postPoids();
     };
 
@@ -54,6 +56,7 @@ const popUp = (props: any) => {
             .post(HOST_BACK + '/historique', data)
             .then(res => {
                 console.log(res)
+
             })
             .catch(function (error) {
                 console.log(error + ' sur post');
@@ -70,7 +73,7 @@ const popUp = (props: any) => {
                     <View style={popUpStyles.modalView}>
                         <Text style={popUpStyles.modalTitre}> Information du seau </Text>
                         <Text> </Text>
-                        
+
                         <TextInput
                             style={popUpStyles.input}
                             keyboardType="numeric"
