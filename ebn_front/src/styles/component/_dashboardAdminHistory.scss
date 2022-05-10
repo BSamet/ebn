@@ -15,7 +15,19 @@ h1 {
 .listHeader{
     color: white;
     font-weight:bolder;
-    width: 20%;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border-width: 0 1px 0 1px;
+    border-style: solid;
+    border-color: #dcdcdc;
+    &--neron {
+         cursor: pointer;
+        &:hover {
+            background-color: #0096f0;
+            border-radius: 0.7rem;
+        }
+     }
 }
 .listItemBody {
     border-width: 0 0 1px 0;
