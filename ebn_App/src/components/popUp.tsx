@@ -21,15 +21,15 @@ interface conteneurInterface {
 const popUp = (props: any) => {
     const [info, setInfo] = useState<conteneurInterface>();
     const scanValue = props.data;
-    const date = Date.now()
-    const [selectedValue, setSelectedValue] = useState();
+    const date = new Date();
+    const [selectedValue, setSelectedValue] = useState("Récupération du seau");
     const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
     let data = {
         typeAction: selectedValue,
-        date: date,
+        date: date.toString(),
         typeDeDechet: info?.typeDechet.typeDechets,
         commentaire: commentaire,
         poids: poids,
@@ -78,7 +78,7 @@ const popUp = (props: any) => {
                         <Text> </Text>
                         <Picker
                             selectedValue={selectedValue}
-                            style={{height: 50, width: 150}}
+                            style={{height: 50, width: 240}}
                             onValueChange={(itemValue) => setSelectedValue(itemValue)}>
                             <Picker.Item label="Récupération du seau" value="Récupération du seau"/>
                             <Picker.Item label="dépot du seau" value="dépot du seau"/>
