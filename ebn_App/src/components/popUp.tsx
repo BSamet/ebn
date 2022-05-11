@@ -67,13 +67,6 @@ const popUp = (props: any) => {
             });
     };
 
-    const poidsMax = () => {
-        if (poids >= poidMax) {
-            setLimite(false);
-        } else {
-            setLimite(true);
-        }
-    };
 
     return (
         <View style={popUpStyles.centeredView}>
@@ -96,9 +89,8 @@ const popUp = (props: any) => {
                             style={popUpStyles.input}
                             keyboardType="numeric"
                             onChangeText={peser => {
-                                poidsMax();
-                                setPoids(peser);
-                                poidsMax();
+                                setLimite(+peser <= +poidMax);
+                                setPoids(peser)
                             }}
                             placeholder="Entrer le poids"
                         />
