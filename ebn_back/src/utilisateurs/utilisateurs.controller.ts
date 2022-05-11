@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UtilisateursService } from './utilisateurs.service';
-import { CreateUtilisateurDto } from './dto/create-utilisateur.dto';
-import { UpdateUtilisateurDto } from './dto/update-utilisateur.dto';
+import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {UtilisateursService} from './utilisateurs.service';
+import {CreateUtilisateurDto} from './dto/create-utilisateur.dto';
+import {UpdateUtilisateurDto} from './dto/update-utilisateur.dto';
+import {catchError, map, Observable, of} from "rxjs";
+import {Utilisateur} from "./entities/utilisateur.entity";
 
 @Controller('utilisateurs')
 export class UtilisateursController {
-  constructor(private readonly utilisateursService: UtilisateursService) {}
+    constructor(private readonly utilisateursService: UtilisateursService) {
+    }
 
-  @Post()
-  create(@Body() createUtilisateurDto: CreateUtilisateurDto) {
-    return this.utilisateursService.create(createUtilisateurDto);
-  }
+    @Post()
+    create(@Body() createUtilisateurDto: CreateUtilisateurDto): Observable<Utilisateur | Object> {
+        return this.utilisateursService.create(createUtilisateurDto).pipe(
+            map((utilisateur: Utilisateur) => utilisateur),
+            catchError(err => of({error: err.message}))
+        );
+    }
 
-  @Get()
-  findAll() {
-    return this.utilisateursService.findAll();
-  }
+    @Post('login')
+    login(@Body() utilisateur: Utilisateur): Observable<Object> {
+        return this.utilisateursService.login(utilisateur).pipe(
+            map((jwt: string) => {
+                return {access_token: jwt};
+            })
+        )
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.utilisateursService.findOne(+id);
-  }
+    @Get()
+    findAll() {
+        return this.utilisateursService.findAll();
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUtilisateurDto: UpdateUtilisateurDto) {
-    return this.utilisateursService.update(+id, updateUtilisateurDto);
-  }
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.utilisateursService.findOne(+id);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.utilisateursService.remove(+id);
-  }
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updateUtilisateurDto: UpdateUtilisateurDto) {
+        return this.utilisateursService.update(+id, updateUtilisateurDto);
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.utilisateursService.remove(+id);
+    }
 }
