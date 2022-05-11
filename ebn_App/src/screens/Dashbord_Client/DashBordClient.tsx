@@ -11,6 +11,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import {Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 import {HOST_BACK} from '../../../environment/environment';
@@ -36,31 +37,27 @@ export interface dashboardClient {
   };
 }
 export interface HistoriqueClient {
-  historique: {
-    id: number;
-    typeAction: string;
-    date: number;
-    typeDeDechet: string;
-    commentaire: string;
-    poids: number;
-  };
+  id: number;
+  typeAction: string;
+  date: number;
+  typeDeDechet: string;
+  commentaire: string;
+  poids: number;
 }
 export interface ShowClient {
-  client: {
+  id: number;
+  siret: number;
+  nomCommercial: string;
+  adresse: string;
+  utilisateur: {
     id: number;
-    siret: number;
-    nomCommercial: string;
-    adresse: string;
-    utilisateur: {
-      id: number;
-      role: string;
-      utilisateur: string;
-      password: string;
-      nom: string;
-      prenom: string;
-      mail: string;
-      telephone: string;
-    };
+    role: string;
+    utilisateur: string;
+    password: string;
+    nom: string;
+    prenom: string;
+    mail: string;
+    telephone: string;
   };
 }
 
@@ -69,7 +66,7 @@ const DashBordClient = () => {
   const [fetchOnce, setFetchOnce] = useState(true);
   const [tourner, setTouner] = useState<dashboardClient[]>();
   const [myclient, setMyClient] = useState<ShowClient>();
-  const [historique, setHistorique] = useState<HistoriqueClient[]>();
+  const [myHistorique, setMyHistorique] = useState<HistoriqueClient[]>();
   const [modalOpen, setModalOpen] = useState(false);
   const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
   const [modalOpenHisto, setModalOpenHisto] = useState(false);
@@ -77,17 +74,19 @@ const DashBordClient = () => {
     if (fetchOnce) {
       axios.get(HOST_BACK + '/etape/client/1').then(res => {
         // appel de l'api
+        // recupération client
+        setMyClient(res.data.etape[0].client);
 
-        setMyClient(res.data[0]);
-        // setHistoriqueModal(res.data[0]);
+        // recupération historique
+        setMyHistorique(res.data.historique);
 
-        setTouner(res.data); // recuperer les infos du collecteur sans map
-
+        // recuperer les infos du collecteur sans map
+        setTouner(res.data.etape);
         // on cherche une seul fois
         setFetchOnce(false);
       });
     }
-  }, [tourner, myclient, fetchOnce]);
+  }, [tourner, myclient, myHistorique, fetchOnce]);
 
   const showModal = (Collecteur: any) => {
     setModalOpen(true);
@@ -95,8 +94,7 @@ const DashBordClient = () => {
   };
   const HistoriqueModal = (Historique: any) => {
     setModalOpenHisto(true);
-    setHistorique(Historique);
-    console.log(historique);
+    setMyHistorique(Historique);
   };
 
   const {height} = useWindowDimensions();
@@ -121,7 +119,7 @@ const DashBordClient = () => {
               resizeMode="contain"
             />
             <Text style={styles.topText}>
-              Bonjour, {myclient?.client.nomCommercial}
+              Bonjour,{myclient?.nomCommercial}
             </Text>
           </LinearGradient>
         </View>
@@ -130,32 +128,52 @@ const DashBordClient = () => {
 
         <CustomButton
           text={'Voir votre historique'}
-          onPress={() => HistoriqueModal(historique)}
+          onPress={() => HistoriqueModal(myHistorique)}
         />
 
         <Modal
           animationType="slide"
           transparent={true}
           visible={modalOpenHisto}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              {historique?.map((hist, index) => (
-                <View key={index}>
-                  <Text style={styles.modalText}>
-                    {hist.historique.commentaire}
-                  </Text>
-                  <Text style={styles.modalText}>{hist.historique.poids}</Text>
-                  <Text style={styles.modalText}></Text>
-                </View>
-              ))}
+          <ScrollView>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                {myHistorique?.map((hist, index) => (
+                  <View key={index}>
+                    <Text style={styles.modalText}>Conteneur :</Text>
+                    <Text style={styles.modalHistoriqueText}>
+                      {hist.typeAction} {hist.id}
+                    </Text>
+                    <Text style={styles.modalText}>Récuperer le :</Text>
+                    <Text style={styles.modalHistoriqueText}>
+                      {moment(hist.date).format('DD.MM.YYYY  à HH[h] mm')}
+                    </Text>
+                    <Text style={styles.modalText}>Type de dechet :</Text>
+                    <Text style={styles.modalHistoriqueText}>
+                      {hist.typeDeDechet}
+                    </Text>
+                    <Text style={styles.modalText}>
+                      Commentaire du Collecteur :
+                    </Text>
+                    <Text style={styles.modalHistoriqueText}>
+                      {hist.commentaire}
+                    </Text>
+                    <Text style={styles.modalText}>Poids total récuperé:</Text>
+                    <Text style={styles.modalHistoriqueText}>
+                      {hist.poids} KG
+                    </Text>
+                    <Divider orientation="vertical" width={200} />
+                  </View>
+                ))}
 
-              <Pressable
-                style={[styles.buttonModal, styles.buttonClose]}
-                onPress={() => setModalOpenHisto(!modalOpenHisto)}>
-                <Text style={styles.textStyle}>Fermer</Text>
-              </Pressable>
+                <Pressable
+                  style={[styles.buttonModal, styles.buttonClose]}
+                  onPress={() => setModalOpenHisto(!modalOpenHisto)}>
+                  <Text style={styles.textStyle}>Fermer</Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </Modal>
 
         <Text style={styles.titleText}>Vos collecte</Text>
@@ -194,6 +212,7 @@ const DashBordClient = () => {
                 Heure approximative de votre collecte {'  '}
                 {moment(item.date).format('DD.MM.YYYY  à HH[h] mm')}
               </Text>
+              <Divider orientation="vertical" width={200} />
             </Pressable>
           </View>
         ))}
@@ -203,6 +222,7 @@ const DashBordClient = () => {
 };
 
 const styles = StyleSheet.create({
+  divider: {paddingTop: 10, width: 25},
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
@@ -231,6 +251,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+  },
+  modalHistoriqueText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontFamily: 'Confortaa-Bold',
+
+    fontSize: 18,
   },
   modalText: {
     marginBottom: 15,

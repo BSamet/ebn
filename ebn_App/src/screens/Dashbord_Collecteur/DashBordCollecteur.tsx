@@ -159,6 +159,7 @@ const DashBordCollecteur = () => {
                 Heure estimé de passage :{' '}
                 {moment(data.date).format('DD.MM.YYYY  à  HH[h] mm')}
               </Text>
+
               <QrCodeScanner />
             </Pressable>
           </View>
