@@ -1,6 +1,6 @@
 import React from 'react'
 import QRCode from "qrcode.react";
-import ReactToPrint, { useReactToPrint } from 'react-to-print';
+import { useReactToPrint } from 'react-to-print';
 import "../styles/component/_QrCodeGen.scss"
 import Button from '@mui/material/Button';
 const icon = require("../assets/cycle.png")
@@ -41,7 +41,7 @@ const RightSideQrcode = ({ selectConteneurId }: idConteneurInterface) => {
                     <h2>Conteneur N° {selectConteneurId}</h2>
                     {qrCode}
                 </div> 
-                <button onClick={handlePrint}>Imprimer le QRCODE</button>                              
+                <Button variant="contained" onClick={handlePrint}>Imprimer le QRCODE</Button>                              
             </div>
         );
     } else {
