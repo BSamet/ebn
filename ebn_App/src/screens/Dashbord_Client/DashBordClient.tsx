@@ -2,20 +2,24 @@ import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   useWindowDimensions,
   View,
 } from 'react-native';
-import {Divider} from 'react-native-elements';
+import {Button, Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 import {HOST_BACK} from '../../../environment/environment';
 import CustomButton from '../../components/CustomButton';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export interface dashboardClient {
   id: number;
@@ -61,6 +65,13 @@ export interface ShowClient {
   };
 }
 
+export interface DemandePonctuelRamassage {
+  date: number;
+  client: {
+    id: number;
+  };
+}
+
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordClient = () => {
   const [fetchOnce, setFetchOnce] = useState(true);
@@ -70,6 +81,32 @@ const DashBordClient = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
   const [modalOpenHisto, setModalOpenHisto] = useState(false);
+  const [modalRamassage, setModalRamassage] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [mode, setMode] = useState('date');
+  const [date, setDate] = useState(new Date());
+  const [textDate, setTextDate] = useState('Aucun ramassage actuellement');
+
+  let data = {
+    date: date.toString(),
+    clientId: myclient?.id,
+  };
+  const postRamasagge = () => {
+    axios
+      .post(HOST_BACK + '/ramassage-ponctuel', data)
+      .then(resp => {
+        if (resp.status === 200) {
+          console.log(resp);
+        }
+      })
+      .catch(function (error) {
+        console.log(error + ' sur post');
+      });
+  };
+  const submit = () => {
+    postRamasagge();
+  };
+
   useEffect(() => {
     if (fetchOnce) {
       axios.get(HOST_BACK + '/etape/client/1').then(res => {
@@ -95,6 +132,27 @@ const DashBordClient = () => {
   const HistoriqueModal = (Historique: any) => {
     setModalOpenHisto(true);
     setMyHistorique(Historique);
+  };
+  // const showPicker = () => {
+  //   setVisible(true);
+  // };
+  const onChange = (event: any, selectedDate: any) => {
+    const currentDate = selectedDate || date;
+    setVisible(false);
+    setDate(currentDate);
+  };
+
+  const showDate = () => {
+    setMode('date');
+    showPicker();
+  };
+
+  const showTime = () => {
+    setMode('time');
+    showPicker();
+  };
+  const showPicker = () => {
+    setVisible(true);
   };
 
   const {height} = useWindowDimensions();
@@ -123,6 +181,44 @@ const DashBordClient = () => {
             </Text>
           </LinearGradient>
         </View>
+        {/* gestion demande de ramassage ponctuel */}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalRamassage}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitre}> Votre demande de ramassage</Text>
+              <Button title="Choisir une date" onPress={showDate} />
+              <Button title="Choisir une heure" onPress={showTime} />
+              <Text style={styles.topText}>
+                Vous avez demander un ramassage le {textDate}
+              </Text>
+              {visible && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  onChange={onChange}
+                />
+              )}
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  setModalRamassage(!modalRamassage);
+                  submit();
+                }}>
+                <Text style={styles.textStyle}> Enregistrer </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalRamassage(true)}>
+          <Text style={styles.textStyle}>Besoin d'un ramassage ?</Text>
+        </Pressable>
 
         {/* gestion modal historique  */}
 
@@ -222,6 +318,30 @@ const DashBordClient = () => {
 };
 
 const styles = StyleSheet.create({
+  modalTitre: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color: 'black',
+  },
+
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+
+  input: {
+    marginBottom: 15,
+    borderBottomColor: '#000000',
+    borderBottomWidth: 1,
+  },
+
   divider: {paddingTop: 10, width: 25},
   textStyle: {
     color: 'white',
@@ -243,9 +363,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  buttonClose: {
-    backgroundColor: 'transparent',
-  },
+
   centeredView: {
     flex: 1,
     justifyContent: 'center',
