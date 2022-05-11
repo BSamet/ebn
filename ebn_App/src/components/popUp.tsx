@@ -20,8 +20,10 @@ interface conteneurInterface {
 
 const popUp = (props: any) => {
     const [info, setInfo] = useState<conteneurInterface>();
+    const [limite, setLimite] = useState(true);
     const scanValue = props.data;
     const date = new Date();
+    const poidMax = info?.capaciteMax;
     const [selectedValue, setSelectedValue] = useState("Récupération du seau");
     const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
@@ -50,7 +52,6 @@ const popUp = (props: any) => {
     }, [info]);
 
     const submit = () => {
-        console.warn(data)
         postPoids();
     };
 
@@ -65,6 +66,15 @@ const popUp = (props: any) => {
                 console.log(error + ' sur post');
             });
     };
+
+    const poidsMax = () => {
+        if (poids >= poidMax) {
+            setLimite(false);
+        } else {
+            setLimite(true);
+        }
+    };
+
     return (
         <View style={popUpStyles.centeredView}>
             <Modal
@@ -75,7 +85,6 @@ const popUp = (props: any) => {
                 <View style={popUpStyles.centeredView}>
                     <View style={popUpStyles.modalView}>
                         <Text style={popUpStyles.modalTitre}> Information du seau </Text>
-                        <Text> </Text>
                         <Picker
                             selectedValue={selectedValue}
                             style={{height: 50, width: 240}}
@@ -86,11 +95,16 @@ const popUp = (props: any) => {
                         <TextInput
                             style={popUpStyles.input}
                             keyboardType="numeric"
-                            onChangeText={peser => setPoids(peser)}
+                            onChangeText={peser => {
+                                poidsMax();
+                                setPoids(peser);
+                                poidsMax();
+                            }}
                             placeholder="Entrer le poids"
                         />
                         <Text style={popUpStyles.modalText}>
-                            Vous avez collecter {poids} kg
+                            Vous avez collecter {limite ? <Text>{poids}</Text> :
+                            <Text style={{color: "red"}}>{poids}</Text>} kg
                         </Text>
                         <TextInput
                             style={popUpStyles.input}
@@ -108,11 +122,6 @@ const popUp = (props: any) => {
                     </View>
                 </View>
             </Modal>
-            <Pressable
-                style={[popUpStyles.button, popUpStyles.buttonOpen]}
-                onPress={() => setModalVisible(true)}>
-                <Text style={popUpStyles.textStyle}> pésage </Text>
-            </Pressable>
         </View>
     );
 };
