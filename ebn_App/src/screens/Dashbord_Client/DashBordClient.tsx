@@ -85,8 +85,9 @@ const DashBordClient = () => {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('date');
   const [date, setDate] = useState(new Date());
-  const [textDate, setTextDate] = useState('Aucun ramassage actuellement');
+  const [textDate, setTextDate] = useState('Aucun ramassage actuellement'); // settextdate n'ai pas utliser car on set rien dedans
 
+  // fonction pour post
   let data = {
     date: date.toString(),
     clientId: myclient?.id,
@@ -124,7 +125,7 @@ const DashBordClient = () => {
       });
     }
   }, [tourner, myclient, myHistorique, fetchOnce]);
-
+  // fonction pour les modales
   const showModal = (Collecteur: any) => {
     setModalOpen(true);
     setMyCollecteurModal(Collecteur);
@@ -133,9 +134,7 @@ const DashBordClient = () => {
     setModalOpenHisto(true);
     setMyHistorique(Historique);
   };
-  // const showPicker = () => {
-  //   setVisible(true);
-  // };
+  // toute les fonction pour le datePicker
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
     setVisible(false);
