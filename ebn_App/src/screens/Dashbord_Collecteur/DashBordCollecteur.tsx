@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
 
 import {
   Image,
@@ -14,8 +13,8 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 
-import {AuthRootParamList} from '../../Navigation/RouteNavigator';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+// import {AuthRootParamList} from '../../Navigation/RouteNavigator';
+// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useState} from 'react';
 
 import axios from 'axios';
@@ -24,7 +23,7 @@ import {HOST_BACK} from '../../../environment/environment';
 import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
 
-type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
+// type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>; a utilisé si direction vers d'autre page
 interface EtapeCollecteur {
   id: number;
   date: string;
@@ -158,8 +157,9 @@ const DashBordCollecteur = () => {
 
               <Text style={styles.poids}>
                 Heure estimé de passage :{' '}
-                {moment(data.date).format('DD.MM.YYYY à    HH[h] mm')}
+                {moment(data.date).format('DD.MM.YYYY  à  HH[h] mm')}
               </Text>
+
               <QrCodeScanner />
             </Pressable>
           </View>
