@@ -1,6 +1,8 @@
 import React from 'react'
 import QRCode from "qrcode.react";
+import ReactToPrint, { useReactToPrint } from 'react-to-print';
 import "../styles/component/_QrCodeGen.scss"
+import Button from '@mui/material/Button';
 const icon = require("../assets/cycle.png")
 
 interface idConteneurInterface {
@@ -10,12 +12,6 @@ interface idConteneurInterface {
 
 const RightSideQrcode = ({ selectConteneurId }: idConteneurInterface) => {
     const qrRef = React.useRef() as React.MutableRefObject<HTMLInputElement>;
-    const [text, setText] = React.useState("");
-
-    const printQRCode = (evt: React.FormEvent) => {
-        evt.preventDefault();
-        setText("");
-    };
 
     const qrCode = (
         <QRCode
@@ -33,18 +29,19 @@ const RightSideQrcode = ({ selectConteneurId }: idConteneurInterface) => {
         />
     )
 
+    const handlePrint = useReactToPrint({
+        content: () => qrRef.current,
+        pageStyle:"@page { size: auto; margin: 25mm; } }"
+    });
+
     if(selectConteneurId !== "") {
         return (
-            <div className="qr-container">
-                {selectConteneurId}
-                <form onSubmit={printQRCode} className="qr-container__form">
-    
-                    <button type="submit">Imprimer le QR Code</button>
-                </form>
-    
-                <div className="qr-container__qr-code" ref={qrRef}>
+            <div className="qr-container"> 
+                <div id="qr_code" className="qr-container__qr-code" ref={qrRef}>
+                    <h2>Conteneur N° {selectConteneurId}</h2>
                     {qrCode}
-                </div>
+                </div> 
+                <button onClick={handlePrint}>Imprimer le QRCODE</button>                              
             </div>
         );
     } else {
