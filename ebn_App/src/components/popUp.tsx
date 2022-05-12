@@ -115,7 +115,14 @@ const popUp = (props: any) => {
                 </View>
             </Modal>
         </View>
-    );
+      </Modal>
+      <Pressable
+        style={[popUpStyles.button, popUpStyles.buttonOpen]}
+        onPress={() => setModalVisible(true)}>
+        <Text style={popUpStyles.textStyle}> pésage </Text>
+      </Pressable>
+    </View>
+  );
 };
 
 export default popUp;
