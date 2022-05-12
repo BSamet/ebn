@@ -1,24 +1,26 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Collecteur} from "../../collecteur/entities/collecteur.entity";
-import {Client} from "../../client/entities/client.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Collecteur } from '../../collecteur/entities/collecteur.entity';
+import { Client } from '../../client/entities/client.entity';
 
 @Entity()
 export class Etape {
-    @PrimaryGeneratedColumn()
-    public id?: number;
-    
-    @ManyToOne(() => Client, client => client.etape, {eager: true})
-    client: Client;
+  @PrimaryGeneratedColumn()
+  public id?: number;
 
-    @ManyToOne(() => Collecteur, collecteur => collecteur.etape, {eager: true})
-    collecteur: Collecteur;
+  @ManyToOne(() => Client, (client) => client.etape, { eager: true })
+  client: Client;
 
-    @Column()
-    public date: Date;
+  @ManyToOne(() => Collecteur, (collecteur) => collecteur.etape, {
+    eager: true,
+  })
+  collecteur: Collecteur;
 
-    @Column({default: false})
-    public isCollected: boolean;
+  @Column()
+  public date: Date;
 
-    @Column()
-    public commentaire: string;
+  @Column({ default: false })
+  public isCollected: boolean;
+
+  @Column()
+  public commentaire: string;
 }

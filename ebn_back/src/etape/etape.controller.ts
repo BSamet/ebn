@@ -34,6 +34,11 @@ export class EtapeController {
   findByCollecteur(@Param('id') id: number) {
     return this.etapeService.findByCollecteur(+id);
   }
+  @Get('client/:id')
+  findByClient(@Param('id') id: number) {
+    return this.etapeService.findByClient(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEtapeDto: UpdateEtapeDto) {
     return this.etapeService.update(+id, updateEtapeDto);
