@@ -33,6 +33,11 @@ export class ConteneurController {
         return this.conteneurService.findAllConteneurPagination(takeForBuilder, skipForBuilder);
     }
 
+    @Get(':id/infos')
+    findOneWithAllInfos(@Param('id') id: number) {
+        return this.conteneurService.findOneWithAllInfos(+id);
+    }
+
     @Patch(':id')
     update(@Param('id') id: number, @Body() updateConteneurDto: UpdateConteneurDto) {
         return this.conteneurService.update(+id, updateConteneurDto);

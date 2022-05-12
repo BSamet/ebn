@@ -5,7 +5,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Conteneur} from './entities/conteneur.entity';
 import {Client} from '../client/entities/client.entity';
-import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
+import {TypeDechet} from '../type-dechets/entities/type-dechet.entity';
 
 @Injectable()
 export class ConteneurService {
@@ -44,24 +44,36 @@ export class ConteneurService {
         const totalPages = Math.ceil(countedConteneur / take);
 
         const allConteneur = await this.conteneurRepository
-            .createQueryBuilder("conteneur")
-            .leftJoinAndSelect("conteneur.client", "client")
-            .leftJoinAndSelect("client.utilisateur", "utilisateur")
-            .leftJoinAndSelect("conteneur.typeDechet", "typeDechet")
-            .select("conteneur")
-            .addSelect("client.nomCommercial")
-            .addSelect("utilisateur.nom")
-            .addSelect("utilisateur.prenom")
-            .addSelect("typeDechet.typeDechets")
+            .createQueryBuilder('conteneur')
+            .leftJoinAndSelect('conteneur.client', 'client')
+            .leftJoinAndSelect('client.utilisateur', 'utilisateur')
+            .leftJoinAndSelect('conteneur.typeDechet', 'typeDechet')
+            .select('conteneur')
+            .addSelect('client.nomCommercial')
+            .addSelect('utilisateur.nom')
+            .addSelect('utilisateur.prenom')
+            .addSelect('typeDechet.typeDechets')
             .take(take)
             .skip(skip)
-            .getMany()
+            .getMany();
 
         return {
-            "totalPages": totalPages,
-            "totalConteneur": countedConteneur,
-            "conteneurs": allConteneur
-        }
+            totalPages: totalPages,
+            totalConteneur: countedConteneur,
+            conteneurs: allConteneur,
+        };
+    }
+
+    async findOneWithAllInfos(id: number) {
+
+        return await this.conteneurRepository.createQueryBuilder("conteneur")
+            .leftJoinAndSelect('conteneur.client', 'client')
+            .leftJoinAndSelect('conteneur.typeDechet', 'typeDechet')
+            .select('conteneur')
+            .addSelect('client.id')
+            .addSelect('typeDechet.typeDechets')
+            .getOne()
+
     }
 
     update(id: number, updateConteneurDto: UpdateConteneurDto) {

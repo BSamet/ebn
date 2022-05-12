@@ -7,12 +7,16 @@ import { getConnection, Repository } from 'typeorm';
 import { Etape } from './entities/etape.entity';
 import { Collecteur } from '../collecteur/entities/collecteur.entity';
 import { Utilisateur } from 'src/utilisateurs/entities/utilisateur.entity';
+import { Historique } from 'src/historique/entities/historique.entity';
+import { HistoriqueService } from 'src/historique/historique.service';
 
 @Injectable()
 export class EtapeService {
+  historiqueRepository: any;
   constructor(
     @InjectRepository(Etape)
     private readonly etapeRepository: Repository<Etape>,
+    private historiqueService: HistoriqueService,
   ) {}
 
   create(createEtapeDto: CreateEtapeDto) {
@@ -56,6 +60,35 @@ export class EtapeService {
       .andWhere('etape.date <= :tomorrow', { tomorrow })
 
       .getMany();
+  }
+
+  async findByClient(id: number) {
+    const dateNow = new Date();
+
+    const dd = String(dateNow.getDate()).padStart(2, '0');
+    const mm = String(dateNow.getMonth() + 1).padStart(2, '0');
+    const yyyy = dateNow.getFullYear();
+
+    const today = yyyy + '-' + mm + '-' + dd + 'T00:00:00.000';
+
+    const historique = await this.historiqueService.findByClient(+id);
+
+    const etape = await this.etapeRepository
+      .createQueryBuilder('etape')
+      .innerJoinAndSelect('etape.client', 'c')
+      .innerJoinAndSelect('c.utilisateur', 'u')
+      .innerJoinAndSelect('etape.collecteur', 'col')
+      .innerJoinAndSelect('col.utilisateur', 'uCol')
+
+      .where('c.id = :id', { id })
+      .andWhere('etape.date >= :today', { today })
+
+      .getMany();
+
+    return {
+      historique: historique,
+      etape: etape,
+    };
   }
 
   update(id: number, updateEtapeDto: UpdateEtapeDto) {
