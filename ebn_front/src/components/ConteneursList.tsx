@@ -99,8 +99,8 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
                                 <ListItemText className='listItem' primary={list.id} />
                                 <ListItemText className='listItem' primary={list.typeDechet.typeDechets} />
                                 <ListItemText className='listItem' primary={list.capaciteMax} />   
-                                {list.client.nomCommercial === null
-                                ?<ListItemText className='listItem' primary='test'/>                    
+                                {!list.client || !list.client.nomCommercial
+                                ?<ListItemText className='listItem' primary='' />
                                 :<ListItemText className='listItem' primary={list.client.nomCommercial} />
                                 }
                             </ListItemButton>

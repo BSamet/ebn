@@ -41,6 +41,7 @@ export default function AddConteneur() {
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         axios.post(HOST_BACK + '/conteneur', dataConteneur)
         handleClose()
+        // refreshPage()
     }
 
     const dechetChange = (event: SelectChangeEvent) => {
@@ -50,6 +51,8 @@ export default function AddConteneur() {
     const poidsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPoids(event.target.value);
     };
+    // const refreshPage= () =>
+    //     window.location.reload()
 
     return (
         <div>

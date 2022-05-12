@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-/* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-=======
 import React, {useEffect, useState} from 'react';
->>>>>>> develop
 import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import popUpStyles from '../styles/popUpStyles';
