@@ -50,6 +50,64 @@ export class HistoriqueService {
       .getMany();
   }
 
+  async findAllHistoriquesPagination(
+    take: number,
+    skip: number,
+    orderBy: string,
+  ) {
+    const historiqueCounted = await this.historiqueRepository.count();
+
+    const totalPages = Math.ceil(historiqueCounted / take);
+
+    // Set params for orderBy
+    let params: string;
+    let orderParams: any;
+    switch (orderBy) {
+      case 'nomCommercial': {
+        params = 'client.nomCommercial';
+        orderParams = 'ASC';
+        break;
+      }
+      case 'action': {
+        params = 'historique.typeAction';
+        orderParams = 'ASC';
+        break;
+      }
+      case 'typeDeDechet': {
+        params = 'historique.typeDeDechet';
+        orderParams = 'ASC';
+        break;
+      }
+      case 'date': {
+        params = 'historique.date';
+        orderParams = 'DESC';
+        break;
+      }
+      default: {
+        params = '';
+      }
+    }
+
+    const allHistoriques = await this.historiqueRepository
+      .createQueryBuilder('historique')
+      .leftJoinAndSelect('historique.client', 'client')
+      .leftJoinAndSelect('client.utilisateur', 'utilisateur')
+      .select('historique')
+      .addSelect('client.nomCommercial')
+      .addSelect('utilisateur.nom')
+      .addSelect('utilisateur.prenom')
+      .orderBy(params, orderParams)
+      .take(take)
+      .skip(skip)
+      .getMany();
+
+    return {
+      totalPages: totalPages,
+      totalHistoriques: historiqueCounted,
+      historiques: allHistoriques,
+    };
+  }
+
   update(id: number, updateHistoriqueDto: UpdateHistoriqueDto) {
     return this.historiqueRepository.update(id, updateHistoriqueDto);
   }

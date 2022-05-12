@@ -1,4 +1,4 @@
-import {Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Client} from "../../client/entities/client.entity";
 import {Collecteur} from "../../collecteur/entities/collecteur.entity";
 
@@ -10,7 +10,7 @@ export class Utilisateur {
     @Column()
     public role: string;
 
-    @Column()
+    @Column({unique: true})
     public utilisateur: string;
 
     @Column()
@@ -35,4 +35,9 @@ export class Utilisateur {
     @OneToMany(() => Collecteur, (collecteur) => collecteur.utilisateur, {onDelete: "CASCADE"})
     @JoinTable()
     collecteur: Collecteur[];
+
+    @BeforeInsert()
+    emailToLowerCase() {
+        this.mail = this.mail.toLowerCase();
+    }
 }
