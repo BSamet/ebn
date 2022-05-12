@@ -17,6 +17,9 @@ import Logo from '../../../assets/images/logo.png';
 import {HOST_BACK} from '../../../environment/environment';
 import CustomButton from '../../components/CustomButton';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AuthRootParamList} from '../../Navigation/RouteNavigator';
+import {useNavigation} from '@react-navigation/native';
 
 export interface dashboardClient {
   id: number;
@@ -37,14 +40,10 @@ export interface dashboardClient {
     };
   };
 }
-export interface HistoriqueClient {
-  id: number;
-  typeAction: string;
-  date: number;
-  typeDeDechet: string;
-  commentaire: string;
-  poids: number;
-}
+
+type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
+// a suprrimé quand l'historique page est fonctionnelle avec navBar
+
 export interface ShowClient {
   id: number;
   siret: number;
@@ -71,13 +70,14 @@ export interface DemandePonctuelRamassage {
 
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordClient = () => {
+  const navigation = useNavigation<AuthScreenNavigate>();
   const [fetchOnce, setFetchOnce] = useState(true);
   const [tourner, setTouner] = useState<dashboardClient[]>();
   const [myclient, setMyClient] = useState<ShowClient>();
-  const [myHistorique, setMyHistorique] = useState<HistoriqueClient[]>();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
-  const [modalOpenHisto, setModalOpenHisto] = useState(false);
+
   const [modalRamassage, setModalRamassage] = useState(false);
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('date');
@@ -112,25 +112,19 @@ const DashBordClient = () => {
         // recupération client
         setMyClient(res.data.etape[0].client);
 
-        // recupération historique
-        setMyHistorique(res.data.historique);
-
         // recuperer les infos du collecteur sans map
         setTouner(res.data.etape);
         // on cherche une seul fois
         setFetchOnce(false);
       });
     }
-  }, [tourner, myclient, myHistorique, fetchOnce]);
+  }, [tourner, myclient, fetchOnce]);
   // fonction pour les modales
   const showModal = (Collecteur: any) => {
     setModalOpen(true);
     setMyCollecteurModal(Collecteur);
   };
-  const HistoriqueModal = (Historique: any) => {
-    setModalOpenHisto(true);
-    setMyHistorique(Historique);
-  };
+
   // toute les fonction pour le datePicker
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -186,9 +180,13 @@ const DashBordClient = () => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalTitre}> Votre demande de ramassage</Text>
-              <Button title="Choisir une date" onPress={showDate} />
-              <Button title="Choisir une heure" onPress={showTime} />
-              <Text style={styles.topText}>
+              <Pressable style={styles.RamassageModal} onPress={showDate}>
+                <Text style={styles.textStyle}> Choisir une date</Text>
+              </Pressable>
+              <Pressable style={styles.RamassageModal} onPress={showTime}>
+                <Text style={styles.textStyle}>Choisir une heure</Text>
+              </Pressable>
+              <Text style={styles.date}>
                 Vous avez demander un ramassage le {textDate}
               </Text>
               {visible && (
@@ -200,7 +198,7 @@ const DashBordClient = () => {
                 />
               )}
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={styles.RamassageModal}
                 onPress={() => {
                   setModalRamassage(!modalRamassage);
                   submit();
@@ -210,65 +208,26 @@ const DashBordClient = () => {
             </View>
           </View>
         </Modal>
+
+        <CustomButton
+          text={'voir Historique'}
+          onPress={() => {
+            navigation.navigate('Historique');
+          }}
+        />
+
+        <Text style={styles.titleText}>Vos collectes</Text>
         <Pressable
-          style={[styles.button, styles.buttonOpen]}
+          style={styles.Ramassage}
           onPress={() => setModalRamassage(true)}>
           <Text style={styles.textStyle}>Besoin d'un ramassage ?</Text>
         </Pressable>
-
-        {/* gestion modal historique  */}
-
-        <CustomButton
-          text={'Voir votre historique'}
-          onPress={() => HistoriqueModal(myHistorique)}
+        <Divider
+          style={{width: '100%', margin: 10}}
+          color="#8AC997"
+          width={2}
+          orientation="horizontal"
         />
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalOpenHisto}>
-          <ScrollView>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                {myHistorique?.map((hist, index) => (
-                  <View key={index}>
-                    <Text style={styles.modalText}>Conteneur :</Text>
-                    <Text style={styles.modalHistoriqueText}>
-                      {hist.typeAction} {hist.id}
-                    </Text>
-                    <Text style={styles.modalText}>Récuperer le :</Text>
-                    <Text style={styles.modalHistoriqueText}>
-                      {moment(hist.date).format('DD.MM.YYYY  à HH[h] mm')}
-                    </Text>
-                    <Text style={styles.modalText}>Type de dechet :</Text>
-                    <Text style={styles.modalHistoriqueText}>
-                      {hist.typeDeDechet}
-                    </Text>
-                    <Text style={styles.modalText}>
-                      Commentaire du Collecteur :
-                    </Text>
-                    <Text style={styles.modalHistoriqueText}>
-                      {hist.commentaire}
-                    </Text>
-                    <Text style={styles.modalText}>Poids total récuperé:</Text>
-                    <Text style={styles.modalHistoriqueText}>
-                      {hist.poids} KG
-                    </Text>
-                    <Divider orientation="vertical" width={200} />
-                  </View>
-                ))}
-
-                <Pressable
-                  style={[styles.buttonModal, styles.buttonClose]}
-                  onPress={() => setModalOpenHisto(!modalOpenHisto)}>
-                  <Text style={styles.textStyle}>Fermer</Text>
-                </Pressable>
-              </View>
-            </View>
-          </ScrollView>
-        </Modal>
-
-        <Text style={styles.titleText}>Vos collecte</Text>
 
         {/* modal afficher les collecteur  */}
 
@@ -304,7 +263,12 @@ const DashBordClient = () => {
                 Heure approximative de votre collecte {'  '}
                 {moment(item.date).format('DD.MM.YYYY  à HH[h] mm')}
               </Text>
-              <Divider orientation="vertical" width={200} />
+              <Divider
+                style={{width: '100%', margin: 10}}
+                color="#0096f0"
+                width={2}
+                orientation="horizontal"
+              />
             </Pressable>
           </View>
         ))}
@@ -314,6 +278,28 @@ const DashBordClient = () => {
 };
 
 const styles = StyleSheet.create({
+  RamassageModal: {
+    borderRadius: 30,
+    padding: 10,
+    backgroundColor: '#8AC997',
+    marginTop: 10,
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '50%',
+    marginLeft: '5%',
+    marginVertical: 5,
+  },
+  Ramassage: {
+    borderRadius: 30,
+    padding: 10,
+    backgroundColor: '#8AC997',
+    marginTop: 10,
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '50%',
+    marginLeft: '25%',
+    marginVertical: 5,
+  },
   modalTitre: {
     marginBottom: 15,
     textAlign: 'center',
@@ -415,11 +401,12 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   titleText: {
-    fontSize: 22,
+    fontSize: 28,
     marginTop: 20,
     paddingHorizontal: 10,
     color: 'black',
     fontFamily: 'Confortaa-Regular',
+    marginLeft: 115,
   },
   date: {
     fontSize: 18,
