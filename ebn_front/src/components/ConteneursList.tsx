@@ -13,12 +13,14 @@ import axios from 'axios';
 import Fab from '@mui/material/Fab';
 import EditIcon from '@mui/icons-material/Edit';
 
+
 interface conteneursInterface {
     id: number;
     capaciteMax: number;
     isAvailable: boolean;
     client: {
         nomCommercial: string,
+        id:number,
         utilisateur: {
             nom: string,
             prenom: string
@@ -45,6 +47,7 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
             setConteneurslist(res.data.conteneurs)
         });
     };
+
     //Fin pagination des conteneurs
 
     useEffect(() => {
@@ -66,7 +69,6 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
         setSelectConteneurId(index);
 
     }
-
 
     return (
         <div className='conteneurs'>
@@ -96,8 +98,11 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
                             >
                                 <ListItemText className='listItem' primary={list.id} />
                                 <ListItemText className='listItem' primary={list.typeDechet.typeDechets} />
-                                <ListItemText className='listItem' primary={list.capaciteMax} />
-                                <ListItemText className='listItem' primary={list.client.nomCommercial} />
+                                <ListItemText className='listItem' primary={list.capaciteMax} />   
+                                {!list.client || !list.client.nomCommercial
+                                ?<ListItemText className='listItem' primary='' />
+                                :<ListItemText className='listItem' primary={list.client.nomCommercial} />
+                                }
                             </ListItemButton>
                         )}
                     </List>
