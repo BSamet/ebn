@@ -2,6 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   Modal,
   Pressable,
@@ -82,7 +83,7 @@ const DashBordClient = () => {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('date');
   const [date, setDate] = useState(new Date());
-  const [textDate, setTextDate] = useState('Aucun ramassage actuellement'); // settextdate n'ai pas utliser car on set rien dedans
+  const [textDate, setTextDate] = useState(''); // settextdate n'ai pas utliser car on set rien dedans
 
   // fonction pour post
   let data = {
@@ -93,12 +94,15 @@ const DashBordClient = () => {
     axios
       .post(HOST_BACK + '/ramassage-ponctuel', data)
       .then(resp => {
-        if (resp.status === 200) {
-          console.log(resp);
+        if (resp.status === 201) {
+          Alert.alert('Votre demande de ramassage à bien été pris en compte');
         }
       })
       .catch(function (error) {
         console.log(error + ' sur post');
+      })
+      .finally(() => {
+        setTextDate('à definir');
       });
   };
   const submit = () => {
@@ -130,6 +134,19 @@ const DashBordClient = () => {
     const currentDate = selectedDate || date;
     setVisible(false);
     setDate(currentDate);
+    let tempDate = new Date(currentDate);
+    let Fdate =
+      tempDate.getDate() +
+      '/' +
+      (tempDate.getMonth() + 1) +
+      '/' +
+      tempDate.getFullYear() +
+      ' à ' +
+      tempDate.getHours() +
+      'h' +
+      tempDate.getMinutes();
+
+    setTextDate(Fdate);
   };
 
   const showDate = () => {
