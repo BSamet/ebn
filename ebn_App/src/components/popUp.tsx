@@ -39,6 +39,7 @@ const popUp = (props: any) => {
         collecteurId: 1,
         conteneurId: scanValue,
     };
+
     useEffect(() => {
         axios
             .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
@@ -67,6 +68,15 @@ const popUp = (props: any) => {
             });
     };
 
+    const depotConteneur = (value) => {
+        if (value == "dépot du seau") {
+            axios
+                .patch(HOST_BACK + '/conteneur/' + scanValue, {"isAvailable": true})
+                .catch(function (error) {
+                    console.log(error + ' sur modif conteneur');
+                });
+        }
+    };
 
     return (
         <View style={popUpStyles.centeredView}>
@@ -81,7 +91,10 @@ const popUp = (props: any) => {
                         <Picker
                             selectedValue={selectedValue}
                             style={{height: 50, width: 240}}
-                            onValueChange={(itemValue) => setSelectedValue(itemValue)}>
+                            onValueChange={(itemValue) => {
+                                setSelectedValue(itemValue);
+                                depotConteneur(itemValue)
+                            }}>
                             <Picker.Item label="Récupération du seau" value="Récupération du seau"/>
                             <Picker.Item label="dépot du seau" value="dépot du seau"/>
                         </Picker>
