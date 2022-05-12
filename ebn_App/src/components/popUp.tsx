@@ -48,7 +48,6 @@ const popUp = (props: any) => {
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
-                console.log(scanValue)
             });
     }, [info]);
 
@@ -73,7 +72,7 @@ const popUp = (props: any) => {
             axios
                 .patch(HOST_BACK + '/conteneur/' + scanValue, {"isAvailable": true})
                 .catch(function (error) {
-                    console.log(error + ' sur modif conteneur');
+                    
                 });
         }
     };
