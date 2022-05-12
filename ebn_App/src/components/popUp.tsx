@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import popUpStyles from '../styles/popUpStyles';
