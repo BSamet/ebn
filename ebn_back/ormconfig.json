@@ -1,6 +1,6 @@
 {
   "type": "mysql",
-  "host": "database_ebn",
+  "host": "dev-database",
   "port": 3306,
   "username": "ebn",
   "password": "ebnroot",

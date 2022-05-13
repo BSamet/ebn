@@ -1,8 +1,8 @@
 version: "3.7"
 
 services:
-  database_ebn:
-    container_name: database_ebn
+  dev-database:
+    container_name: dev-database
     image: mysql:8.0
     cap_add:
       - SYS_NICE
@@ -15,38 +15,41 @@ services:
     ports:
       - "3306:3306"
 
-  phpmyadmin:
+  dev-phpmyadmin:
+    container_name: dev-phpmyadmin
     depends_on:
-      - database_ebn
+      - dev-database
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
       - "8088:80"
     environment:
-      PMA_HOST: database_ebn
+      PMA_HOST: dev-database
       MYSQL_ROOT_PASSWORD: ebnrootd
 
-  dev:
-    container_name: ebn-dev
+  dev-api:
+    container_name: dev-api
     env_file:
       - ebn_back/.env.docker
     build:
       context: ebn_back
+      dockerfile: Dockerfile.dev
     command: npm run start:dev
     depends_on:
-      - database_ebn
+      - dev-database
     volumes:
       - ./ebn_back:/usr/src/app
     ports:
       - "5454:5454"
     restart: always
 
-  front:
-    container_name: ebn-front
+  dev-web:
+    container_name: dev-web
     build:
       context: ebn_front
+      dockerfile: Dockerfile.dev
     depends_on:
-      - dev
+      - dev-api
     volumes:
       - ./ebn_front:/app
     ports:

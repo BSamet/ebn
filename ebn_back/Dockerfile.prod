@@ -1,0 +1,19 @@
+FROM node:latest as production
+
+WORKDIR /app
+
+COPY package.json /app
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+FROM nginx:1.12-alpine
+
+COPY --from=production /app/dist /usr/share/nginx/html
+
+EXPOSE 54
+
+CMD ["nginx", "-g", "daemon off;"]
