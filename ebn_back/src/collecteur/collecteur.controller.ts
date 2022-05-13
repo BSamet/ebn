@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -6,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CollecteurService } from './collecteur.service';
 import { CreateCollecteurDto } from './dto/create-collecteur.dto';
@@ -29,6 +31,15 @@ export class CollecteurController {
   findOne(@Param('id') id: string) {
     return this.collecteurService.findOne(+id);
   }
+
+  @Get('/all/:pages')
+    findAllCollecteurPagination(@Param('pages') pages: number, @Query('take') take: number) {
+        const takeForBuilder = take || 10
+        const pagesForBuilder = pages || 1
+        const skipForBuilder = takeForBuilder * (pagesForBuilder - 1)
+
+        return this.collecteurService.findAllCollecteurPagination(takeForBuilder, skipForBuilder);
+    }
 
   @Patch(':id')
   update(

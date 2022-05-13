@@ -5,6 +5,7 @@ import Inscription from "./pages/Inscription";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import DashboardClient from "./pages/DashboardClient";
 import Conteneurs from "./pages/Conteneurs";
+import Collecteurs from "./pages/Collecteurs";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/Admin" element={<DashboardAdmin />} />
         <Route path="/Client" element={<DashboardClient />} />
         <Route path="/Conteneurs" element={<Conteneurs />} />
+        <Route path="/Collecteurs" element={<Collecteurs />} />
       </Routes>
     </BrowserRouter>
   );

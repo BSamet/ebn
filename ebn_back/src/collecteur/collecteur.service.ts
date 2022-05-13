@@ -31,6 +31,27 @@ export class CollecteurService {
     return this.collecteurRepository.findOne(id);
   }
 
+  async findAllCollecteurPagination(take: number, skip: number) {
+    const countedCollecteur = await this.collecteurRepository.count();
+    const totalPages = Math.ceil(countedCollecteur / take);
+
+    const allCollecteur = await this.collecteurRepository
+      .createQueryBuilder('collecteur')
+      .leftJoinAndSelect('collecteur.utilisateur', 'utilisateur')
+      .select('collecteur')
+      .addSelect('utilisateur.nom')
+      .addSelect('utilisateur.prenom')
+      .take(take)
+      .skip(skip)
+      .getMany();
+
+    return {
+      totalPages: totalPages,
+      totalCollecteurs: countedCollecteur,
+      collecteurs: allCollecteur,
+    };
+  }
+
   update(id: number, updateCollecteurDto: UpdateCollecteurDto) {
     return this.collecteurRepository.update(id, updateCollecteurDto);
   }
