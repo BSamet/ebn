@@ -29,6 +29,10 @@ const popUp = (props: any) => {
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
+    let Assignation = {
+        isAvailable: false,
+        client: 1
+    };
     let data = {
         typeAction: selectedValue,
         date: date.toString(),
@@ -70,9 +74,9 @@ const popUp = (props: any) => {
     const depotConteneur = (value) => {
         if (value == "dépot du seau") {
             axios
-                .patch(HOST_BACK + '/conteneur/' + scanValue, {"isAvailable": true})
+                .patch(HOST_BACK + '/conteneur/' + scanValue, Assignation)
                 .catch(function (error) {
-                    
+                    alert("le seau n'a pas été assigné")
                 });
         }
     };
@@ -107,7 +111,7 @@ const popUp = (props: any) => {
                             placeholder="Entrer le poids"
                         />
                         <Text style={popUpStyles.modalText}>
-                            Vous avez collecter {limite ? <Text>{poids}</Text> :
+                            Vous avez collecter {limite ? <Text style={popUpStyles.textStyle}>{poids}</Text> :
                             <Text style={{color: "red"}}>{poids}</Text>} kg
                         </Text>
                         <TextInput

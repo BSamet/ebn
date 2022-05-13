@@ -1,6 +1,5 @@
 import {Injectable} from '@nestjs/common';
 import {CreateConteneurDto} from './dto/create-conteneur.dto';
-import {UpdateConteneurDto} from './dto/update-conteneur.dto';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Conteneur} from './entities/conteneur.entity';
@@ -29,6 +28,7 @@ export class ConteneurService {
         }
         return this.conteneurRepository.save(conteneur);
     }
+
 
     findAll() {
         return this.conteneurRepository.find();
@@ -66,17 +66,19 @@ export class ConteneurService {
 
     async findOneWithAllInfos(id: number) {
 
-        return await this.conteneurRepository.createQueryBuilder("conteneur")
+        return await this.conteneurRepository
+            .createQueryBuilder("conteneur")
             .leftJoinAndSelect('conteneur.client', 'client')
             .leftJoinAndSelect('conteneur.typeDechet', 'typeDechet')
             .select('conteneur')
             .addSelect('client.id')
             .addSelect('typeDechet.typeDechets')
-            .getOne()
+            .where("conteneur.id = " + id)
+            .getOne();
 
     }
 
-    update(id: number, updateConteneurDto: UpdateConteneurDto) {
+    update(id: number, updateConteneurDto: any) {
         return this.conteneurRepository.update(id, updateConteneurDto);
     }
 
