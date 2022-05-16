@@ -15,7 +15,6 @@ export class CollecteurService {
 
   create(createCollecteurDto: CreateCollecteurDto) {
     const collecteur = new Collecteur();
-    collecteur.numeroCollecteur = createCollecteurDto.numeroCollecteur;
     collecteur.numeroVelo = createCollecteurDto.numeroVelo;
     collecteur.utilisateur = Object.assign(new Utilisateur(), {
       id: createCollecteurDto.utilisateurId,
