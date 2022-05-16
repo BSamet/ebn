@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -6,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CollecteurService } from './collecteur.service';
@@ -39,6 +41,23 @@ export class CollecteurController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.collecteurService.findOne(+id);
+  }
+
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('/all/:pages')
+  findAllCollecteurPagination(
+    @Param('pages') pages: number,
+    @Query('take') take: number,
+  ) {
+    const takeForBuilder = take || 10;
+    const pagesForBuilder = pages || 1;
+    const skipForBuilder = takeForBuilder * (pagesForBuilder - 1);
+
+    return this.collecteurService.findAllCollecteurPagination(
+      takeForBuilder,
+      skipForBuilder,
+    );
   }
 
   @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)

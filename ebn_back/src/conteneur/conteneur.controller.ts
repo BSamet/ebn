@@ -62,6 +62,13 @@ export class ConteneurController {
 
   @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':id/infos')
+  findOneWithAllInfos(@Param('id') id: number) {
+      return this.conteneurService.findOneWithAllInfos(+id);
+  }
+
+  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: number,
