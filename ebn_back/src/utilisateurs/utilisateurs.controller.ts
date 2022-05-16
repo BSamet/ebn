@@ -47,8 +47,6 @@ export class UtilisateursController {
     return this.utilisateursService.findAll();
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.utilisateursService.findOne(+id);
