@@ -38,6 +38,30 @@ export class ClientService {
     return this.clientRepository.findOne(id);
   }
 
+  async findAllClientPagination(take: number, skip: number) {
+    const countedClient = await this.clientRepository.count();
+    const totalPages = Math.ceil(countedClient / take);
+
+    const allClient = await this.clientRepository
+      .createQueryBuilder('client')
+      .leftJoinAndSelect('client.utilisateur', 'utilisateur')
+      .leftJoinAndSelect('client.typeDechet', 'typeDechet')
+      .select('client')
+      .addSelect('utilisateur.nom')
+      .addSelect('utilisateur.prenom')
+      .addSelect('utilisateur.telephone')
+      .addSelect('typeDechet.typeDechets')
+      .take(take)
+      .skip(skip)
+      .getMany();
+
+    return {
+      totalPages: totalPages,
+      totalClients: countedClient,
+      clients: allClient,
+    };
+  }
+
   update(id: number, updateClientDto: UpdateClientDto) {
     return this.clientRepository.update(id, updateClientDto);
   }

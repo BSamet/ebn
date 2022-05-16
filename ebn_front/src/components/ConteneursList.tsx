@@ -9,10 +9,13 @@ import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
 import { HOST_BACK } from '../environment/environment';
+import "../styles/component/cssList.scss"
 import axios from 'axios';
 import Fab from '@mui/material/Fab';
 import EditIcon from '@mui/icons-material/Edit';
 import CachedIcon from '@mui/icons-material/Cached';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 interface conteneursInterface {
@@ -72,6 +75,17 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
 
     }
 
+    const deleteConteneur = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+        index: number,
+    ) => {
+        setSelectedIndex(index);
+        axios.delete(HOST_BACK + '/conteneur/' + index).then(res => {
+            setConteneurslist(res.data.collecteurs)
+        });
+
+    }
+
     return (
         <div className='conteneurs'>
             <h1>LISTE DES CONTENEURS</h1>
@@ -87,6 +101,7 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
                             <ListItemText className='listHeader' primary="Type de déchet" />
                             <ListItemText className='listHeader' primary="Capacité maximum" />
                             <ListItemText className='listHeader' primary="Client" />
+                            <ListItemText className='listHeader' primary="" />
                         </ListItem>
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary=" " />
@@ -108,6 +123,11 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
                                 <Fab size="medium" color="primary" aria-label="edit">
                                     <EditIcon />
                                 </Fab>
+                                <div onClick={(event) => deleteConteneur(event, list.id)}>
+                                    <IconButton aria-label="delete" size="large">
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </div>
                             </ListItemButton>
                         )}
                     </List>

@@ -8,10 +8,13 @@ import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
 import { HOST_BACK } from '../environment/environment';
+import "../styles/component/cssList.scss"
 import axios from 'axios';
 import Fab from '@mui/material/Fab';
 import EditIcon from '@mui/icons-material/Edit';
-import CachedIcon from '@mui/icons-material/Cached';
+import AddConteneur from './AddConteneur';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 interface collecteursInterface {
@@ -37,7 +40,7 @@ const CollecteursList = ({ setSelectCollecteurId }: any) => {
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
         axios.get(HOST_BACK + '/collecteur/all/' + value).then(res => {
-            setCollecteurslist(res.data.collecteurs)                        
+            setCollecteurslist(res.data.collecteurs)
         });
     };
 
@@ -53,8 +56,6 @@ const CollecteursList = ({ setSelectCollecteurId }: any) => {
             });
         }
     }, [collecteursList, fetchOnce]);
-    console.log(collecteursList);
-    
 
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -62,13 +63,25 @@ const CollecteursList = ({ setSelectCollecteurId }: any) => {
     ) => {
         setSelectedIndex(index);
         setSelectCollecteurId(index);
-    }    
-    console.log(collecteursList);
-    
+    }
+
+    const deleteCollecteur = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+        index: number,
+    ) => {
+        setSelectedIndex(index);
+        axios.delete(HOST_BACK + '/collecteur/'+ index).then(res => {
+            setCollecteurslist(res.data.collecteurs)
+        });
+
+    }
 
     return (
         <div className='conteneurs'>
             <h1>LISTE DES COLLECTEURS</h1>
+            <div className='bouton'>
+                <AddConteneur />
+            </div>
             <div className='liste'>
                 <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
 
@@ -76,8 +89,9 @@ const CollecteursList = ({ setSelectCollecteurId }: any) => {
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary="N° Collecteur" />
                             <ListItemText className='listHeader' primary="Nom" />
-                            <ListItemText className='listHeader' primary="Prénom maximum" />
+                            <ListItemText className='listHeader' primary="Prénom" />
                             <ListItemText className='listHeader' primary="N° Vélo" />
+                            <ListItemText className='listHeader' primary="" />
                         </ListItem>
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary=" " />
@@ -96,6 +110,11 @@ const CollecteursList = ({ setSelectCollecteurId }: any) => {
                                 <Fab size="medium" color="primary" aria-label="edit">
                                     <EditIcon />
                                 </Fab>
+                                <div onClick={(event) => deleteCollecteur(event, list.id)} >
+                                <IconButton aria-label="delete" size="large">
+                                    <DeleteIcon />
+                                </IconButton>
+                                </div>
                             </ListItemButton>
                         )}
                     </List>
@@ -107,7 +126,7 @@ const CollecteursList = ({ setSelectCollecteurId }: any) => {
                 </Stack>
                 { }
             </div>
-        </div>
+        </div >
     )
 }
 

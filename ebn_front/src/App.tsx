@@ -6,6 +6,7 @@ import DashboardAdmin from "./pages/DashboardAdmin";
 import DashboardClient from "./pages/DashboardClient";
 import Conteneurs from "./pages/Conteneurs";
 import Collecteurs from "./pages/Collecteurs";
+import Clients from "./pages/Clients";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/Client" element={<DashboardClient />} />
         <Route path="/Conteneurs" element={<Conteneurs />} />
         <Route path="/Collecteurs" element={<Collecteurs />} />
+        <Route path="/Clients" element={<Clients />} />
       </Routes>
     </BrowserRouter>
   );
