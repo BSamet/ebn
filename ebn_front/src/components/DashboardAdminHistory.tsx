@@ -33,6 +33,7 @@ const DashboardAdminHistory = () => {
 
 
     const [DashboardAdminHistory, setDashboardAdminHistory] = useState<historyCustomerInterface[]>();
+    const [nomCommercial, setNomCommercial] = useState('Tacos-Pacos');
     const [fetchOnce, setFetchOnce] = useState(true);
     const [isLoad, setIsLoad] = useState(false);
     const [orderBy, setOrderBy] = useState("date");
@@ -43,7 +44,8 @@ const DashboardAdminHistory = () => {
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
         setIsLoad(false)
-        axios.get(HOST_BACK + '/historique/all/' + value + '?take=5&orderBy='+ orderBy).then(res => {
+
+        axios.get(HOST_BACK + '/historique/all/' + value + '?take=5'+nomCommercial !== '' ? '&nomCommercial='+ nomCommercial : '' +'&orderBy='+ orderBy).then(res => {
             setDashboardAdminHistory(res.data.historiques)
         })
         .finally(() => {
@@ -83,6 +85,13 @@ const DashboardAdminHistory = () => {
 
             <div className='conteneurs'>
                 <h1>LISTE DES HISTORIQUES</h1>
+                <select className="selectionFiltre">
+                    <option value="grapefruit">Client</option>
+                    <option value="lime">Action</option>
+                    <option selected value="coconut">Type de déchet</option>
+                    <option value="mango">Date de début</option>
+                    <option value="mango">Date de fin</option>
+                </select>
             <div className='liste'>
                 <Box sx={{width: '80%', bgcolor: 'background.paper'}}>
                     <List component="nav" aria-label="Liste des conteneurs">
