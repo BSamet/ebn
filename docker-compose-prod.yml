@@ -12,8 +12,6 @@ services:
       context: ebn_back/database
     env_file:
       - ebn_back/.env.prod.docker
-    ports:
-      - "3306:3306"
 
   prod-phpmyadmin:
     container_name: prod-phpmyadmin
@@ -25,7 +23,7 @@ services:
       - "8778:80"
     environment:
       PMA_HOST: prod-database
-      MYSQL_ROOT_PASSWORD: ebnrootd
+      MYSQL_ROOT_PASSWORD: ebnroot
 
   prod-api:
     container_name: prod-api
@@ -37,7 +35,7 @@ services:
     depends_on:
       - prod-database
     ports:
-      - "5454:54"
+      - "5454:5454"
     restart: always
 
   prod-web:

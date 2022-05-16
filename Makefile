@@ -11,6 +11,9 @@ first-start-dev:
 start-dev:
 	@docker-compose -f docker-compose-dev.yml up
 
+stop-dev:
+	@docker-compose -f docker-compose-dev.yml stop
+
 clean-dev:
 	@docker-compose -f docker-compose-dev.yml down
 	@docker system prune -f
@@ -27,6 +30,9 @@ first-start-prod:
 
 start-prod:
 	@docker-compose -f docker-compose-prod.yml up
+
+stop-prod:
+	@docker-compose -f docker-compose-prod.yml stop
 
 clean-prod:
 	@docker-compose -f docker-compose-prod.yml down

@@ -1,8 +1,10 @@
 FROM node:latest as production
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY package.json /app
+COPY package.json /usr/src/app
+
+RUN npm install glob rimraf
 
 RUN npm install
 
@@ -10,10 +12,16 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:1.12-alpine
+FROM node:latest
 
-COPY --from=production /app/dist /usr/share/nginx/html
+WORKDIR /usr/src/app
 
-EXPOSE 54
+COPY package*.json ./
 
-CMD ["nginx", "-g", "daemon off;"]
+RUN npm install --only=production
+
+COPY --from=production /usr/src/app/dist ./dist
+
+EXPOSE 5454
+
+CMD ["node", "dist/main"]
