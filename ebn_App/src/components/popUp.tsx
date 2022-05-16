@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import popUpStyles from '../styles/popUpStyles';
@@ -24,7 +24,7 @@ const popUp = (props: any) => {
     const scanValue = props.data;
     const date = new Date();
     const poidMax = info?.capaciteMax;
-    const [selectedValue, setSelectedValue] = useState("Récupération du seau");
+    const [selectedValue, setSelectedValue] = useState("dépot du seau");
     const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
@@ -39,27 +39,39 @@ const popUp = (props: any) => {
         typeDeDechet: info?.typeDechet.typeDechets,
         commentaire: commentaire,
         poids: poids,
-        clientId: info?.client.id,
+        clientId: 1,
         collecteurId: 1,
         conteneurId: scanValue,
     };
+    /*
+        useEffect(() => {
+            if (selectedValue == "Récupération du seau") {
+                getInfo();
+            }
+        });
+    */
+    const submit = () => {
+        postPoids();
+        if (selectedValue == "dépot du seau") {
+            depotConteneur(selectedValue);
+        }
+    };
 
-    useEffect(() => {
+    const getInfo = () => {
         axios
             .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
             .then(res => {
                 setInfo(res.data);
+                console.log(res.data);
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
             });
-    }, [info]);
 
-    const submit = () => {
-        postPoids();
     };
 
     const postPoids = () => {
+        getInfo();
         axios
             .post(HOST_BACK + '/historique', data)
             .then(res => {
@@ -68,6 +80,7 @@ const popUp = (props: any) => {
             })
             .catch(function (error) {
                 console.log(error + ' sur post');
+                console.log(data);
             });
     };
 
@@ -98,8 +111,8 @@ const popUp = (props: any) => {
                                 setSelectedValue(itemValue);
                                 depotConteneur(itemValue)
                             }}>
-                            <Picker.Item label="Récupération du seau" value="Récupération du seau"/>
                             <Picker.Item label="dépot du seau" value="dépot du seau"/>
+                            <Picker.Item label="Récupération du seau" value="Récupération du seau"/>
                         </Picker>
                         <TextInput
                             style={popUpStyles.input}
