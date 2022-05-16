@@ -1,38 +1,37 @@
-.MainDash{
-  -webkit-box-shadow: 0px 0px 15px -1px rgba(0,0,0,0.34);
-  box-shadow: 0px 0px 15px -1px rgba(0,0,0,0.34);
+.MainDash {
+  -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+  box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
   background-color: #daebd3;
   padding-top: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  h1{
-    color:seagreen;
+  overflow: scroll;
 
+  h1 {
+    color: seagreen;
   }
-  &__bioStat{    width: 100%;
+  &__bioStat {
+    width: 100%;
     display: flex;
     justify-content: space-around;
-
   }
-  &__graph{
+  &__graph {
     width: 100%;
     display: flex;
     justify-content: center;
   }
 }
 
-
 @media screen and (max-width: 1200px) {
-  .MainDash{
-    justify-content:flex-start;
+  .MainDash {
+    justify-content: flex-start;
     margin-top: 2rem;
   }
 }
 
-@media screen and (max-width: 768px)
-{
-  .MainDash{
+@media screen and (max-width: 768px) {
+  .MainDash {
     align-items: center;
   }
 }
