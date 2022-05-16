@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import popUpStyles from '../styles/popUpStyles';
@@ -24,6 +24,7 @@ const popUp = (props: any) => {
     const scanValue = props.data;
     const date = new Date();
     const poidMax = info?.capaciteMax;
+    const [client, setClient] = useState();
     const [selectedValue, setSelectedValue] = useState("dépot du seau");
     const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
@@ -31,7 +32,7 @@ const popUp = (props: any) => {
     const [commentaire, setCommentaire] = useState('');
     let Assignation = {
         isAvailable: false,
-        client: 1
+        client: client
     };
     let data = {
         typeAction: selectedValue,
@@ -39,17 +40,16 @@ const popUp = (props: any) => {
         typeDeDechet: info?.typeDechet.typeDechets,
         commentaire: commentaire,
         poids: poids,
-        clientId: 1,
+        clientId: client,
         collecteurId: 1,
         conteneurId: scanValue,
     };
-    /*
-        useEffect(() => {
-            if (selectedValue == "Récupération du seau") {
-                getInfo();
-            }
-        });
-    */
+
+    useEffect(() => {
+        getInfo();
+
+    }, []);
+
     const submit = () => {
         postPoids();
         if (selectedValue == "dépot du seau") {
@@ -62,7 +62,12 @@ const popUp = (props: any) => {
             .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
             .then(res => {
                 setInfo(res.data);
-                console.log(res.data);
+                if (res.data.client.id) {
+                    setClient(res.data.client.id);
+                }
+
+                console.log(res.data + "getClient");
+                console.log(client)
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
@@ -80,11 +85,12 @@ const popUp = (props: any) => {
             })
             .catch(function (error) {
                 console.log(error + ' sur post');
-                console.log(data);
+                console.log(data + "data");
             });
     };
 
     const depotConteneur = (value) => {
+        getInfo();
         if (value == "dépot du seau") {
             axios
                 .patch(HOST_BACK + '/conteneur/' + scanValue, Assignation)
