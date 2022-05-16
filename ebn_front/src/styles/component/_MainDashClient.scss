@@ -1,8 +1,21 @@
-.idClient{
+.MainDashClient {
+  -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+  box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+  background-color: #daebd3;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.scroll {
+  overflow: scroll;
+}
+
+.idClient {
   word-wrap: break-word;
   overflow: auto;
-  -webkit-box-shadow: 0px 0px 15px -1px rgba(0,0,0,0.34);
-  box-shadow: 0px 0px 15px -1px rgba(0,0,0,0.34);
+  -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
+  box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
   background-color: #8ac997;
   margin-top: 2rem;
   gap: 10px;
@@ -13,18 +26,16 @@
   font-weight: bold;
   text-align: center;
 
-  h4{
+  h4 {
     margin-top: 2rem;
   }
-  p{
+  p {
     color: #788097;
     font-size: 1rem;
     text-align: center;
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
-
   }
-
 }
 
 .abonnement {
@@ -42,7 +53,7 @@
   font-weight: bold;
   text-align: center;
 
-  h4{
+  h4 {
     margin-top: 2rem;
   }
 
@@ -52,13 +63,10 @@
     text-align: center;
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
-
-
   }
 }
 
-
-.typeDechets{
+.typeDechets {
   word-wrap: break-word;
   overflow: auto;
   -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
@@ -73,7 +81,7 @@
   font-weight: bold;
   text-align: center;
 
-  h4{
+  h4 {
     margin-top: 2rem;
   }
 
@@ -83,7 +91,5 @@
     text-align: center;
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
-
-
   }
 }
