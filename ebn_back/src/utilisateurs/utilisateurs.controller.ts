@@ -47,11 +47,15 @@ export class UtilisateursController {
     return this.utilisateursService.findAll();
   }
 
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.utilisateursService.findOne(+id);
   }
 
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -60,6 +64,8 @@ export class UtilisateursController {
     return this.utilisateursService.update(+id, updateUtilisateurDto);
   }
 
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id/role')
   updateRoleOfUser(
     @Param('id') id: string,
@@ -68,6 +74,8 @@ export class UtilisateursController {
     return this.utilisateursService.updateRoleOfUser(+id, updateUtilisateurDto);
   }
 
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.utilisateursService.remove(+id);
