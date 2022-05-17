@@ -15,6 +15,8 @@ import axios from "axios";
 import { HOST_BACK } from "../environment/environment";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import Fab from "@mui/material/Fab";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 function Copyright(props: any) {
   return (
@@ -38,6 +40,7 @@ const theme = createTheme();
 
 export default function SignInSide() {
   const navigate = useNavigate();
+  const [errorRequest, setErrorRequest] = useState(false);
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -67,11 +70,22 @@ export default function SignInSide() {
             navigate("/client");
           }
         }, 100);
+      })
+      .catch((err) => {
+        setErrorRequest(true);
       });
   }
 
   return (
     <ThemeProvider theme={theme}>
+      <div className="returnButton">
+        <Link href="/">
+          <Fab variant="extended">
+            <ArrowBackIcon sx={{ mr: 1 }} />
+            Retour
+          </Fab>
+        </Link>
+      </div>
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
@@ -106,6 +120,11 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Connectez vous
             </Typography>
+            {errorRequest && (
+              <div className="errorRequestClass">
+                Une erreur c'est produite !
+              </div>
+            )}
             <Box
               component="form"
               noValidate
@@ -117,7 +136,7 @@ export default function SignInSide() {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Adresse email"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -128,7 +147,7 @@ export default function SignInSide() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Mot de passe"
                 type="password"
                 id="password"
                 autoComplete="current-password"
