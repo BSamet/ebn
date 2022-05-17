@@ -52,7 +52,11 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
     const [page, setPage] = React.useState(1);
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
-        axios.get(HOST_BACK + '/conteneur/all/' + value).then(res => {
+        axios.get(HOST_BACK + '/conteneur/all/' + value, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(res => {
             setConteneurslist(res.data.conteneurs)
         });
     };
@@ -61,7 +65,11 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
 
     useEffect(() => {
         if (fetchOnce) {
-            axios.get(HOST_BACK + '/conteneur/all/' + page).then(res => {
+            axios.get(HOST_BACK + '/conteneur/all/' + page, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            }).then(res => {
                 setConteneurslist(res.data.conteneurs)
                 // appel de l'api
                 setFetchOnce(false);
@@ -84,7 +92,11 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
         index: number,
     ) => {
         setSelectedIndex(index);
-        axios.delete(HOST_BACK + '/conteneur/' + index).then(res => {
+        axios.delete(HOST_BACK + '/conteneur/' + index, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(res => {
             setConteneurslist(res.data.collecteurs)
         });
 

@@ -40,7 +40,11 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
     const [page, setPage] = React.useState(1);
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
-        axios.get(HOST_BACK + '/collecteur/all/' + value).then(res => {
+        axios.get(HOST_BACK + '/collecteur/all/' + value, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(res => {
             setCollecteurslist(res.data.collecteurs)
         });
     };
@@ -49,7 +53,11 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
 
     useEffect(() => {
         if (fetchOnce) {
-            axios.get(HOST_BACK + '/collecteur/all/' + page).then(res => {
+            axios.get(HOST_BACK + '/collecteur/all/' + page, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            }).then(res => {
                 setCollecteurslist(res.data.collecteurs)
                 // appel de l'api
                 setFetchOnce(false);
@@ -71,7 +79,11 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
         index: number,
     ) => {
         setSelectedIndex(index);
-        axios.delete(HOST_BACK + '/collecteur/'+ index).then(res => {
+        axios.delete(HOST_BACK + '/collecteur/' + index, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(res => {
             setCollecteurslist(res.data.collecteurs)
         });
 
@@ -109,9 +121,9 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                                     <UpdateCollecteur selectCollecteurId={selectCollecteurId} />
                                 </div>
                                 <div onClick={(event) => deleteCollecteur(event, list.id)} >
-                                <IconButton aria-label="delete" size="large" color="warning">
-                                    <DeleteIcon />
-                                </IconButton>
+                                    <IconButton aria-label="delete" size="large" color="warning">
+                                        <DeleteIcon />
+                                    </IconButton>
                                 </div>
                             </ListItemButton>
                         )}

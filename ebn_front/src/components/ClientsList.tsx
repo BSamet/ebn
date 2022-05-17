@@ -48,7 +48,11 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
   const [page, setPage] = React.useState(1);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
-    axios.get(HOST_BACK + '/client/all/' + value).then(res => {
+    axios.get(HOST_BACK + '/client/all/' + value, {
+      headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+      }
+  }).then(res => {
       setClientslist(res.data.clients)
     });
   };
@@ -57,7 +61,11 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
 
   useEffect(() => {
     if (fetchOnce) {
-      axios.get(HOST_BACK + '/client/all/' + page).then(res => {
+      axios.get(HOST_BACK + '/client/all/' + page, {
+        headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+    }).then(res => {
         setClientslist(res.data.clients)
         // appel de l'api
         setFetchOnce(false);
@@ -80,7 +88,11 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
     index: number,
   ) => {
     setSelectedIndex(index);
-    axios.delete(HOST_BACK + '/client/' + index).then(res => {
+    axios.delete(HOST_BACK + '/client/' + index, {
+      headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+      }
+  }).then(res => {
       setClientslist(res.data.collecteurs)
     });
 
