@@ -11,9 +11,6 @@ export class CreateUtilisateurDto {
   public role: UserRole;
 
   @ApiProperty()
-  public utilisateur: string;
-
-  @ApiProperty()
   public password: string;
 
   @ApiProperty()

@@ -5,21 +5,34 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Collecteur } from './entities/collecteur.entity';
 import { Utilisateur } from '../utilisateurs/entities/utilisateur.entity';
+import { UtilisateursService } from '../utilisateurs/utilisateurs.service';
 
 @Injectable()
 export class CollecteurService {
   constructor(
     @InjectRepository(Collecteur)
     private readonly collecteurRepository: Repository<Collecteur>,
+    private readonly utilisateursService: UtilisateursService,
   ) {}
 
   create(createCollecteurDto: CreateCollecteurDto) {
-    const collecteur = new Collecteur();
-    collecteur.numeroVelo = createCollecteurDto.numeroVelo;
-    collecteur.utilisateur = Object.assign(new Utilisateur(), {
-      id: createCollecteurDto.utilisateurId,
+    const userDto = {
+      role: createCollecteurDto.role,
+      password: createCollecteurDto.password,
+      nom: createCollecteurDto.nom,
+      prenom: createCollecteurDto.prenom,
+      mail: createCollecteurDto.mail,
+      telephone: createCollecteurDto.telephone,
+    };
+
+    this.utilisateursService.create(userDto).forEach((response) => {
+      const collecteur = new Collecteur();
+      collecteur.numeroVelo = createCollecteurDto.numeroVelo;
+      collecteur.utilisateur = Object.assign(new Utilisateur(), {
+        id: response.id,
+      });
+      return this.collecteurRepository.save(collecteur);
     });
-    return this.collecteurRepository.save(collecteur);
   }
 
   findAll() {
