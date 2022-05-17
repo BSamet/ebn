@@ -1,21 +1,21 @@
-import {ApiProperty} from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateConteneurDto {
-    @ApiProperty()
-    public id: number;
+  @ApiProperty()
+  public id: number;
 
-    @ApiProperty()
-    public capaciteMax: number;
+  @ApiProperty()
+  public capaciteMax: number;
 
-    @ApiProperty()
-    public isAvailable: boolean;
-    
-    @ApiProperty()
-    public typeDechetId: number;
+  @ApiProperty()
+  public isAvailable: boolean;
 
-    @ApiProperty()
-    public clientId: number;
+  @ApiProperty()
+  public typeDechetId: number;
 
-    @ApiProperty()
-    public tourneeId: number;
+  @ApiProperty()
+  public clientId: number;
+
+  @ApiProperty()
+  public tourneeId: number;
 }

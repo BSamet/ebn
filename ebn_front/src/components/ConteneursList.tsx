@@ -11,11 +11,16 @@ import Pagination from '@mui/material/Pagination';
 import { HOST_BACK } from '../environment/environment';
 import "../styles/component/cssList.scss"
 import axios from 'axios';
-import Fab from '@mui/material/Fab';
-import EditIcon from '@mui/icons-material/Edit';
-import CachedIcon from '@mui/icons-material/Cached';
+
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateConteneur from './UpdateConteneur';
+
+
+interface propsConteneurListInterface {
+    setSelectConteneurId: any;
+    selectConteneurId: string;
+}
 
 
 interface conteneursInterface {
@@ -35,7 +40,7 @@ interface conteneursInterface {
     }
 }
 
-const ConteneursList = ({ setSelectConteneurId }: any) => {
+const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConteneurListInterface) => {
 
 
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -47,7 +52,11 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
     const [page, setPage] = React.useState(1);
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
-        axios.get(HOST_BACK + '/conteneur/all/' + value).then(res => {
+        axios.get(HOST_BACK + '/conteneur/all/' + value, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(res => {
             setConteneurslist(res.data.conteneurs)
         });
     };
@@ -56,7 +65,11 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
 
     useEffect(() => {
         if (fetchOnce) {
-            axios.get(HOST_BACK + '/conteneur/all/' + page).then(res => {
+            axios.get(HOST_BACK + '/conteneur/all/' + page, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            }).then(res => {
                 setConteneurslist(res.data.conteneurs)
                 // appel de l'api
                 setFetchOnce(false);
@@ -64,7 +77,6 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
             });
         }
     }, [conteneursList, fetchOnce]);
-    console.log(conteneursList)
 
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -80,7 +92,11 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
         index: number,
     ) => {
         setSelectedIndex(index);
-        axios.delete(HOST_BACK + '/conteneur/' + index).then(res => {
+        axios.delete(HOST_BACK + '/conteneur/' + index, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(res => {
             setConteneurslist(res.data.collecteurs)
         });
 
@@ -101,7 +117,7 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
                             <ListItemText className='listHeader' primary="Type de déchet" />
                             <ListItemText className='listHeader' primary="Capacité maximum" />
                             <ListItemText className='listHeader' primary="Client" />
-                            <ListItemText className='listHeader' primary="" />
+                            <ListItemText className='listHeaderEnd' primary="" />
                         </ListItem>
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary=" " />
@@ -120,11 +136,11 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
                                     ? <ListItemText className='listItem' primary='' />
                                     : <ListItemText className='listItem' primary={list.client.nomCommercial} />
                                 }
-                                <Fab size="medium" color="primary" aria-label="edit">
-                                    <EditIcon />
-                                </Fab>
+                                <div>
+                                    <UpdateConteneur selectConteneurId={selectConteneurId} />
+                                </div>
                                 <div onClick={(event) => deleteConteneur(event, list.id)}>
-                                    <IconButton aria-label="delete" size="large">
+                                    <IconButton color='warning' aria-label="delete" size="large">
                                         <DeleteIcon />
                                     </IconButton>
                                 </div>

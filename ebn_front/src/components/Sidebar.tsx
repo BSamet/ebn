@@ -3,9 +3,9 @@ import Logo from "../assets/logo.png";
 import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { motion } from "framer-motion";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({setSelectNav, setSelectRight}:any) => {
+const Sidebar = ({ setSelectNav, setSelectRight }: any) => {
 
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ const Sidebar = ({setSelectNav, setSelectRight}:any) => {
   const [expanded, setExpaned] = useState(true);
 
 
-  function onClickOnNav(index:number, heading:string) {
+  function onClickOnNav(index: number, heading: string) {
     setSelected(index);
     setSelectNav(heading);
     setSelectRight(heading);
@@ -39,7 +39,7 @@ const Sidebar = ({setSelectNav, setSelectRight}:any) => {
       <div
         className="bars"
         style={expanded ? { left: "60%" } : { left: "5%" }}
-        onClick={() =>setExpaned(!expanded)}
+        onClick={() => setExpaned(!expanded)}
       >
         <UilBars />
       </div>
@@ -51,7 +51,7 @@ const Sidebar = ({setSelectNav, setSelectRight}:any) => {
         {/* logo */}
         <div className="logo">
 
-          <img src={Logo} alt="logo" onClick={() => onClickOnNav(0, "Tableau de bord") }/>
+          <img src={Logo} alt="logo" onClick={() => onClickOnNav(0, "Tableau de bord")} />
 
         </div>
 
@@ -61,7 +61,7 @@ const Sidebar = ({setSelectNav, setSelectRight}:any) => {
               <div
                 className={selected === index ? "menuItem active" : "menuItem"}
                 key={index}
-                onClick={() => onClickOnNav(index, item.heading) }
+                onClick={() => onClickOnNav(index, item.heading)}
               >
                 <item.icon />
                 <span>{item.heading}</span>
@@ -73,9 +73,9 @@ const Sidebar = ({setSelectNav, setSelectRight}:any) => {
 
           {/* signoutIcon */}
           <div className="menuItem"
-               onClick={() =>
-                   logOut()
-          }>
+            onClick={() =>
+              logOut()
+            }>
             <UilSignOutAlt />
             <span>Déconnexion</span>
           </div>

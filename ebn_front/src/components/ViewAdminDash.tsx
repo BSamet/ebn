@@ -2,24 +2,39 @@ import React from 'react';
 import MainDash from "./MainDash";
 import DashboardAdminHistory from "./DashboardAdminHistory";
 import ConteneursList from './ConteneursList';
+import ClientsList from './ClientsList';
+import CollecteursList from './CollecteursList';
 
 interface ViewAdminDashInterface {
     selectNav: string;
     setSelectConteneurId: any;
+    selectConteneurId: string;
+    setSelectClientId: any;
+    selectClientId: string
+    setSelectCollecteurId: any;
+    selectCollecteurId: string
 }
 
-const ViewAdminDash = ({selectNav, setSelectConteneurId}: ViewAdminDashInterface) => {
-    if(selectNav === 'Historique') {
+const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, setSelectClientId, selectClientId, setSelectCollecteurId, selectCollecteurId}: ViewAdminDashInterface) => {
+    if (selectNav === 'Historique') {
         return (
-            <DashboardAdminHistory/>
+            <DashboardAdminHistory />
         )
-    } else if(selectNav === 'Conteneurs'){
+    } else if (selectNav === 'Conteneurs') {
         return (
-            <ConteneursList setSelectConteneurId={setSelectConteneurId}/>
+            <ConteneursList setSelectConteneurId={setSelectConteneurId} selectConteneurId={selectConteneurId} />
         )
-    } else {
+    } else if (selectNav === 'Clients') {
         return (
-            <MainDash/>
+            <ClientsList setSelectClientId={setSelectClientId} selectClientId={selectClientId} />
+        )
+        } else if (selectNav === 'Collecteurs') {
+            return (
+                <CollecteursList setSelectCollecteurId={setSelectCollecteurId} selectCollecteurId={selectCollecteurId} />
+            )
+            } else {
+        return (
+            <MainDash />
         )
     }
 };

@@ -10,10 +10,15 @@ import Pagination from '@mui/material/Pagination';
 import { HOST_BACK } from '../environment/environment';
 import "../styles/component/cssList.scss"
 import axios from 'axios';
-import Fab from '@mui/material/Fab';
-import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateClient from './UpdateClient';
+
+
+interface propsClientListInterface {
+  setSelectClientId: any;
+  selectClientId: string;
+}
 
 interface clientsInterface {
   id: number,
@@ -31,7 +36,7 @@ interface clientsInterface {
   }
 }
 
-const ClientsList = ({ setSelectClientId }: any) => {
+const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInterface) => {
 
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -43,7 +48,11 @@ const ClientsList = ({ setSelectClientId }: any) => {
   const [page, setPage] = React.useState(1);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
-    axios.get(HOST_BACK + '/client/all/' + value).then(res => {
+    axios.get(HOST_BACK + '/client/all/' + value, {
+      headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+      }
+  }).then(res => {
       setClientslist(res.data.clients)
     });
   };
@@ -52,7 +61,11 @@ const ClientsList = ({ setSelectClientId }: any) => {
 
   useEffect(() => {
     if (fetchOnce) {
-      axios.get(HOST_BACK + '/client/all/' + page).then(res => {
+      axios.get(HOST_BACK + '/client/all/' + page, {
+        headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+    }).then(res => {
         setClientslist(res.data.clients)
         // appel de l'api
         setFetchOnce(false);
@@ -75,7 +88,11 @@ const ClientsList = ({ setSelectClientId }: any) => {
     index: number,
   ) => {
     setSelectedIndex(index);
-    axios.delete(HOST_BACK + '/client/' + index).then(res => {
+    axios.delete(HOST_BACK + '/client/' + index, {
+      headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+      }
+  }).then(res => {
       setClientslist(res.data.collecteurs)
     });
 
@@ -93,7 +110,7 @@ const ClientsList = ({ setSelectClientId }: any) => {
               <ListItemText className='listHeader' primary="Nom" />
               <ListItemText className='listHeader' primary="Prénom" />
               <ListItemText className='listHeader' primary="Téléphone" />
-              <ListItemText className='listHeader' primary="" />
+              <ListItemText className='listHeader' primary="Modifier / Supprimer" />
             </ListItem>
             <ListItem className='listItemHeader'>
               <ListItemText className='listHeader' primary=" " />
@@ -109,11 +126,11 @@ const ClientsList = ({ setSelectClientId }: any) => {
                 <ListItemText className='listItem' primary={list.utilisateur.nom} />
                 <ListItemText className='listItem' primary={list.utilisateur.prenom} />
                 <ListItemText className='listItem' primary={list.utilisateur.telephone} />
-                <Fab size="medium" color="primary" aria-label="edit">
-                  <EditIcon />
-                </Fab>
+                <div>
+                  <UpdateClient selectClientId={selectClientId} />
+                </div>
                 <div onClick={(event) => deleteClient(event, list.id)}>
-                  <IconButton aria-label="delete" size="large" color="error">
+                  <IconButton aria-label="delete" size="large" color="warning">
                     <DeleteIcon />
                   </IconButton>
                 </div>
