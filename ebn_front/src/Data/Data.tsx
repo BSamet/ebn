@@ -19,12 +19,12 @@ export const SidebarData = [
   },
   {
     icon: UilUserSquare,
-    heading: "Client",
+    heading: "Clients",
     path:"/",
   },
   {
     icon: UilUserSquare,
-    heading: "Collecteur",
+    heading: "Collecteurs",
     path:"/",
   },
   {
