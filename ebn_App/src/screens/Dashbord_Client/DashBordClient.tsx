@@ -12,15 +12,12 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import {Button, Divider} from 'react-native-elements';
+import {Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 import {HOST_BACK} from '../../../environment/environment';
-import CustomButton from '../../components/CustomButton';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthRootParamList} from '../../Navigation/RouteNavigator';
-import {useNavigation} from '@react-navigation/native';
 
 export interface dashboardClient {
   id: number;
@@ -41,9 +38,6 @@ export interface dashboardClient {
     };
   };
 }
-
-type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
-// a suprrimé quand l'historique page est fonctionnelle avec navBar
 
 export interface ShowClient {
   id: number;
@@ -71,7 +65,6 @@ export interface DemandePonctuelRamassage {
 
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordClient = () => {
-  const navigation = useNavigation<AuthScreenNavigate>();
   const [fetchOnce, setFetchOnce] = useState(true);
   const [tourner, setTouner] = useState<dashboardClient[]>();
   const [myclient, setMyClient] = useState<ShowClient>();
@@ -225,13 +218,6 @@ const DashBordClient = () => {
             </View>
           </View>
         </Modal>
-
-        <CustomButton
-          text={'voir Historique'}
-          onPress={() => {
-            navigation.navigate('Historique');
-          }}
-        />
 
         <Text style={styles.titleText}>Vos collectes</Text>
         <Pressable
