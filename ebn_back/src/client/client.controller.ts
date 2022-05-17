@@ -34,7 +34,8 @@ export class ClientController {
   }
 
   @hasRoles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)  @Get('/all/:pages')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('/all/:pages')
   findAllClientPagination(
     @Param('pages') pages: number,
     @Query('take') take: number,

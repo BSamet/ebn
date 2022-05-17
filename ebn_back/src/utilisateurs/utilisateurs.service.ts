@@ -20,7 +20,6 @@ export class UtilisateursService {
       switchMap((passwordHash: string) => {
         const utilisateur = new Utilisateur();
         utilisateur.role = createUtilisateurDto.role;
-        utilisateur.utilisateur = createUtilisateurDto.utilisateur;
         utilisateur.password = passwordHash;
         utilisateur.nom = createUtilisateurDto.nom;
         utilisateur.prenom = createUtilisateurDto.prenom;

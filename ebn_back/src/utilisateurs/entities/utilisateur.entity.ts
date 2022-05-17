@@ -18,9 +18,6 @@ export class Utilisateur {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENT })
   public role: UserRole;
 
-  @Column({ unique: true })
-  public utilisateur: string;
-
   @Column()
   public password: string;
 
@@ -30,7 +27,7 @@ export class Utilisateur {
   @Column()
   public prenom: string;
 
-  @Column()
+  @Column({ unique: true })
   public mail: string;
 
   @Column()
