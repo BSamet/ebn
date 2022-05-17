@@ -10,10 +10,15 @@ import Pagination from '@mui/material/Pagination';
 import { HOST_BACK } from '../environment/environment';
 import "../styles/component/cssList.scss"
 import axios from 'axios';
-import Fab from '@mui/material/Fab';
-import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateClient from './UpdateClient';
+
+
+interface propsClientListInterface {
+  setSelectClientId: any;
+  selectClientId: string;
+}
 
 interface clientsInterface {
   id: number,
@@ -31,7 +36,7 @@ interface clientsInterface {
   }
 }
 
-const ClientsList = ({ setSelectClientId }: any) => {
+const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInterface) => {
 
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -109,9 +114,9 @@ const ClientsList = ({ setSelectClientId }: any) => {
                 <ListItemText className='listItem' primary={list.utilisateur.nom} />
                 <ListItemText className='listItem' primary={list.utilisateur.prenom} />
                 <ListItemText className='listItem' primary={list.utilisateur.telephone} />
-                <Fab size="medium" color="primary" aria-label="edit">
-                  <EditIcon className='listItemEnd'/>
-                </Fab>
+                <div>
+                  <UpdateClient selectClientId={selectClientId} />
+                </div>
                 <div onClick={(event) => deleteClient(event, list.id)}>
                   <IconButton aria-label="delete" size="large" color="warning">
                     <DeleteIcon />

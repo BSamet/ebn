@@ -30,7 +30,6 @@ const style = {
 };
 
 export default function UpdateConteneur({selectConteneurId }: propsUpdateConteneurInterface) {
-    console.log(selectConteneurId);
     
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
