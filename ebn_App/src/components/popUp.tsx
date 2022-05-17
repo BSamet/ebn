@@ -21,18 +21,18 @@ interface conteneurInterface {
 const popUp = (props: any) => {
     const [info, setInfo] = useState<conteneurInterface>();
     const [limite, setLimite] = useState(true);
-    const scanValue = props.data;
+    const scanValue = props.data.res;
     const date = new Date();
     const poidMax = info?.capaciteMax;
     const [client, setClient] = useState();
-    const [selectedValue, setSelectedValue] = useState("dépot du seau");
+    const [selectedValue, setSelectedValue] = useState("Récupération du seau");
     const [conteneur, setConteneur] = useState();
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
     let Assignation = {
         isAvailable: false,
-        client: client
+        client: props.data.clientId
     };
     let data = {
         typeAction: selectedValue,
@@ -46,8 +46,8 @@ const popUp = (props: any) => {
     };
 
     useEffect(() => {
-        getInfo();
-
+        getInfoRecup();
+        console.log(client + " use");
     }, []);
 
     const submit = () => {
@@ -57,17 +57,28 @@ const popUp = (props: any) => {
         }
     };
 
-    const getInfo = () => {
+    const getInfoRecup = () => {
         axios
             .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
             .then(res => {
                 setInfo(res.data);
-                if (res.data.client.id) {
-                    setClient(res.data.client.id);
-                }
+                setClient(res.data.client.id);
 
-                console.log(res.data + "getClient");
-                console.log(client)
+                console.log(res.data);
+                console.log(client, "getClient")
+            })
+            .catch(function (error) {
+                console.log("erreur get info scan");
+            });
+
+    };
+
+    const getInfoDepot = () => {
+        axios
+            .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
+            .then(res => {
+                setInfo(res.data);
+                console.log(client, "getClient")
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
@@ -76,11 +87,12 @@ const popUp = (props: any) => {
     };
 
     const postPoids = () => {
-        getInfo();
+        getInfoRecup();
         axios
             .post(HOST_BACK + '/historique', data)
             .then(res => {
                 console.log(res)
+                console.log(data.clientId + "dans post");
 
             })
             .catch(function (error) {
@@ -90,7 +102,8 @@ const popUp = (props: any) => {
     };
 
     const depotConteneur = (value) => {
-        getInfo();
+        getInfoDepot();
+        console.log(Assignation.client + " client dans post")
         if (value == "dépot du seau") {
             axios
                 .patch(HOST_BACK + '/conteneur/' + scanValue, Assignation)
@@ -117,8 +130,8 @@ const popUp = (props: any) => {
                                 setSelectedValue(itemValue);
                                 depotConteneur(itemValue)
                             }}>
-                            <Picker.Item label="dépot du seau" value="dépot du seau"/>
                             <Picker.Item label="Récupération du seau" value="Récupération du seau"/>
+                            <Picker.Item label="dépot du seau" value="dépot du seau"/>
                         </Picker>
                         <TextInput
                             style={popUpStyles.input}

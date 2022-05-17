@@ -8,11 +8,15 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import PopUp from '../popUp';
 
-const QrCodeScanner = () => {
+const QrCodeScanner = (props: any) => {
+
     const [scan, setScan] = useState(false);
     const [result, setResult] = useState();
     const [affichage, setaffichage] = useState(false);
-    // const [res, setRes] = useState(false);
+    let datas = {
+        res: result,
+        clientId: props.data
+    }
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
@@ -36,7 +40,7 @@ const QrCodeScanner = () => {
                         {result && (
                             <View style={styles.sectionContainer}>
                                 <Text>{result}</Text>
-                                <PopUp data={result}/>
+                                <PopUp data={datas}/>
                             </View>
                         )}
                         {!scan && (
