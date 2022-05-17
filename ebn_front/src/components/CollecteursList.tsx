@@ -4,7 +4,6 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import AddConteneur from './AddConteneur';
 import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
@@ -13,82 +12,73 @@ import "../styles/component/cssList.scss"
 import axios from 'axios';
 import Fab from '@mui/material/Fab';
 import EditIcon from '@mui/icons-material/Edit';
-import CachedIcon from '@mui/icons-material/Cached';
+import AddConteneur from './AddConteneur';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
-interface conteneursInterface {
+interface collecteursInterface {
     id: number;
-    capaciteMax: number;
-    isAvailable: boolean;
-    client: {
-        nomCommercial: string,
-        id: number,
-        utilisateur: {
-            nom: string,
-            prenom: string
-        },
-    }
-    typeDechet: {
-        typeDechets: string;
+    numeroCollecteur: number;
+    numeroVelo: number;
+    utilisateur: {
+        nom: string,
+        prenom: string,
     }
 }
 
-const ConteneursList = ({ setSelectConteneurId }: any) => {
+const CollecteursList = ({ setSelectCollecteurId }: any) => {
 
 
     const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-    const [conteneursList, setConteneurslist] = useState<conteneursInterface[]>();
+    const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [fetchOnce, setFetchOnce] = useState(true);
-    //Paginations des conteneurs
+    //Paginations des collecteurs
     const [totalPages, setTotalPages] = React.useState('')
     const [page, setPage] = React.useState(1);
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
-        axios.get(HOST_BACK + '/conteneur/all/' + value).then(res => {
-            setConteneurslist(res.data.conteneurs)
+        axios.get(HOST_BACK + '/collecteur/all/' + value).then(res => {
+            setCollecteurslist(res.data.collecteurs)
         });
     };
 
-    //Fin pagination des conteneurs
+    //Fin pagination des collecteurs
 
     useEffect(() => {
         if (fetchOnce) {
-            axios.get(HOST_BACK + '/conteneur/all/' + page).then(res => {
-                setConteneurslist(res.data.conteneurs)
+            axios.get(HOST_BACK + '/collecteur/all/' + page).then(res => {
+                setCollecteurslist(res.data.collecteurs)
                 // appel de l'api
                 setFetchOnce(false);
                 setTotalPages(res.data.totalPages)
             });
         }
-    }, [conteneursList, fetchOnce]);
-    console.log(conteneursList)
+    }, [collecteursList, fetchOnce]);
 
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
     ) => {
         setSelectedIndex(index);
-        setSelectConteneurId(index);
-
+        setSelectCollecteurId(index);
     }
 
-    const deleteConteneur = (
+    const deleteCollecteur = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
     ) => {
         setSelectedIndex(index);
-        axios.delete(HOST_BACK + '/conteneur/' + index).then(res => {
-            setConteneurslist(res.data.collecteurs)
+        axios.delete(HOST_BACK + '/collecteur/'+ index).then(res => {
+            setCollecteurslist(res.data.collecteurs)
         });
 
     }
 
     return (
         <div className='conteneurs'>
-            <h1>LISTE DES CONTENEURS</h1>
+            <h1>LISTE DES COLLECTEURS</h1>
             <div className='bouton'>
                 <AddConteneur />
             </div>
@@ -97,36 +87,33 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
 
                     <List component="nav" aria-label="Liste des conteneurs">
                         <ListItem className='listItemHeader'>
-                            <ListItemText className='listHeader' primary="Conteneur N°" />
-                            <ListItemText className='listHeader' primary="Type de déchet" />
-                            <ListItemText className='listHeader' primary="Capacité maximum" />
-                            <ListItemText className='listHeader' primary="Client" />
+                            <ListItemText className='listHeader' primary="N° Collecteur" />
+                            <ListItemText className='listHeader' primary="Nom" />
+                            <ListItemText className='listHeader' primary="Prénom" />
+                            <ListItemText className='listHeader' primary="N° Vélo" />
                             <ListItemText className='listHeader' primary="" />
                         </ListItem>
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary=" " />
                         </ListItem>
                         <Divider />
-                        {conteneursList?.map((list, index) =>
+                        {collecteursList?.map((list, index) =>
                             <ListItemButton
                                 selected={selectedIndex === list.id}
                                 onClick={(event) => handleListItemClick(event, list.id)}
                                 key={index}
                             >
                                 <ListItemText className='listItem' primary={list.id} />
-                                <ListItemText className='listItem' primary={list.typeDechet.typeDechets} />
-                                <ListItemText className='listItem' primary={list.capaciteMax} />
-                                {!list.client || !list.client.nomCommercial
-                                    ? <ListItemText className='listItem' primary='' />
-                                    : <ListItemText className='listItem' primary={list.client.nomCommercial} />
-                                }
+                                <ListItemText className='listItem' primary={list.utilisateur.nom} />
+                                <ListItemText className='listItem' primary={list.utilisateur.prenom} />
+                                <ListItemText className='listItem' primary={list.numeroVelo} />
                                 <Fab size="medium" color="primary" aria-label="edit">
                                     <EditIcon />
                                 </Fab>
-                                <div onClick={(event) => deleteConteneur(event, list.id)}>
-                                    <IconButton aria-label="delete" size="large">
-                                        <DeleteIcon />
-                                    </IconButton>
+                                <div onClick={(event) => deleteCollecteur(event, list.id)} >
+                                <IconButton aria-label="delete" size="large">
+                                    <DeleteIcon />
+                                </IconButton>
                                 </div>
                             </ListItemButton>
                         )}
@@ -139,8 +126,8 @@ const ConteneursList = ({ setSelectConteneurId }: any) => {
                 </Stack>
                 { }
             </div>
-        </div>
+        </div >
     )
 }
 
-export default ConteneursList
+export default CollecteursList
