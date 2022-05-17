@@ -19,8 +19,23 @@ export const SidebarData = [
   },
   {
     icon: UilUserSquare,
+    heading: "Client",
+    path:"/",
+  },
+  {
+    icon: UilUserSquare,
     heading: "Collecteur",
     path:"/",
+  },
+  {
+    icon:  UilTrash,
+    heading: "Conteneurs",
+    path:"/",
+  },
+  {
+    icon: UilUsersAlt,
+    heading: "Historique",
+    path: "/Admin/History"
   },
   {
     icon: UilCalendarAlt,
@@ -36,16 +51,6 @@ export const SidebarData = [
   {
     icon: UilPackage,
     heading: "Produits",
-    path:"/",
-  },
-  {
-    icon: UilUsersAlt,
-    heading: "Historique",
-    path: "/Admin/History"
-  },
-  {
-    icon:  UilTrash,
-    heading: "Conteneurs",
     path:"/",
   },
   {

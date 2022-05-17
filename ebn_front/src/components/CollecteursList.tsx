@@ -111,7 +111,7 @@ const CollecteursList = ({ setSelectCollecteurId }: any) => {
                                     <EditIcon />
                                 </Fab>
                                 <div onClick={(event) => deleteCollecteur(event, list.id)} >
-                                <IconButton aria-label="delete" size="large">
+                                <IconButton aria-label="delete" size="large" color="warning">
                                     <DeleteIcon />
                                 </IconButton>
                                 </div>

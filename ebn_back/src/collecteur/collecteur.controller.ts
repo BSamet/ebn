@@ -43,8 +43,8 @@ export class CollecteurController {
     return this.collecteurService.findOne(+id);
   }
 
-  @hasRoles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('/all/:pages')
   findAllCollecteurPagination(
     @Param('pages') pages: number,
@@ -60,8 +60,8 @@ export class CollecteurController {
     );
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -70,8 +70,8 @@ export class CollecteurController {
     return this.collecteurService.update(+id, updateCollecteurDto);
   }
 
-  @hasRoles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.collecteurService.remove(+id);

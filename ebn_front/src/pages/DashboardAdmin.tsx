@@ -19,7 +19,7 @@ const DashboardAdmin = () => {
     <div className="App">
       <div className="AppGlass">
         <Sidebar setSelectNav={setSelectNav} setSelectRight={setSelectRight}/>
-        <ViewAdminDash selectNav={selectNav} setSelectConteneurId={setSelectConteneurId}/>
+        <ViewAdminDash selectNav={selectNav} selectConteneurId={selectConteneurId} setSelectConteneurId={setSelectConteneurId}/>
         <ViewAdminRightSide selectRight={selectRight} selectConteneurId={selectConteneurId}/>
       
       </div>

@@ -93,7 +93,7 @@ const ClientsList = ({ setSelectClientId }: any) => {
               <ListItemText className='listHeader' primary="Nom" />
               <ListItemText className='listHeader' primary="Prénom" />
               <ListItemText className='listHeader' primary="Téléphone" />
-              <ListItemText className='listHeader' primary="" />
+              <ListItemText className='listHeader' primary="Modifier / Supprimer" />
             </ListItem>
             <ListItem className='listItemHeader'>
               <ListItemText className='listHeader' primary=" " />
@@ -110,10 +110,10 @@ const ClientsList = ({ setSelectClientId }: any) => {
                 <ListItemText className='listItem' primary={list.utilisateur.prenom} />
                 <ListItemText className='listItem' primary={list.utilisateur.telephone} />
                 <Fab size="medium" color="primary" aria-label="edit">
-                  <EditIcon />
+                  <EditIcon className='listItemEnd'/>
                 </Fab>
                 <div onClick={(event) => deleteClient(event, list.id)}>
-                  <IconButton aria-label="delete" size="large" color="error">
+                  <IconButton aria-label="delete" size="large" color="warning">
                     <DeleteIcon />
                   </IconButton>
                 </div>

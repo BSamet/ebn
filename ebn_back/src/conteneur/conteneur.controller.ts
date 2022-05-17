@@ -22,8 +22,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 export class ConteneurController {
   constructor(private readonly conteneurService: ConteneurService) {}
 
-  @hasRoles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   create(@Body() createConteneurDto: CreateConteneurDto) {
     return this.conteneurService.create(createConteneurDto);
@@ -43,8 +43,8 @@ export class ConteneurController {
     return this.conteneurService.findOne(+id);
   }
 
-  @hasRoles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('/all/:pages')
   findAllConteneurPagination(
     @Param('pages') pages: number,
@@ -67,8 +67,8 @@ export class ConteneurController {
       return this.conteneurService.findOneWithAllInfos(+id);
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: number,
@@ -77,8 +77,8 @@ export class ConteneurController {
     return this.conteneurService.update(+id, updateConteneurDto);
   }
 
-  @hasRoles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.conteneurService.remove(+id);
