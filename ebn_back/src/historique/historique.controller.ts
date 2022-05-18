@@ -56,7 +56,16 @@ export class HistoriqueController {
     @Param('pages') pages: number,
     @Query('take') take: number,
     @Query('orderBy') orderBy: string,
+    @Query('nomCommercial') nomCommercial: string,
+    @Query('typeAction') typeAction: string,
+    @Query('typeDeDechet') typeDeDechet: string,
+    @Query('dateStart') dateStart: Date,
+    @Query('dateEnd') dateEnd: Date,
   ) {
+    console.log(nomCommercial);
+    console.log(dateStart);
+    console.log(dateEnd);
+
     const takeForBuilder = take || 10;
     const pagesForBuilder = pages || 1;
     const skipForBuilder = takeForBuilder * (pagesForBuilder - 1);
@@ -65,6 +74,11 @@ export class HistoriqueController {
       takeForBuilder,
       skipForBuilder,
       orderBy,
+      nomCommercial,
+      typeAction,
+      typeDeDechet,
+      dateStart,
+      dateEnd,
     );
   }
 

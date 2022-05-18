@@ -13,6 +13,7 @@ import axios from 'axios';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateCollecteur from './UpdateCollecteur';
+import AddCollecteur from './AddCollecteur';
 
 interface propsCollecteurListInterface {
     setSelectCollecteurId: any;
@@ -20,7 +21,6 @@ interface propsCollecteurListInterface {
 }
 interface collecteursInterface {
     id: number;
-    numeroCollecteur: number;
     numeroVelo: number;
     utilisateur: {
         nom: string,
@@ -64,7 +64,7 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                 setTotalPages(res.data.totalPages)
             });
         }
-    }, [collecteursList, fetchOnce]);
+    }, [collecteursList, fetchOnce, page]);
 
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -84,7 +84,7 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
         }).then(res => {
-            setCollecteurslist(res.data.collecteurs)
+            setCollecteurslist(res.data.collecteurs)            
         });
 
     }
@@ -92,6 +92,9 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
     return (
         <div className='conteneurs'>
             <h1>LISTE DES COLLECTEURS</h1>
+            <div className='bouton'>
+                <AddCollecteur />
+            </div>
             <div className='liste'>
                 <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
 
@@ -101,10 +104,7 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                             <ListItemText className='listHeader' primary="Nom" />
                             <ListItemText className='listHeader' primary="Prénom" />
                             <ListItemText className='listHeader' primary="N° Vélo" />
-                            <ListItemText className='listHeader' primary="" />
-                        </ListItem>
-                        <ListItem className='listItemHeader'>
-                            <ListItemText className='listHeader' primary=" " />
+                            <ListItemText className='listHeader' primary="Modifier / Supprimer" />
                         </ListItem>
                         <Divider />
                         {collecteursList?.map((list, index) =>

@@ -6,7 +6,6 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { HOST_BACK } from '../environment/environment';
 import EditIcon from '@mui/icons-material/Edit';
@@ -28,8 +27,7 @@ const style = {
     p: 4,
 };
 
-export default function UpdateClient({ selectClientId }: propsUpdateClientListInterface) {
-    console.log(selectClientId);
+export default function UpdateClient({ selectClientId}: propsUpdateClientListInterface) {
     
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -41,16 +39,14 @@ export default function UpdateClient({ selectClientId }: propsUpdateClientListIn
     const [adresse, setAdresse] =React.useState('');
     const [siret, setSiret] =React.useState('');
     const [telephone, setTelephone] =React.useState('');
-    const [mail, setMail] =React.useState('');
 
     let dataConteneur = {
-        "Nom": nom,
+        "nom": nom,
         "prenom": prenom,
         "nomCommercial": nomCommercial,
         "adresse": adresse,
         "siret": siret,
-        "telephone": telephone,
-        "mail": mail
+        "telephone": telephone
     };
 
     const nomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,13 +67,14 @@ export default function UpdateClient({ selectClientId }: propsUpdateClientListIn
     const telephoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTelephone(event.target.value);
     };
-    const mailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMail(event.target.value);
-    };
 
     const updateClient = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        axios.patch(HOST_BACK + '/client/' + selectClientId, dataConteneur)
+        axios.patch(HOST_BACK + '/client/' + selectClientId, dataConteneur, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
         handleClose()
     }
     return (
@@ -107,7 +104,7 @@ export default function UpdateClient({ selectClientId }: propsUpdateClientListIn
                             autoComplete="off"
                         >
                             <div className='popupConteneurs'>
-                                <h1 className='titleConteneurs'>Modifier un conteneur</h1>
+                                <h1 className='titleConteneurs'>Modifier un client</h1>
 
                                 <InputLabel htmlFor="component-outlined">Nom</InputLabel>
                                 <OutlinedInput
@@ -151,13 +148,6 @@ export default function UpdateClient({ selectClientId }: propsUpdateClientListIn
                                     value={telephone}
                                     onChange={telephoneChange}
                                     label="Téléphone"
-                                />
-                                <InputLabel htmlFor="component-outlined">Email</InputLabel>
-                                <OutlinedInput
-                                    id="component-outlined"
-                                    value={mail}
-                                    onChange={mailChange}
-                                    label="Email"
                                 />
                                 <div onClick={(event) => updateClient(event)}>
                                     <Button>Valider</Button>

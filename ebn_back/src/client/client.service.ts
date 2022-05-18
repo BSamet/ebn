@@ -77,14 +77,34 @@ export class ClientService {
 
   async findByUserMail(mail: string) {
     return await this.clientRepository
-      .createQueryBuilder('client')
-      .innerJoinAndSelect('client.utilisateur', 'utilisateur')
-      .where('utilisateur.mail = :mail', { mail })
-      .getOne();
+        .createQueryBuilder('client')
+        .innerJoinAndSelect('client.utilisateur', 'utilisateur')
+        .where('utilisateur.mail = :mail', { mail })
+        .getOne();
   }
 
-  update(id: number, updateClientDto: UpdateClientDto) {
-    return this.clientRepository.update(id, updateClientDto);
+  async update(id: number, updateClientDto: UpdateClientDto) {
+    const client = {
+      siret: updateClientDto.siret,
+      nomCommercial: updateClientDto.nomCommercial,
+      adresse: updateClientDto.adresse,
+    };
+    const updatedClient = await this.clientRepository.update(id, client);
+
+    const newClient = await this.clientRepository.findOne(id);
+
+    const user = {
+      nom: updateClientDto.nom,
+      prenom: updateClientDto.prenom,
+      telephone: updateClientDto.telephone,
+    };
+
+    const updateUser = await this.utilisateursService.update(
+        newClient.utilisateur.id,
+        user,
+    );
+
+    return this.clientRepository.find();
   }
 
   remove(id: number) {
