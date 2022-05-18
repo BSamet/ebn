@@ -12,12 +12,15 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import {Divider} from 'react-native-elements';
+import {Button, Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 import {HOST_BACK} from '../../../environment/environment';
-
+import jwt_decode from 'jwt-decode';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage, {
+  useAsyncStorage,
+} from '@react-native-async-storage/async-storage';
 
 export interface dashboardClient {
   id: number;
@@ -55,7 +58,10 @@ export interface ShowClient {
     telephone: string;
   };
 }
-
+export interface Session {
+  idClient: string;
+  token: string;
+}
 export interface DemandePonctuelRamassage {
   date: number;
   client: {
@@ -68,10 +74,10 @@ const DashBordClient = () => {
   const [fetchOnce, setFetchOnce] = useState(true);
   const [tourner, setTouner] = useState<dashboardClient[]>();
   const [myclient, setMyClient] = useState<ShowClient>();
-
+  // const [sessionClient, setSessionClient] = useState<Session>();
   const [modalOpen, setModalOpen] = useState(false);
   const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
-
+  // const [Token, setToken] = useState();
   const [modalRamassage, setModalRamassage] = useState(false);
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('date');
@@ -116,6 +122,7 @@ const DashBordClient = () => {
       });
     }
   }, [tourner, myclient, fetchOnce]);
+
   // fonction pour les modales
   const showModal = (Collecteur: any) => {
     setModalOpen(true);
