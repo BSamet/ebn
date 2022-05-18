@@ -48,6 +48,8 @@ export class HistoriqueController {
     @Query('dateEnd') dateEnd: Date,
   ) {
     console.log(nomCommercial);
+    console.log(dateStart);
+    console.log(dateEnd);
 
     const takeForBuilder = take || 10;
     const pagesForBuilder = pages || 1;
