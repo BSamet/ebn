@@ -57,6 +57,8 @@ export class UtilisateursService {
   }
 
   update(id: number, updateUtilisateurDto: UpdateUtilisateurDto) {
+    console.log(updateUtilisateurDto);
+    
     delete updateUtilisateurDto.mail;
     delete updateUtilisateurDto.password;
 
