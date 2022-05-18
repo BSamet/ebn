@@ -41,15 +41,15 @@ export class EtapeController {
     return this.etapeService.findOne(+id);
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('collecteur/:id')
   findByCollecteur(@Param('id') id: number) {
     return this.etapeService.findByCollecteur(+id);
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('client/:id')
   findByClient(@Param('id') id: number) {
     return this.etapeService.findByClient(+id);
