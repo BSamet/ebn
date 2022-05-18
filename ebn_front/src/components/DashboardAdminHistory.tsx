@@ -85,9 +85,12 @@ interface historyCustomerInterface{
                 setNomCommercial('')
                 setTypeAction('')
                 settypeDeDechet('')
-                setStartDate(null)
-                setEndDate(null)
-                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&orderBy=date').then(res => {
+                setStartDate('')
+                setEndDate('')
+                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&orderBy=date', {
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                    }}).then(res => {
                     setDashboardAdminHistory(res.data.historiques)
                     // appel de l'api
                     setFetchOnce(false);
@@ -97,7 +100,10 @@ interface historyCustomerInterface{
 
             function validateFilter(){
                 setPage(1)
-                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate' + startDate + '&endDate' + endDate + '&orderBy=date').then(res => {
+                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate' + startDate + '&endDate' + endDate + '&orderBy=date', {
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                    }}).then(res => {
                     setDashboardAdminHistory(res.data.historiques)
                 })
             }
@@ -105,7 +111,10 @@ interface historyCustomerInterface{
             const handleChange = (event: string, value: number) => {
                 setPage(value);
 
-                axios.get(HOST_BACK + '/historique/all/' + value + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate' + startDate + '&endDate' + endDate + '&orderBy=date').then(res => {
+                axios.get(HOST_BACK + '/historique/all/' + value + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate' + startDate + '&endDate' + endDate + '&orderBy=date', {
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                    }}).then(res => {
                     setDashboardAdminHistory(res.data.historiques)
                 })
             };
@@ -113,7 +122,10 @@ interface historyCustomerInterface{
 
             const configOrderBy = (orderBy: string) => {
                 setPage(1);
-                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&orderBy=date').then(res => {
+                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&orderBy=date', {
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                    }}).then(res => {
                     setDashboardAdminHistory(res.data.historiques)
                     setOrderBy(orderBy)
                 })
@@ -122,7 +134,10 @@ interface historyCustomerInterface{
 
             useEffect(() => {
                 if (fetchOnce) {
-                    axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&orderBy=date').then(res => {
+                    axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&orderBy=date', {
+                        headers: {
+                            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                        }}).then(res => {
                         setDashboardAdminHistory(res.data.historiques)
                         // appel de l'api
                         setFetchOnce(false);
@@ -134,13 +149,17 @@ interface historyCustomerInterface{
             return (
 
                 <div className='conteneurs'>
+
                     <h1>Historiques des clients</h1>
+
                     <div className="datePickerHistorique">
                         <Stack component="form" noValidate spacing={3}>
                             <div className="filter">
                             <TextField
                                 id="nomCommercial"
+                                defaultValue="Small"
                                 select
+                                helperText="Société"
                                 value={nomCommercial}
                                 SelectProps={{
                                     native: true,
@@ -148,6 +167,9 @@ interface historyCustomerInterface{
                                 onChange={(e) => setNomCommercial(e.target.value)}
 
                             >
+                                <option value='Société'>
+                                    Société
+                                </option>
                                 {nomCommercialCat?.map((list, index) =>
                                     <option key={index} value={list}>
                                         {list}
@@ -156,13 +178,21 @@ interface historyCustomerInterface{
                             </TextField>
                                 <TextField
                                     id="typeAction"
+
                                     select
                                     value={typeAction}
+
                                     SelectProps={{
                                         native: true,
                                     }}
+                                    helperText="Type d'action"
+
+
                                     onChange={(e) => setTypeAction(e.target.value)}
                                 >
+                                    <option value="Type d'action">
+                                        Type d'action
+                                    </option>
                                     {actionCat?.map((list, index) =>
                                         <option key={index} value={list}>
                                             {list}
@@ -176,8 +206,13 @@ interface historyCustomerInterface{
                                     SelectProps={{
                                         native: true,
                                     }}
+
+                                    helperText="Type de déchet"
                                     onChange={(e) => settypeDeDechet(e.target.value)}
                                 >
+                                    <option value="Type de déchet">
+                                        Type de déchet
+                                    </option>
                                     {dechetCat?.map((list, index) =>
                                         <option key={index} value={list}>
                                             {list}
