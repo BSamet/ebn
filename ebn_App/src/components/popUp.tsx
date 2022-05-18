@@ -34,27 +34,32 @@ const popUp = (props: any) => {
         isAvailable: false,
         client: props.data.clientId
     };
-    let data = {
+    let DeAssignation = {
+        isAvailable: true,
+        client: null
+    };
+    let dataPost = {
         typeAction: selectedValue,
         date: date.toString(),
         typeDeDechet: info?.typeDechet.typeDechets,
         commentaire: commentaire,
         poids: poids,
-        clientId: client,
+        clientId: props.data.clientId,
         collecteurId: 1,
         conteneurId: scanValue,
     };
 
     useEffect(() => {
         getInfoRecup();
-        console.log(client + " use");
     }, []);
 
     const submit = () => {
         postPoids();
+
         if (selectedValue == "dépot du seau") {
             depotConteneur(selectedValue);
         }
+
     };
 
     const getInfoRecup = () => {
@@ -65,7 +70,6 @@ const popUp = (props: any) => {
                 setClient(res.data.client.id);
 
                 console.log(res.data);
-                console.log(client, "getClient")
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
@@ -78,7 +82,6 @@ const popUp = (props: any) => {
             .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
             .then(res => {
                 setInfo(res.data);
-                console.log(client, "getClient")
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
@@ -88,16 +91,28 @@ const popUp = (props: any) => {
 
     const postPoids = () => {
         getInfoRecup();
+
         axios
-            .post(HOST_BACK + '/historique', data)
+            .post(HOST_BACK + '/historique', dataPost)
             .then(res => {
                 console.log(res)
-                console.log(data.clientId + "dans post");
 
             })
             .catch(function (error) {
                 console.log(error + ' sur post');
-                console.log(data + "data");
+            });
+
+        if (selectedValue == "Récupération du seau") {
+            retraitConteneur();
+        }
+    };
+
+    const retraitConteneur = () => {
+
+        axios
+            .patch(HOST_BACK + '/conteneur/' + scanValue, DeAssignation)
+            .catch(function (error) {
+                alert("le seau n'a pas été repris")
             });
     };
 
@@ -112,6 +127,7 @@ const popUp = (props: any) => {
                 });
         }
     };
+
 
     return (
         <View style={popUpStyles.centeredView}>
