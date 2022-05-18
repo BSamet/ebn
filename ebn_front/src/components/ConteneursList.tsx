@@ -76,7 +76,7 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
                 setTotalPages(res.data.totalPages)
             });
         }
-    }, [conteneursList, fetchOnce]);
+    }, [conteneursList, fetchOnce, page]);
 
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -117,7 +117,7 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
                             <ListItemText className='listHeader' primary="Type de déchet" />
                             <ListItemText className='listHeader' primary="Capacité maximum" />
                             <ListItemText className='listHeader' primary="Client" />
-                            <ListItemText className='listHeaderEnd' primary="" />
+                            <ListItemText className='listHeaderEnd' primary="Modifier / Supprimer" />
                         </ListItem>
                         <ListItem className='listItemHeader'>
                             <ListItemText className='listHeader' primary=" " />

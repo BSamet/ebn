@@ -13,6 +13,7 @@ import axios from 'axios';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateClient from './UpdateClient';
+import AddClient from './AddClient';
 
 
 interface propsClientListInterface {
@@ -37,7 +38,6 @@ interface clientsInterface {
 }
 
 const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInterface) => {
-
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -93,7 +93,13 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
           "Authorization": `Bearer ${sessionStorage.getItem('token')}`
       }
   }).then(res => {
-      setClientslist(res.data.collecteurs)
+    axios.get(HOST_BACK + '/client/all/' + page, {
+      headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`}
+      }).then(res => {
+        setClientslist(res.data.clients)
+        setTotalPages(res.data.totalPages)
+      });
     });
 
   }
@@ -101,6 +107,9 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
   return (
     <div className='conteneurs'>
       <h1>LISTE DES CLIENTS</h1>
+      <div className='bouton'>
+                <AddClient />
+            </div>
       <div className='liste'>
         <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
 

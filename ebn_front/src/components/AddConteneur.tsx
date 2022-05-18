@@ -38,9 +38,12 @@ export default function AddConteneur() {
         "typeDechetId": dechet
     }
 
+    const config = {
+        headers: {"Authorization": `Bearer ${sessionStorage.getItem('token')}`}
+    };
     const postConteneur = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        axios.post(HOST_BACK + '/conteneur', dataConteneur)
+        axios.post(HOST_BACK + '/conteneur' , dataConteneur, config)
         handleClose()
     }
 
@@ -51,7 +54,7 @@ export default function AddConteneur() {
     const poidsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPoids(event.target.value);
     };
-    
+
     return (
         <div>
             <div onClick={handleOpen}>
@@ -71,7 +74,7 @@ export default function AddConteneur() {
             >
                 <Fade in={open}>
                     <Box sx={style}>
-                        <Box 
+                        <Box
                             component="form"
                             noValidate
                             autoComplete="off"
