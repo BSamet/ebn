@@ -12,6 +12,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { HOST_BACK } from '../environment/environment';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -41,7 +42,6 @@ export default function AddConteneur() {
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         axios.post(HOST_BACK + '/conteneur', dataConteneur)
         handleClose()
-        // refreshPage()
     }
 
     const dechetChange = (event: SelectChangeEvent) => {
@@ -51,9 +51,7 @@ export default function AddConteneur() {
     const poidsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPoids(event.target.value);
     };
-    // const refreshPage= () =>
-    //     window.location.reload()
-
+    
     return (
         <div>
             <div onClick={handleOpen}>
@@ -73,7 +71,7 @@ export default function AddConteneur() {
             >
                 <Fade in={open}>
                     <Box sx={style}>
-                        <Box
+                        <Box 
                             component="form"
                             noValidate
                             autoComplete="off"
