@@ -63,6 +63,17 @@ export class ConteneurService {
     };
   }
 
+  async findOneWithAllInfos(id: number) {
+    return await this.conteneurRepository
+      .createQueryBuilder('conteneur')
+      .leftJoinAndSelect('conteneur.client', 'client')
+      .leftJoinAndSelect('conteneur.typeDechet', 'typeDechet')
+      .select('conteneur')
+      .addSelect('client.id')
+      .addSelect('typeDechet.typeDechets')
+      .getOne();
+  }
+
   update(id: number, updateConteneurDto: UpdateConteneurDto) {
     return this.conteneurRepository.update(id, updateConteneurDto);
   }
