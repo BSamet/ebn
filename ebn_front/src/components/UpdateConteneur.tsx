@@ -55,7 +55,11 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
     };
     const updateConteneur = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        axios.patch(HOST_BACK + '/conteneur/' + selectConteneurId, dataConteneur)
+        axios.patch(HOST_BACK + '/conteneur/' + selectConteneurId, dataConteneur, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
         handleClose()
     }
     return (

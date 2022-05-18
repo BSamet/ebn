@@ -17,6 +17,7 @@ const DashboardAdmin = () => {
   const [selectClientId, setSelectClientId] = useState('');
   //passage de l'ID Collecteur de la liste centrale vers les formulaires
   const [selectCollecteurId, setSelectCollecteurId] = useState('')
+  
   useEffect(() => {
     const sessionExp: any = sessionStorage.getItem("token_exp");
     const role: any = sessionStorage.getItem("role");
@@ -36,10 +37,10 @@ const DashboardAdmin = () => {
       <div className="AppGlass">
         <Sidebar setSelectNav={setSelectNav} setSelectRight={setSelectRight} />
         <ViewAdminDash 
-          setSelectCollecteurId={undefined} selectNav={selectNav}
+          selectNav={selectNav}
           selectConteneurId={selectConteneurId} setSelectConteneurId={setSelectConteneurId}
           setSelectClientId={setSelectClientId} selectClientId={selectClientId}
-          {...setSelectCollecteurId} selectCollecteurId={selectCollecteurId}          />
+          setSelectCollecteurId={setSelectCollecteurId} selectCollecteurId={selectCollecteurId}          />
         <ViewAdminRightSide selectRight={selectRight} selectConteneurId={selectConteneurId} />
 
       </div>
