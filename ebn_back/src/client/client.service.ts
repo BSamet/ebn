@@ -75,6 +75,14 @@ export class ClientService {
     };
   }
 
+  async findByUserMail(mail: string) {
+    return await this.clientRepository
+      .createQueryBuilder('client')
+      .innerJoinAndSelect('client.utilisateur', 'utilisateur')
+      .where('utilisateur.mail = :mail', { mail })
+      .getOne();
+  }
+
   update(id: number, updateClientDto: UpdateClientDto) {
     return this.clientRepository.update(id, updateClientDto);
   }

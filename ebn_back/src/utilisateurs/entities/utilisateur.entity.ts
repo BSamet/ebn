@@ -27,7 +27,7 @@ export class Utilisateur {
   @Column()
   public prenom: string;
 
-  @Column({ unique: true })
+  @Column()
   public mail: string;
 
   @Column()

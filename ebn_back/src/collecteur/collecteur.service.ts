@@ -64,6 +64,14 @@ export class CollecteurService {
     };
   }
 
+  async findByUserMail(mail: string) {
+    return await this.collecteurRepository
+      .createQueryBuilder('collecteur')
+      .innerJoinAndSelect('collecteur.utilisateur', 'utilisateur')
+      .where('utilisateur.mail = :mail', { mail })
+      .getOne();
+  }
+
   update(id: number, updateCollecteurDto: UpdateCollecteurDto) {
     return this.collecteurRepository.update(id, updateCollecteurDto);
   }
