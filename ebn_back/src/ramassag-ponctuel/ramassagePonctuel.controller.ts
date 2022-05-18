@@ -20,22 +20,22 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 export class RamassageController {
   constructor(private readonly ramassageService: RamassagePonctuelService) {}
 
-  // @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   create(@Body() createRamassagePonctuelDto: CreateRamassagePonctuelDto) {
     return this.ramassageService.create(createRamassagePonctuelDto);
   }
 
-  // @hasRoles(UserRole.ADMIN)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll() {
     return this.ramassageService.findAll();
   }
 
-  // @hasRoles(UserRole.ADMIN)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ramassageService.findOne(+id);

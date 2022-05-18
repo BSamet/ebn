@@ -12,15 +12,13 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import {Button, Divider} from 'react-native-elements';
+import {Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
 import {HOST_BACK} from '../../../environment/environment';
-import jwt_decode from 'jwt-decode';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
-import AsyncStorage, {
-  useAsyncStorage,
-} from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface dashboardClient {
   id: number;
@@ -82,7 +80,8 @@ const DashBordClient = () => {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('date');
   const [date, setDate] = useState(new Date());
-  const [textDate, setTextDate] = useState(''); // settextdate n'ai pas utliser car on set rien dedans
+  const [textDate, setTextDate] = useState('');
+  const [clientToken, setClienToken] = useState('');
 
   // fonction pour post
   let data = {
@@ -91,7 +90,11 @@ const DashBordClient = () => {
   };
   const postRamasagge = () => {
     axios
-      .post(HOST_BACK + '/ramassage-ponctuel', data)
+      .post(HOST_BACK + '/ramassage-ponctuel', data, {
+        headers: {
+          Authorization: `Bearer ${clientToken}`,
+        },
+      })
       .then(resp => {
         if (resp.status === 201) {
           Alert.alert('Votre demande de ramassage à bien été pris en compte');
@@ -107,21 +110,31 @@ const DashBordClient = () => {
   const submit = () => {
     postRamasagge();
   };
+  // jwt
 
+  AsyncStorage.getItem('token').then(value => setClienToken(value));
   useEffect(() => {
+    console.log(clientToken, 'client Bryan');
     if (fetchOnce) {
-      axios.get(HOST_BACK + '/etape/client/1').then(res => {
-        // appel de l'api
-        // recupération client
-        setMyClient(res.data.etape[0].client);
+      axios
+        .get(HOST_BACK + '/etape/client/1', {
+          headers: {
+            Authorization: `Bearer ${clientToken}`,
+          },
+        })
 
-        // recuperer les infos du collecteur sans map
-        setTouner(res.data.etape);
-        // on cherche une seul fois
-        setFetchOnce(false);
-      });
+        .then(res => {
+          // appel de l'api
+          // recupération client
+          setMyClient(res.data.etape[0].client);
+
+          // recuperer les infos du collecteur sans map
+          setTouner(res.data.etape);
+          // on cherche une seul fois
+          setFetchOnce(false);
+        });
     }
-  }, [tourner, myclient, fetchOnce]);
+  }, [tourner, myclient, fetchOnce, clientToken]);
 
   // fonction pour les modales
   const showModal = (Collecteur: any) => {

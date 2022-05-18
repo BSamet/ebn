@@ -22,6 +22,7 @@ import {HOST_BACK} from '../../../environment/environment';
 
 import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>; a utilisé si direction vers d'autre page
 interface EtapeCollecteur {
@@ -75,20 +76,29 @@ const DashBordCollecteur = () => {
   const [fetchOnce, setFetchOnce] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [ClientModal, setClientModal] = useState<EtapeCollecteur>();
-
+  const [CollecteurToken, setCollecteurToken] = useState('');
+  AsyncStorage.getItem('token').then(value => setCollecteurToken(value));
   useEffect(() => {
+    console.log(CollecteurToken);
+
     if (fetchOnce) {
-      axios.get(HOST_BACK + '/etape/collecteur/1').then(res => {
-        // appel de l'api
+      axios
+        .get(HOST_BACK + '/etape/collecteur/1', {
+          headers: {
+            Authorization: `Bearer ${CollecteurToken}`,
+          },
+        })
+        .then(res => {
+          // appel de l'api
 
-        setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
-        setEtapes(res.data); // recuperation des etapes pour map
+          setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
+          setEtapes(res.data); // recuperation des etapes pour map
 
-        // on cherche une seul fois
-        setFetchOnce(false);
-      });
+          // on cherche une seul fois
+          setFetchOnce(false);
+        });
     }
-  }, [etapes, userCollecteur, fetchOnce]);
+  }, [etapes, userCollecteur, fetchOnce, CollecteurToken]);
 
   const showModal = (Client: any) => {
     setModalOpen(true);
