@@ -64,8 +64,38 @@ export class CollecteurService {
     };
   }
 
-  update(id: number, updateCollecteurDto: UpdateCollecteurDto) {
-    return this.collecteurRepository.update(id, updateCollecteurDto);
+  async findByUserMail(mail: string) {
+    return await this.collecteurRepository
+        .createQueryBuilder('collecteur')
+        .innerJoinAndSelect('collecteur.utilisateur', 'utilisateur')
+        .where('utilisateur.mail = :mail', { mail })
+        .getOne();
+  }
+
+  async update(id: number, updateCollecteurDto: UpdateCollecteurDto) {
+    const collecteur = {
+      numeroVelo: updateCollecteurDto.numeroVelo,
+    };
+
+    const updateCollecteur = await this.collecteurRepository.update(
+      id,
+      collecteur,
+    );
+
+    const newCollecteur = await this.collecteurRepository.findOne(id);
+
+    const user = {
+      nom: updateCollecteurDto.nom,
+      prenom: updateCollecteurDto.prenom,
+      telephone: updateCollecteurDto.telephone,
+    };
+
+    const updateUser = await this.utilisateursService.update(
+      newCollecteur.utilisateur.id,
+      user,
+    );
+
+    return this.collecteurRepository.find();
   }
 
   remove(id: number) {

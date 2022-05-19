@@ -54,6 +54,11 @@ export class HistoriqueService {
     take: number,
     skip: number,
     orderBy: string,
+    nomCommercial: string,
+    typeAction: string,
+    typeDeDechet: string,
+    dateStart: Date,
+    dateEnd: Date,
   ) {
     const historiqueCounted = await this.historiqueRepository.count();
 
@@ -97,6 +102,22 @@ export class HistoriqueService {
       .addSelect('utilisateur.nom')
       .addSelect('utilisateur.prenom')
       .orderBy(params, orderParams)
+      .where(nomCommercial ? 'client.nomCommercial = :nomCommercial' : '1=1', {
+        nomCommercial,
+      })
+      .andWhere(typeAction ? 'historique.typeAction = :typeAction' : '1=1', {
+        typeAction,
+      })
+      .andWhere(
+        typeDeDechet ? 'historique.typeDeDechet = :typeDeDechet' : '1=1',
+        {
+          typeDeDechet,
+        },
+      )
+      .andWhere(dateStart ? 'historique.date >= :dateStart' : '1=1', {
+        dateStart,
+      })
+      .andWhere(dateEnd ? 'historique.date <= :dateEnd' : '1=1', { dateEnd })
       .take(take)
       .skip(skip)
       .getMany();

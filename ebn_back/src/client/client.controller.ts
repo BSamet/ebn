@@ -53,8 +53,15 @@ export class ClientController {
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.clientService.findOne(+id);
+  }
+
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('/mail')
+  findByUserMail(@Body() createClientDto: CreateClientDto) {
+    return this.clientService.findByUserMail(createClientDto.mail);
   }
 
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)

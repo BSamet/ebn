@@ -8,6 +8,7 @@ h1 {
     display: flex;
     justify-content: center;
     padding-top: 20px;
+    margin-bottom: 2rem;
 }
 .listItemHeader{
     background-color: #8ac997;
@@ -57,4 +58,50 @@ h1 {
     display: flex;
     justify-content: center;
     padding-top: 20px;
+}
+
+.selectionFiltre{
+    text-align: center;
+    width: 10rem;
+    height: 2rem;
+    margin-left: 1rem;
+    font-size: large;
+    border-radius: 3rem;
+}
+
+.filter{
+    display: flex;
+    justify-content: center;
+
+}
+.filterchild{
+    border: #0096f0 1px  solid;
+    border-radius: 8px;
+    background: whitesmoke;
+    font-size: medium;
+}
+
+.datePickerHistorique {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 1rem;
+    &__container {
+        padding: 0 15px 0 15px;
+    }
+}
+.buttonChoice{
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+    text-align: center;
+    margin-left: 1rem;
+
+
+    &__filter{
+        padding: 0 20px 0 10px;
+
+    }
+
+
 }

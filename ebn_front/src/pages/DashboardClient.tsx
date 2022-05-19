@@ -11,14 +11,17 @@ const DashboardClient = () => {
   useEffect(() => {
     const sessionExp: any = sessionStorage.getItem("token_exp");
     const role: any = sessionStorage.getItem("role");
-    if (role !== "Client") {
+    if (!sessionStorage.getItem("role")) {
+      navigate("/");
+    } else if (role !== "Client") {
       navigate("/admin");
-    }
-    if (sessionExp * 1000 < Date.now()) {
+    } else if (sessionExp * 1000 < Date.now()) {
       sessionStorage.clear();
       setTimeout(() => {
         navigate("/");
       }, 100);
+    } else {
+      return true;
     }
   });
 

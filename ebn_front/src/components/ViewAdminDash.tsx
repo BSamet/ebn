@@ -15,24 +15,25 @@ interface ViewAdminDashInterface {
     selectCollecteurId: string
 }
 
-const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, setSelectClientId, selectClientId, setSelectCollecteurId, selectCollecteurId}: ViewAdminDashInterface) => {
-    if (selectNav === 'Historique') {
+const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, setSelectClientId, selectClientId, setSelectCollecteurId, selectCollecteurId }: ViewAdminDashInterface) => {
+    switch (selectNav) {
+    case 'Historique':
         return (
             <DashboardAdminHistory />
         )
-    } else if (selectNav === 'Conteneurs') {
+    case 'Conteneurs':
         return (
             <ConteneursList setSelectConteneurId={setSelectConteneurId} selectConteneurId={selectConteneurId} />
         )
-    } else if (selectNav === 'Clients') {
+    case 'Clients':
         return (
             <ClientsList setSelectClientId={setSelectClientId} selectClientId={selectClientId} />
         )
-        } else if (selectNav === 'Collecteurs') {
-            return (
-                <CollecteursList setSelectCollecteurId={setSelectCollecteurId} selectCollecteurId={selectCollecteurId} />
-            )
-            } else {
+    case 'Collecteurs':
+        return (
+            <CollecteursList setSelectCollecteurId={setSelectCollecteurId} selectCollecteurId={selectCollecteurId} />
+        )
+    default:
         return (
             <MainDash />
         )

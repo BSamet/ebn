@@ -60,6 +60,13 @@ export class CollecteurController {
     );
   }
 
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('/mail')
+  findByUserMail(@Body() createCollecteurDto: CreateCollecteurDto) {
+    return this.collecteurService.findByUserMail(createCollecteurDto.mail);
+  }
+
   @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
