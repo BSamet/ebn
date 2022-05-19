@@ -4,6 +4,7 @@ import {Picker} from '@react-native-picker/picker';
 import popUpStyles from '../styles/popUpStyles';
 import axios from 'axios';
 import {HOST_BACK} from "../../environment/environment";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface conteneurInterface {
     "id": number,
@@ -30,6 +31,7 @@ const popUp = (props: any) => {
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
+    const [clientToken, setClienToken] = useState('');
     let Assignation = {
         isAvailable: false,
         client: props.data.clientId
@@ -62,9 +64,16 @@ const popUp = (props: any) => {
 
     };
 
+    AsyncStorage.getItem('token').then(value => setClienToken(value));
+
     const getInfoRecup = () => {
+        console.log(clientToken)
         axios
-            .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
+            .get(HOST_BACK + '/conteneur/' + scanValue + '/infos', {
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                }
+            })
             .then(res => {
                 setInfo(res.data);
                 setClient(res.data.client.id);
@@ -79,7 +88,11 @@ const popUp = (props: any) => {
 
     const getInfoDepot = () => {
         axios
-            .get(HOST_BACK + '/conteneur/' + scanValue + '/infos')
+            .get(HOST_BACK + '/conteneur/' + scanValue + '/infos', {
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                }
+            })
             .then(res => {
                 setInfo(res.data);
             })
@@ -93,7 +106,11 @@ const popUp = (props: any) => {
         getInfoRecup();
 
         axios
-            .post(HOST_BACK + '/historique', dataPost)
+            .post(HOST_BACK + '/historique', dataPost, {
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                }
+            })
             .then(res => {
                 console.log(res)
 
@@ -110,7 +127,11 @@ const popUp = (props: any) => {
     const retraitConteneur = () => {
 
         axios
-            .patch(HOST_BACK + '/conteneur/' + scanValue, DeAssignation)
+            .patch(HOST_BACK + '/conteneur/' + scanValue, DeAssignation, {
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                }
+            })
             .catch(function (error) {
                 alert("le seau n'a pas été repris")
             });
@@ -121,7 +142,11 @@ const popUp = (props: any) => {
         console.log(Assignation.client + " client dans post")
         if (value == "dépot du seau") {
             axios
-                .patch(HOST_BACK + '/conteneur/' + scanValue, Assignation)
+                .patch(HOST_BACK + '/conteneur/' + scanValue, Assignation, {
+                    headers: {
+                        Authorization: `Bearer ${clientToken}`,
+                    }
+                })
                 .catch(function (error) {
                     alert("le seau n'a pas été assigné")
                 });
