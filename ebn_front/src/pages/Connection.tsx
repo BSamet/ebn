@@ -57,12 +57,28 @@ export default function SignInSide() {
       })
       .then((res) => {
         const decode: any = jwt_decode(res.data.access_token);
-        sessionStorage.setItem("id", decode.utilisateur.id);
         sessionStorage.setItem("role", decode.utilisateur.role);
         sessionStorage.setItem("name", decode.utilisateur.nom);
         sessionStorage.setItem("lastname", decode.utilisateur.lastname);
         sessionStorage.setItem("token", res.data.access_token);
         sessionStorage.setItem("token_exp", decode.exp);
+        if (decode.utilisateur.role === "Admin") {
+          sessionStorage.setItem("id", decode.utilisateur.id);
+        } else {
+          axios
+            .post(
+              HOST_BACK + "/client/mail",
+              { mail: decode.utilisateur.mail },
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.access_token}`,
+                },
+              }
+            )
+            .then((res) => {
+              sessionStorage.setItem("id", res.data.id);
+            });
+        }
         setTimeout(() => {
           if (decode.utilisateur.role === "Admin") {
             navigate("/admin");

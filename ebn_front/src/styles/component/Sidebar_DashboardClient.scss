@@ -59,7 +59,7 @@
 
 .menu .menuItem:last-child {
   position: absolute;
-  bottom: 2, 5rem;
+  bottom: 6rem;
   width: 100%;
 }
 
@@ -79,9 +79,6 @@
 
 /* Tablets */
 @media screen and (max-width: 1200px) {
-  .menuItem > span {
-    display: none;
-  }
   .logo {
     display: none;
   }

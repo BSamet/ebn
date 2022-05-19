@@ -39,7 +39,7 @@ const MainDashClient = () => {
 
   useEffect(() => {
     axios
-      .get(HOST_BACK + "/client/1", {
+      .get(HOST_BACK + "/client/" + sessionStorage.getItem("id"), {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
