@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View, StyleSheet, Text} from 'react-native';
 import {Card, Divider} from 'react-native-elements';
-import {HOST_BACK} from '../../../environment/environment';
+import {HOST_BACK} from "../../../Environement/environnement";
 
 export interface HistoriqueClient {
   id: number;

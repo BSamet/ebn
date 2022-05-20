@@ -3,7 +3,7 @@ import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import popUpStyles from '../styles/popUpStyles';
 import axios from 'axios';
-import {HOST_BACK} from "../../environment/environment";
+import {HOST_BACK} from "../../Environement/environnement";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface conteneurInterface {
@@ -25,9 +25,7 @@ const popUp = (props: any) => {
     const scanValue = props.data.res;
     const date = new Date();
     const poidMax = info?.capaciteMax;
-    const [client, setClient] = useState();
-    const [selectedValue, setSelectedValue] = useState("Récupération du seau");
-    const [conteneur, setConteneur] = useState();
+    const [selectedValue, setSelectedValue] = useState("faite votre choix");
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState(0);
     const [commentaire, setCommentaire] = useState('');
@@ -52,33 +50,40 @@ const popUp = (props: any) => {
     };
 
     useEffect(() => {
-        getInfoRecup();
-    }, []);
+        getInfo();
+    }, [info]);
 
     const submit = () => {
-        postPoids();
 
-        if (selectedValue == "dépot du seau") {
-            depotConteneur(selectedValue);
+        switch(selectedValue){
+            case "dépot du seau":
+                depotConteneur(selectedValue);
+                break;
+            case "Récupération du seau":
+                retraitConteneur(selectedValue);
+                break;
+            case "faite votre choix":
+                alert("faite un choix");
+                break;
         }
-
+        postPoids();
     };
 
+    //permet de recupérer le token
     AsyncStorage.getItem('token').then(value => setClienToken(value));
 
-    const getInfoRecup = () => {
-        console.log(clientToken)
+    //Fait un get de tout les infos consernant le conteneur
+    const getInfo = () => {
         axios
             .get(HOST_BACK + '/conteneur/' + scanValue + '/infos', {
                 headers: {
-                    Authorization: `Bearer ${clientToken}`,
+                    'Authorization': `Bearer ${clientToken}`
                 }
             })
             .then(res => {
                 setInfo(res.data);
-                setClient(res.data.client.id);
 
-                console.log(res.data);
+
             })
             .catch(function (error) {
                 console.log("erreur get info scan");
@@ -86,29 +91,14 @@ const popUp = (props: any) => {
 
     };
 
-    const getInfoDepot = () => {
-        axios
-            .get(HOST_BACK + '/conteneur/' + scanValue + '/infos', {
-                headers: {
-                    Authorization: `Bearer ${clientToken}`,
-                }
-            })
-            .then(res => {
-                setInfo(res.data);
-            })
-            .catch(function (error) {
-                console.log("erreur get info scan");
-            });
-
-    };
-
+    //envoi les informations rentrer dans la popUp en bdd (historique)
     const postPoids = () => {
-        getInfoRecup();
+        getInfo();
 
         axios
-            .post(HOST_BACK + '/historique', dataPost, {
+            .post(HOST_BACK + '/historique', dataPost , {
                 headers: {
-                    Authorization: `Bearer ${clientToken}`,
+                    'Authorization': `Bearer ${clientToken}`
                 }
             })
             .then(res => {
@@ -116,39 +106,43 @@ const popUp = (props: any) => {
 
             })
             .catch(function (error) {
-                console.log(error + ' sur post');
+                console.log(error , ' sur post');
             });
 
-        if (selectedValue == "Récupération du seau") {
-            retraitConteneur();
-        }
     };
 
-    const retraitConteneur = () => {
+    //permet de déassigner le conteneur bdd (Table conteneur)
+    const retraitConteneur = (value) => {
+        getInfo();
 
-        axios
-            .patch(HOST_BACK + '/conteneur/' + scanValue, DeAssignation, {
+        if (value == "Récupération du seau"){
+            axios
+            .patch(HOST_BACK + '/conteneur/' + scanValue, DeAssignation , {
                 headers: {
-                    Authorization: `Bearer ${clientToken}`,
+                    'Authorization': `Bearer ${clientToken}`
                 }
             })
             .catch(function (error) {
-                alert("le seau n'a pas été repris")
+                alert("le seau n'a pas été repris");
+                console.log(Assignation, "assignation")
             });
+        }
     };
 
+    //permet d'assigner le conteneur en bdd (Table conteneur)
     const depotConteneur = (value) => {
-        getInfoDepot();
-        console.log(Assignation.client + " client dans post")
+        getInfo();
+
         if (value == "dépot du seau") {
             axios
                 .patch(HOST_BACK + '/conteneur/' + scanValue, Assignation, {
                     headers: {
-                        Authorization: `Bearer ${clientToken}`,
+                        'Authorization': `Bearer ${clientToken}`
                     }
                 })
                 .catch(function (error) {
                     alert("le seau n'a pas été assigné")
+                    console.log(Assignation,"assignation")
                 });
         }
     };
@@ -169,8 +163,10 @@ const popUp = (props: any) => {
                             style={{height: 50, width: 240}}
                             onValueChange={(itemValue) => {
                                 setSelectedValue(itemValue);
-                                depotConteneur(itemValue)
+                                depotConteneur(itemValue);
+                                retraitConteneur(itemValue);
                             }}>
+                            <Picker.Item label="Faite votre choix" value="faite votre choix"/>
                             <Picker.Item label="Récupération du seau" value="Récupération du seau"/>
                             <Picker.Item label="dépot du seau" value="dépot du seau"/>
                         </Picker>

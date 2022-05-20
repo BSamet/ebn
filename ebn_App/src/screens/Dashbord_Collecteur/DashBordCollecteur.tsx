@@ -18,7 +18,7 @@ import Logo from '../../../assets/images/logo.png';
 import {useState} from 'react';
 
 import axios from 'axios';
-import {HOST_BACK} from '../../../environment/environment';
+import {HOST_BACK} from "../../../Environement/environnement";
 
 import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
@@ -170,7 +170,7 @@ const DashBordCollecteur = () => {
                 {moment(data.date).format('DD.MM.YYYY  à  HH[h] mm')}
               </Text>
 
-              <QrCodeScanner />
+              <QrCodeScanner  data={data.client.id}/>
             </Pressable>
           </View>
         ))}

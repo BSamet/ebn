@@ -15,7 +15,7 @@ import {
 import {Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
-import {HOST_BACK} from '../../../environment/environment';
+import {HOST_BACK} from "../../../Environement/environnement";
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';

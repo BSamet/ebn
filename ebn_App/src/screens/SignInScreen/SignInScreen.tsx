@@ -15,7 +15,7 @@ import CustomInput from '../../components/CustomInput';
 import {AuthRootParamList} from '../../../App';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
-import {HOST_BACK} from '../../../environment/environment';
+import {HOST_BACK} from '../../../Environement/environnement';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
