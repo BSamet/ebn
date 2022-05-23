@@ -1,9 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View, StyleSheet, Text} from 'react-native';
 import {Card, Divider} from 'react-native-elements';
-import {HOST_BACK} from '../../../environment/environment';
+import {HOST_BACK} from "../../../Environement/environnement";
 
 export interface HistoriqueClient {
   id: number;
@@ -17,18 +18,26 @@ const HistoriqueClient = () => {
   const [myHistorique, setMyHistorique] = useState<HistoriqueClient[]>();
 
   const [fetchOnce, setFetchOnce] = useState(true);
-
+  const [clientToken, setClienToken] = useState('');
+  AsyncStorage.getItem('token').then(value => setClienToken(value));
   useEffect(() => {
+    console.log(clientToken, ' historique');
     if (fetchOnce) {
-      axios.get(HOST_BACK + '/etape/client/1').then(res => {
-        // appel de l'api
+      axios
+        .get(HOST_BACK + '/etape/client/1', {
+          headers: {
+            Authorization: `Bearer ${clientToken}`,
+          },
+        })
+        .then(res => {
+          // appel de l'api
 
-        // recupération historique
-        setMyHistorique(res.data.historique);
-        setFetchOnce(false);
-      });
+          // recupération historique
+          setMyHistorique(res.data.historique);
+          setFetchOnce(false);
+        });
     }
-  }, [myHistorique, fetchOnce]);
+  }, [myHistorique, fetchOnce, clientToken]);
   return (
     <ScrollView>
       <Card.Title h1={true}>Mon historique</Card.Title>
