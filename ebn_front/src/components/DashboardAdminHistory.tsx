@@ -55,7 +55,8 @@ interface historyCustomerInterface{
             const [startTime, setStartTime] = useState('');
             const [endDate, setEndDate] = useState('');
 
-            console.log(startDate + ' ' + startTime)
+            console.log(startDate +' ' + endDate)
+            
 
             const nomCommercialCat = DashboardAdminHistory?.reduce(
                 (acc, nomCommercial) =>
@@ -100,7 +101,7 @@ interface historyCustomerInterface{
 
             function validateFilter(){
                 setPage(1)
-                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate' + startDate + '&endDate' + endDate + '&orderBy=date', {
+                axios.get(HOST_BACK + '/historique/all/' + page + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate=' + startDate + '&endDate=' + endDate + '&orderBy=date', {
                     headers: {
                         "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                     }}).then(res => {
@@ -111,7 +112,7 @@ interface historyCustomerInterface{
             const handleChange = (event: string, value: number) => {
                 setPage(value);
 
-                axios.get(HOST_BACK + '/historique/all/' + value + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate' + startDate + '&endDate' + endDate + '&orderBy=date', {
+                axios.get(HOST_BACK + '/historique/all/' + value + '?take=5&nomCommercial=' + nomCommercial + '&typeDeDechet=' + typeDeDechet + '&typeAction='+typeAction+ '&startDate=' + startDate + '&endDate=' + endDate + '&orderBy=date', {
                     headers: {
                         "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                     }}).then(res => {
