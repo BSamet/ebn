@@ -20,8 +20,6 @@ const DashboardClient = () => {
       setTimeout(() => {
         navigate("/");
       }, 100);
-    } else {
-      return true;
     }
   });
 
