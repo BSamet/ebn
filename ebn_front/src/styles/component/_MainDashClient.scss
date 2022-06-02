@@ -9,8 +9,11 @@
 }
 
 .scroll {
+  width: 93%;
+  height: 93%;
   overflow-y: scroll;
-}
+  scrollbar-color: rebeccapurple green;
+  scrollbar-width: thin;}
 
 .idClient {
   word-wrap: break-word;
@@ -93,4 +96,6 @@
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
   }
+
+  
 }
