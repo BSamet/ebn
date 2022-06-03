@@ -60,6 +60,7 @@ const SignInScreen = () => {
           }, 100);
         })
       .catch(res => {
+      console.log(res)
         Alert.alert('Une erreur c\'est produite lors de la connexion');
       });
   };
