@@ -18,7 +18,7 @@ import Logo from '../../../assets/images/logo.png';
 import {useState} from 'react';
 
 import axios from 'axios';
-import {HOST_BACK} from "../../../Environement/environnement";
+import {HOST_BACK} from "../../../environment/environment";
 
 import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';

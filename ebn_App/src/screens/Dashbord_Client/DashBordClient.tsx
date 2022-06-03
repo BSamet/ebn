@@ -15,7 +15,7 @@ import {
 import {Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
-import {HOST_BACK} from "../../../Environement/environnement";
+import {HOST_BACK} from "../../../environment/environment";
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -114,7 +114,6 @@ const DashBordClient = () => {
 
   AsyncStorage.getItem('token').then(value => setClienToken(value));
   useEffect(() => {
-    console.log(clientToken, 'client Bryan');
     if (fetchOnce) {
       axios
         .get(HOST_BACK + '/etape/client/1', {

@@ -3,7 +3,7 @@ import {Modal, Pressable, Text, TextInput, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import popUpStyles from '../styles/popUpStyles';
 import axios from 'axios';
-import {HOST_BACK} from "../../Environement/environnement";
+import {HOST_BACK} from "../../environment/environment";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface conteneurInterface {
