@@ -27,7 +27,11 @@ export class RamassagePonctuelService {
   }
 
   findOne(id: number) {
-    return this.ramassagePonctuelRepository.findOne(id);
+    return this.ramassagePonctuelRepository.findOne({
+      where: {
+        id: id
+      }
+    });
   }
 
   update(id: number, updateRamassagePonctuelDto: UpdateRamassagePonctuelDto) {

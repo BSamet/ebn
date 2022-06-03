@@ -35,7 +35,11 @@ export class ConteneurService {
     }
 
     findOne(id: number) {
-        return this.conteneurRepository.findOne(id);
+        return this.conteneurRepository.findOne({
+            where: {
+                id: id
+            }
+        });
     }
 
     async findAllConteneurPagination(take: number, skip: number) {

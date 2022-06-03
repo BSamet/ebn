@@ -48,7 +48,11 @@ export class UtilisateursService {
   }
 
   findOne(id: number) {
-    return from(this.utilisateurRepository.findOne(id)).pipe(
+    return from(this.utilisateurRepository.findOne({
+        where: {
+            id: id
+        }
+    })).pipe(
       map((utilisateur: Utilisateur) => {
         const { password, ...result } = utilisateur;
         return result;
@@ -111,6 +115,10 @@ export class UtilisateursService {
   }
 
   findByMail(mail: string) {
-    return from(this.utilisateurRepository.findOne({ mail }));
+    return from(this.utilisateurRepository.findOne({
+        where: {
+            mail: mail
+        }
+    }));
   }
 }
