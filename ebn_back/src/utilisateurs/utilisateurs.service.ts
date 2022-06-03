@@ -16,24 +16,26 @@ export class UtilisateursService {
   ) {}
 
   create(createUtilisateurDto: CreateUtilisateurDto) {
-    return this.authService.hashPassword(createUtilisateurDto.password).pipe(
-      switchMap((passwordHash: string) => {
-        const utilisateur = new Utilisateur();
-        utilisateur.role = createUtilisateurDto.role;
-        utilisateur.password = passwordHash;
-        utilisateur.nom = createUtilisateurDto.nom;
-        utilisateur.prenom = createUtilisateurDto.prenom;
-        utilisateur.mail = createUtilisateurDto.mail;
-        utilisateur.telephone = createUtilisateurDto.telephone;
-        return from(this.utilisateurRepository.save(utilisateur)).pipe(
-          map((utilisateur: Utilisateur) => {
-            const { password, ...result } = utilisateur;
-            return result;
-          }),
-          catchError((err) => throwError(err)),
-        );
-      }),
-    );
+      return this.authService.hashPassword(createUtilisateurDto.password).pipe(
+        switchMap((passwordHash: string) => {
+          const utilisateur = new Utilisateur();
+          utilisateur.role = createUtilisateurDto.role;
+          utilisateur.password = passwordHash;
+          utilisateur.nom = createUtilisateurDto.nom;
+          utilisateur.prenom = createUtilisateurDto.prenom;
+          utilisateur.mail = createUtilisateurDto.mail;
+          utilisateur.telephone = createUtilisateurDto.telephone;
+          
+            return from(this.utilisateurRepository.save(utilisateur)).pipe(
+              map((utilisateur: Utilisateur) => {
+                const { password, ...result } = utilisateur;
+                return result;
+              }),
+              catchError((err) => throwError(err)),
+            );
+        }),
+      );
+    
   }
 
   findAll() {

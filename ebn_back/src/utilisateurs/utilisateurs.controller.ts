@@ -25,10 +25,10 @@ export class UtilisateursController {
   create(
     @Body() createUtilisateurDto: CreateUtilisateurDto,
   ): Observable<Utilisateur | Object> {
-    return this.utilisateursService.create(createUtilisateurDto).pipe(
-      map((utilisateur: Utilisateur) => utilisateur),
-      catchError((err) => of({ error: err.message })),
-    );
+      return this.utilisateursService.create(createUtilisateurDto).pipe(
+        map((utilisateur: Utilisateur) => utilisateur),
+        catchError((err) => of({ error: err.message })),
+      );
   }
 
   @Post('login')

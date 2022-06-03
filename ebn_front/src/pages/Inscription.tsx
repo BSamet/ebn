@@ -179,9 +179,13 @@ export default function SignInSide() {
           adresse: adresse,
         })
         .then((res) => {
+            console.log(res.data)
+            console.log(res.data.error)
+            console.log("pas use")
           setTimeout(() => {
             navigate("/Connection");
           }, 1500);
+          
         })
         .catch((err) => {
           setErrorRequest(true);
