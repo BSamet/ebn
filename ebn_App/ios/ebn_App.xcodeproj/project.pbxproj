@@ -37,6 +37,12 @@
 		7AAD1B8346414342B26C2342 /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E2F9BEFD20F4EF9B76E0165 /* Comfortaa-Regular.ttf */; };
 		87FC51B8F5C5437A8F9A52AB /* Comfortaa-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94BE46293AB94781950ABE2B /* Comfortaa-SemiBold.ttf */; };
 		163AF6BD39D547CD96D60540 /* japonais.otf in Resources */ = {isa = PBXBuildFile; fileRef = 93B64D8CC90646F48D2AE4F1 /* japonais.otf */; };
+		37D2EC189ED3415EBCB0D0F8 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 207D3D1488434D8C9F05D99A /* Comfortaa-Bold.ttf */; };
+		4B44D4C93BC64941BACE7C4C /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00E8B0B7151447E292FD0030 /* Comfortaa-Light.ttf */; };
+		D12A3B6121F7430A93FB0A78 /* Comfortaa-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 421C2A100C664A5BBB4BC7FF /* Comfortaa-Medium.ttf */; };
+		355F513FE6A9435A8E067C26 /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01103AF729394617BF8B4C10 /* Comfortaa-Regular.ttf */; };
+		3C2767CEEAA2462CA8216762 /* Comfortaa-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 820FFBEA28964103B10083AF /* Comfortaa-SemiBold.ttf */; };
+		9A162A97BC5C49F38828A878 /* Comfortaa-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65FD9E7446604676A9427924 /* Comfortaa-VariableFont_wght.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +96,12 @@
 		7E2F9BEFD20F4EF9B76E0165 /* Comfortaa-Regular.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Regular.ttf"; path = "../assets/Fonts/Comfortaa-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		94BE46293AB94781950ABE2B /* Comfortaa-SemiBold.ttf */ = {isa = PBXFileReference; name = "Comfortaa-SemiBold.ttf"; path = "../assets/Fonts/Comfortaa-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		93B64D8CC90646F48D2AE4F1 /* japonais.otf */ = {isa = PBXFileReference; name = "japonais.otf"; path = "../assets/Fonts/japonais.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		207D3D1488434D8C9F05D99A /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Bold.ttf"; path = "../assets/fonts/Comfortaa-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		00E8B0B7151447E292FD0030 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Light.ttf"; path = "../assets/fonts/Comfortaa-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		421C2A100C664A5BBB4BC7FF /* Comfortaa-Medium.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Medium.ttf"; path = "../assets/fonts/Comfortaa-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		01103AF729394617BF8B4C10 /* Comfortaa-Regular.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Regular.ttf"; path = "../assets/fonts/Comfortaa-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		820FFBEA28964103B10083AF /* Comfortaa-SemiBold.ttf */ = {isa = PBXFileReference; name = "Comfortaa-SemiBold.ttf"; path = "../assets/fonts/Comfortaa-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		65FD9E7446604676A9427924 /* Comfortaa-VariableFont_wght.ttf */ = {isa = PBXFileReference; name = "Comfortaa-VariableFont_wght.ttf"; path = "../assets/fonts/Comfortaa-VariableFont_wght.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -221,6 +233,12 @@
 				7E2F9BEFD20F4EF9B76E0165 /* Comfortaa-Regular.ttf */,
 				94BE46293AB94781950ABE2B /* Comfortaa-SemiBold.ttf */,
 				93B64D8CC90646F48D2AE4F1 /* japonais.otf */,
+				207D3D1488434D8C9F05D99A /* Comfortaa-Bold.ttf */,
+				00E8B0B7151447E292FD0030 /* Comfortaa-Light.ttf */,
+				421C2A100C664A5BBB4BC7FF /* Comfortaa-Medium.ttf */,
+				01103AF729394617BF8B4C10 /* Comfortaa-Regular.ttf */,
+				820FFBEA28964103B10083AF /* Comfortaa-SemiBold.ttf */,
+				65FD9E7446604676A9427924 /* Comfortaa-VariableFont_wght.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -345,6 +363,12 @@
 				7AAD1B8346414342B26C2342 /* Comfortaa-Regular.ttf in Resources */,
 				87FC51B8F5C5437A8F9A52AB /* Comfortaa-SemiBold.ttf in Resources */,
 				163AF6BD39D547CD96D60540 /* japonais.otf in Resources */,
+				37D2EC189ED3415EBCB0D0F8 /* Comfortaa-Bold.ttf in Resources */,
+				4B44D4C93BC64941BACE7C4C /* Comfortaa-Light.ttf in Resources */,
+				D12A3B6121F7430A93FB0A78 /* Comfortaa-Medium.ttf in Resources */,
+				355F513FE6A9435A8E067C26 /* Comfortaa-Regular.ttf in Resources */,
+				3C2767CEEAA2462CA8216762 /* Comfortaa-SemiBold.ttf in Resources */,
+				9A162A97BC5C49F38828A878 /* Comfortaa-VariableFont_wght.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

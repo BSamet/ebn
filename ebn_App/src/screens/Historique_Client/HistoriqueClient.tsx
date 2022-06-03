@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View, StyleSheet, Text} from 'react-native';
 import {Card, Divider} from 'react-native-elements';
-import {HOST_BACK} from "../../../Environement/environnement";
+import {HOST_BACK} from "../../../environment/environment";
 
 export interface HistoriqueClient {
   id: number;
@@ -24,7 +24,7 @@ const HistoriqueClient = () => {
     console.log(clientToken, ' historique');
     if (fetchOnce) {
       axios
-        .get(HOST_BACK + '/etape/client/1', {
+        .get(HOST_BACK + '/etape/client/2', {
           headers: {
             Authorization: `Bearer ${clientToken}`,
           },
