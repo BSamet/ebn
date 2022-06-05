@@ -29,7 +29,11 @@ export class RamassageAbonnementService {
     }
 
     findOne(id: number) {
-        return this.ramassageAbonnementRepository.findOne(id);
+        return this.ramassageAbonnementRepository.findOne({
+            where: {
+                id: id
+            }
+        });
     }
 
     update(id: number, updateRamassageAbonnementDto: UpdateRamassageAbonnementDto) {

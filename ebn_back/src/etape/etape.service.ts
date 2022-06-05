@@ -37,7 +37,11 @@ export class EtapeService {
   }
 
   findOne(id: number) {
-    return this.etapeRepository.findOne(id);
+    return this.etapeRepository.findOne({
+      where: {
+        id: id
+      }
+    });
   }
   findByCollecteur(id: number) {
     const dateNow = new Date();

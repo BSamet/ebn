@@ -15,7 +15,7 @@ import CustomInput from '../../components/CustomInput';
 import {AuthRootParamList} from '../../../App';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
-import {HOST_BACK} from '../../../Environement/environnement';
+import {HOST_BACK} from '../../../environment/environment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
@@ -40,24 +40,28 @@ const SignInScreen = () => {
         mail: mail,
         password: password,
       })
-      .then(async (res: {data: {access_token: string}}) => {
-        const decode: any = jwt_decode(res.data.access_token);
+        .then(async (res: {data: {access_token: string}}) => {
+          const decode: any = jwt_decode(res.data.access_token);
 
-        await AsyncStorage.setItem('id', JSON.stringify(decode.utilisateur.id));
-        await AsyncStorage.setItem('role', decode.utilisateur.role);
-        await AsyncStorage.setItem('prenom', decode.utilisateur.prenom);
-        await AsyncStorage.setItem('nom', decode.utilisateur.nom);
-        await AsyncStorage.setItem('token', res.data.access_token);
-        await AsyncStorage.setItem('token_exp', JSON.stringify(decode.exp));
-        setTimeout(() => {
-          if (decode.utilisateur.role === 'Client') {
-            navigation.navigate('Client');
-          } else if (decode.utilisateur.role === 'Collecteur') {
-            navigation.navigate('Collecteur');
-          } else {
-            Alert.alert('Erreur de connexion');
-          }
-        }, 100);
+          await AsyncStorage.setItem('id', JSON.stringify(decode.utilisateur.id));
+          await AsyncStorage.setItem('role', decode.utilisateur.role);
+          await AsyncStorage.setItem('prenom', decode.utilisateur.prenom);
+          await AsyncStorage.setItem('nom', decode.utilisateur.nom);
+          await AsyncStorage.setItem('token', res.data.access_token);
+          await AsyncStorage.setItem('token_exp', JSON.stringify(decode.exp));
+          setTimeout(() => {
+            if (decode.utilisateur.role === 'Client') {
+              navigation.navigate('Client');
+            } else if (decode.utilisateur.role === 'Collecteur') {
+              navigation.navigate('Collecteur');
+            } else {
+                Alert.alert('Veuillez vous connecter avec vos login de client ou de collecteur');
+            }
+          }, 100);
+        })
+      .catch(res => {
+      console.log(res)
+        Alert.alert('Une erreur c\'est produite lors de la connexion');
       });
   };
 

@@ -39,7 +39,11 @@ export class HistoriqueService {
   }
 
   findOne(id: number) {
-    return this.historiqueRepository.findOne(id);
+    return this.historiqueRepository.findOne({
+      where: {
+        id: id
+      }
+    });
   }
 
   findByClient(id: number) {
@@ -121,6 +125,8 @@ export class HistoriqueService {
       .take(take)
       .skip(skip)
       .getMany();
+
+
 
     return {
       totalPages: totalPages,

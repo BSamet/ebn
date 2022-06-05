@@ -51,7 +51,11 @@ export class ClientService {
   }
 
   findOne(id: number) {
-    return this.clientRepository.findOne(id);
+    return this.clientRepository.findOne({
+      where: {
+        id: id
+      }
+    });
   }
 
 
@@ -95,7 +99,11 @@ export class ClientService {
     };
     const updatedClient = await this.clientRepository.update(id, client);
 
-    const newClient = await this.clientRepository.findOne(id);
+    const newClient = await this.clientRepository.findOne({
+      where: {
+        id: id
+      }
+    });
 
     const user = {
       nom: updateClientDto.nom,
