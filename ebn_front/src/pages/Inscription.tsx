@@ -67,6 +67,22 @@ export default function SignInSide() {
     error: false,
     errorMessage: "",
   });
+  let emailEntered: any
+
+  async function isEmailDuplicated(email: string){
+    emailEntered = await axios
+                              .get(HOST_BACK + "/utilisateurs/email/" + email)
+                              .then((res) => {
+                                console.log(res.data.mail)
+                                if(res.data.mail == email){
+                                  console.log("dupe")
+                                  return res.data.mail;
+                                } else {
+                                  console.log("pas dupe")
+                                  return "";
+                                }
+                              }) 
+  }
 
   function validatePhone(phone: string) {
     const pattern = /^((\+)33|0)[1-9](\d{2}){4}$/g;
@@ -85,7 +101,7 @@ export default function SignInSide() {
     return pattern.test(password);
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let send = true;
     const data = new FormData(event.currentTarget);
@@ -117,6 +133,21 @@ export default function SignInSide() {
       setErrorMail({
         error: true,
         errorMessage: "Veuillez entrez une adresse email valide.",
+      });
+    } else {
+      setErrorMail({
+        error: false,
+        errorMessage: "",
+      });
+    }
+
+    await isEmailDuplicated(mail)
+
+    if(emailEntered == mail) {
+      send = false;
+      setErrorMail({
+        error: true,
+        errorMessage: "Cette adresse mail est déjà utilisée",
       });
     } else {
       setErrorMail({
@@ -179,9 +210,6 @@ export default function SignInSide() {
           adresse: adresse,
         })
         .then((res) => {
-            console.log(res.data)
-            console.log(res.data.error)
-            console.log("pas use")
           setTimeout(() => {
             navigate("/Connection");
           }, 1500);

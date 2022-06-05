@@ -66,6 +66,13 @@ export class ClientController {
 
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('/:mail')
+  findOneUserByMail(@Param('mail') mail: string) {
+    return this.clientService.findByUserMail(mail);
+  }
+
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientService.update(+id, updateClientDto);

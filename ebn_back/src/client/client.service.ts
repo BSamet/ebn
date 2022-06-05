@@ -54,6 +54,7 @@ export class ClientService {
     return this.clientRepository.findOne(id);
   }
 
+
   async findAllClientPagination(take: number, skip: number) {
     const countedClient = await this.clientRepository.count();
     const totalPages = Math.ceil(countedClient / take);
