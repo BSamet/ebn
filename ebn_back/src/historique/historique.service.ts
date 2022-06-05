@@ -122,6 +122,8 @@ export class HistoriqueService {
       .skip(skip)
       .getMany();
 
+
+
     return {
       totalPages: totalPages,
       totalHistoriques: historiqueCounted,
