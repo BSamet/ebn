@@ -73,12 +73,9 @@ export default function SignInSide() {
     emailEntered = await axios
                               .get(HOST_BACK + "/utilisateurs/email/" + email)
                               .then((res) => {
-                                console.log(res.data.mail)
                                 if(res.data.mail == email){
-                                  console.log("dupe")
                                   return res.data.mail;
                                 } else {
-                                  console.log("pas dupe")
                                   return "";
                                 }
                               }) 
