@@ -25,10 +25,10 @@ export class UtilisateursController {
   create(
     @Body() createUtilisateurDto: CreateUtilisateurDto,
   ): Observable<Utilisateur | Object> {
-    return this.utilisateursService.create(createUtilisateurDto).pipe(
-      map((utilisateur: Utilisateur) => utilisateur),
-      catchError((err) => of({ error: err.message })),
-    );
+      return this.utilisateursService.create(createUtilisateurDto).pipe(
+        map((utilisateur: Utilisateur) => utilisateur),
+        catchError((err) => of({ error: err.message })),
+      );
   }
 
   @Post('login')
@@ -52,6 +52,13 @@ export class UtilisateursController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.utilisateursService.findOne(+id);
+  }
+
+  // @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('email/:mail')
+  findOneByMail(@Param('mail') mail: string) {
+    return this.utilisateursService.findByMail(mail);
   }
 
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)

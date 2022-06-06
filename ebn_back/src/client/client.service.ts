@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { UtilisateursService } from '../utilisateurs/utilisateurs.service';
 import { Utilisateur } from '../utilisateurs/entities/utilisateur.entity';
 import { TypeDechet } from '../type-dechets/entities/type-dechet.entity';
+import { catchError, throwError } from 'rxjs';
 
 @Injectable()
 export class ClientService {
@@ -39,7 +40,9 @@ export class ClientService {
           id: createClientDto.typeDechetsId,
         }),
       ];
-      return this.clientRepository.save(client);
+      
+        return this.clientRepository.save(client);
+     
     });
   }
 
@@ -54,6 +57,7 @@ export class ClientService {
       }
     });
   }
+
 
   async findAllClientPagination(take: number, skip: number) {
     const countedClient = await this.clientRepository.count();
