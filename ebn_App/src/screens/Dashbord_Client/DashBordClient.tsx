@@ -15,7 +15,7 @@ import {
 import {Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
-import {HOST_BACK} from "../../../environment/environment";
+import {HOST_BACK} from '../../../environment/environment';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -58,7 +58,7 @@ export interface ShowClient {
 }
 export interface Session {
   idClient: string;
-  token: string;
+  token: string | null;
 }
 export interface DemandePonctuelRamassage {
   date: number;
@@ -81,12 +81,14 @@ const DashBordClient = () => {
   const [mode, setMode] = useState('date');
   const [date, setDate] = useState(new Date());
   const [textDate, setTextDate] = useState('');
-  const [clientToken, setClienToken] = useState('');
+
+  const [clientToken, setClienToken] = useState<string | null>('');
+  const [myClientId, setClientId] = useState<string | null>('');
 
   // fonction pour post
   let data = {
     date: date.toString(),
-    clientId: myclient?.id,
+    clientId: myClientId,
   };
   const postRamasagge = () => {
     axios
@@ -110,30 +112,33 @@ const DashBordClient = () => {
   const submit = () => {
     postRamasagge();
   };
-  // jwt
 
-  AsyncStorage.getItem('token').then(value => setClienToken(value));
+  AsyncStorage.getItem('token').then(value => {
+    setClienToken(value);
+  });
+  AsyncStorage.getItem('id').then(value => {
+    setClientId(value);
+  });
+
   useEffect(() => {
     if (fetchOnce) {
       axios
-        .get(HOST_BACK + '/etape/client/1', {
+        .get(HOST_BACK + '/etape/client/' + myClientId, {
           headers: {
             Authorization: `Bearer ${clientToken}`,
           },
         })
-
         .then(res => {
           // appel de l'api
           // recupération client
           setMyClient(res.data.etape[0].client);
-
           // recuperer les infos du collecteur sans map
           setTouner(res.data.etape);
           // on cherche une seul fois
           setFetchOnce(false);
         });
     }
-  }, [tourner, myclient, fetchOnce, clientToken]);
+  }, [tourner, myclient, fetchOnce, clientToken, myClientId]);
 
   // fonction pour les modales
   const showModal = (Collecteur: any) => {

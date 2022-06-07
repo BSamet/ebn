@@ -40,28 +40,56 @@ const SignInScreen = () => {
         mail: mail,
         password: password,
       })
-        .then(async (res: {data: {access_token: string}}) => {
-          const decode: any = jwt_decode(res.data.access_token);
+      .then(async (res: {data: {access_token: string}}) => {
+        const decode: any = jwt_decode(res.data.access_token);
 
-          await AsyncStorage.setItem('id', JSON.stringify(decode.utilisateur.id));
-          await AsyncStorage.setItem('role', decode.utilisateur.role);
-          await AsyncStorage.setItem('prenom', decode.utilisateur.prenom);
-          await AsyncStorage.setItem('nom', decode.utilisateur.nom);
-          await AsyncStorage.setItem('token', res.data.access_token);
-          await AsyncStorage.setItem('token_exp', JSON.stringify(decode.exp));
-          setTimeout(() => {
-            if (decode.utilisateur.role === 'Client') {
+        await AsyncStorage.setItem('role', decode.utilisateur.role);
+        await AsyncStorage.setItem('prenom', decode.utilisateur.prenom);
+        await AsyncStorage.setItem('nom', decode.utilisateur.nom);
+        await AsyncStorage.setItem('token', res.data.access_token);
+        await AsyncStorage.setItem('token_exp', JSON.stringify(decode.exp));
+        if (decode.utilisateur.role === 'Client') {
+          axios
+            .post(
+              HOST_BACK + '/client/mail',
+              {mail: decode.utilisateur.mail},
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.access_token}`,
+                },
+              },
+            )
+            .then(async res => {
+              await AsyncStorage.setItem('id', res.data.id.toString());
+            })
+            .finally(() => {
               navigation.navigate('Client');
-            } else if (decode.utilisateur.role === 'Collecteur') {
+            });
+        } else if (decode.utilisateur.role === 'Collecteur') {
+          axios
+            .post(
+              HOST_BACK + '/collecteur/mail',
+              {mail: decode.utilisateur.mail},
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.access_token}`,
+                },
+              },
+            )
+            .then(async res => {
+              await AsyncStorage.setItem('id', res.data.id.toString());
+            })
+            .finally(() => {
               navigation.navigate('Collecteur');
-            } else {
-                Alert.alert('Veuillez vous connecter avec vos login de client ou de collecteur');
-            }
-          }, 100);
-        })
+            });
+        } else {
+          Alert.alert(
+            'Veuillez vous connecter avec vos login de client ou de collecteur',
+          );
+        }
+      })
       .catch(res => {
-      console.log(res)
-        Alert.alert('Une erreur c\'est produite lors de la connexion');
+        Alert.alert("Une erreur c'est produite lors de la connexion");
       });
   };
 
