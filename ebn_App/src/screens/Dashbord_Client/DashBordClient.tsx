@@ -19,6 +19,7 @@ import {HOST_BACK} from '../../../environment/environment';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 export interface dashboardClient {
   id: number;
@@ -87,7 +88,7 @@ const DashBordClient = () => {
 
   // fonction pour post
   let data = {
-    date: date.toString(),
+    date: date,
     clientId: myClientId,
   };
   const postRamasagge = () => {
@@ -150,8 +151,8 @@ const DashBordClient = () => {
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
     setVisible(false);
-    setDate(currentDate);
     let tempDate = new Date(currentDate);
+
     let Fdate =
       tempDate.getDate() +
       '/' +
@@ -163,6 +164,15 @@ const DashBordClient = () => {
       'h' +
       tempDate.getMinutes();
 
+    let formatDateSave = new Date(
+      +tempDate.getFullYear(),
+      +tempDate.getMonth(),
+      +tempDate.getDate(),
+      +tempDate.getHours() + 2,
+      +tempDate.getMinutes(),
+    );
+
+    setDate(formatDateSave);
     setTextDate(Fdate);
   };
 
@@ -224,7 +234,7 @@ const DashBordClient = () => {
                 Vous avez demander un ramassage le {textDate}
               </Text>
               {visible && (
-                <DateTimePicker
+                <RNDateTimePicker
                   testID="dateTimePicker"
                   value={date}
                   mode={mode}
