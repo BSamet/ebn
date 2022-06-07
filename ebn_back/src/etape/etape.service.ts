@@ -58,7 +58,7 @@ export class EtapeService {
       .where('etape.collecteur.id = :id', { id })
       .andWhere('etape.date >= :today', { today })
       .andWhere('etape.date <= :tomorrow', { tomorrow })
-
+      .orderBy('etape.date', 'ASC')
       .getMany();
   }
 
