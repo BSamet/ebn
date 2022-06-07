@@ -59,9 +59,11 @@ export class HistoriqueController {
     @Query('nomCommercial') nomCommercial: string,
     @Query('typeAction') typeAction: string,
     @Query('typeDeDechet') typeDeDechet: string,
-    @Query('dateStart') dateStart: Date,
-    @Query('dateEnd') dateEnd: Date,
+    @Query('startDate') dateStart: Date,
+    @Query('enDate') dateEnd: Date,
+    
   ) {
+ 
     const takeForBuilder = take || 10;
     const pagesForBuilder = pages || 1;
     const skipForBuilder = takeForBuilder * (pagesForBuilder - 1);
@@ -75,8 +77,13 @@ export class HistoriqueController {
       typeDeDechet,
       dateStart,
       dateEnd,
+      
     );
+    
   }
+
+  
+
 
   @hasRoles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)

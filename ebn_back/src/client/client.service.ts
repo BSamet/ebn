@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { UtilisateursService } from '../utilisateurs/utilisateurs.service';
 import { Utilisateur } from '../utilisateurs/entities/utilisateur.entity';
 import { TypeDechet } from '../type-dechets/entities/type-dechet.entity';
+import { catchError, throwError } from 'rxjs';
 
 @Injectable()
 export class ClientService {
@@ -39,7 +40,9 @@ export class ClientService {
           id: createClientDto.typeDechetsId,
         }),
       ];
-      return this.clientRepository.save(client);
+      
+        return this.clientRepository.save(client);
+     
     });
   }
 
@@ -48,8 +51,13 @@ export class ClientService {
   }
 
   findOne(id: number) {
-    return this.clientRepository.findOne(id);
+    return this.clientRepository.findOne({
+      where: {
+        id: id
+      }
+    });
   }
+
 
   async findAllClientPagination(take: number, skip: number) {
     const countedClient = await this.clientRepository.count();
@@ -91,7 +99,11 @@ export class ClientService {
     };
     const updatedClient = await this.clientRepository.update(id, client);
 
-    const newClient = await this.clientRepository.findOne(id);
+    const newClient = await this.clientRepository.findOne({
+      where: {
+        id: id
+      }
+    });
 
     const user = {
       nom: updateClientDto.nom,

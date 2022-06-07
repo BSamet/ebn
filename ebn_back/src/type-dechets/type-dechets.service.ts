@@ -24,7 +24,11 @@ export class TypeDechetsService {
     }
 
     findOne(id: number) {
-        return this.typeDechetsRepository.findOne(id);
+        return this.typeDechetsRepository.findOne({
+            where: {
+                id: id
+            }
+        });
     }
 
     update(id: number, updateTypeDechetDto: UpdateTypeDechetDto) {
