@@ -83,10 +83,9 @@ export class EtapeService {
       .innerJoinAndSelect('c.utilisateur', 'u')
       .innerJoinAndSelect('etape.collecteur', 'col')
       .innerJoinAndSelect('col.utilisateur', 'uCol')
-
       .where('c.id = :id', { id })
       .andWhere('etape.date >= :today', { today })
-
+      
       .getMany();
 
     return {

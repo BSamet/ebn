@@ -37,12 +37,22 @@ interface historyCustomerInterface{
     }
 }
 
-
-
+interface AgendaCollecteur {
+    date: Date;
+    collecteur:{
+        numeroVelo: number;
+        utilisateur: {
+            nom: string;
+            prenom: string;
+            telephone: number;
+        }
+    }
+}
 
         const DashboardAdminHistory = () => {
             const [DashboardAdminHistory, setDashboardAdminHistory] = useState<historyCustomerInterface[]>();
             const [nomCommercial, setNomCommercial] = useState('');
+            const [agendaCollecteur, setAgendaCollecteur] = useState<AgendaCollecteur>();
             const [typeAction, setTypeAction] = useState('');
             const [typeDeDechet, settypeDeDechet] = useState('');
             const [fetchOnce, setFetchOnce] = useState(true);
@@ -54,9 +64,6 @@ interface historyCustomerInterface{
             const [startDate, setStartDate] = useState('');
             const [startTime, setStartTime] = useState('');
             const [endDate, setEndDate] = useState('');
-
-            console.log(startDate +' ' + endDate)
-            
 
             const nomCommercialCat = DashboardAdminHistory?.reduce(
                 (acc, nomCommercial) =>
@@ -144,8 +151,14 @@ interface historyCustomerInterface{
                         setFetchOnce(false);
                         setTotalPages(res.data.totalPages)
                     })
+                    axios.get(HOST_BACK + '/etape/collecteur/1', {
+                        headers: {
+                            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                        }}).then(res => {
+                        setAgendaCollecteur(res.data)
+                    })
                 }
-            }, [DashboardAdminHistory, fetchOnce]);
+            }, [DashboardAdminHistory, fetchOnce, agendaCollecteur]);
 
             return (
 
@@ -295,7 +308,6 @@ interface historyCustomerInterface{
                             </List>
                         </Box>
                     </div>
-
                     <div className='pagination'>
                         <Stack spacing={2}>
                             <Pagination count={parseInt(totalPages)} color="primary" page={page}
@@ -303,6 +315,19 @@ interface historyCustomerInterface{
                         </Stack>
                     </div>
 
+                    <div>
+                        {agendaCollecteur?.map((agenda, index) => 
+                            <div>
+                                <p>{agenda.date}</p>
+                                <p>{agenda.client.id}</p>
+                                <p>{agenda.collecteur.utilisateur.nom}</p>
+                                <p>{agenda.collecteur.utilisateur.prenom}</p>
+                                <p>{agenda.collecteur.utilisateur.telephone}</p>
+                                <p>{agenda.collecteur.numeroVelo}</p>
+
+                            </div>
+                        )}
+                    </div>
 
                 </div>
             )
