@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack/lib/typescript/src/types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -22,12 +22,22 @@ type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
 
 const SignInScreen = () => {
   const navigation = useNavigation<AuthScreenNavigate>();
-
   // const [passwordForgot, setpasswordForgot] = useState(''); // TODO redirection vers modal reset password
   const {height} = useWindowDimensions();
-
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
+
+  const clearAll = async () => {
+    try {
+      await AsyncStorage.clear();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    clearAll().then(() => {});
+  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,6 +58,7 @@ const SignInScreen = () => {
         await AsyncStorage.setItem('nom', decode.utilisateur.nom);
         await AsyncStorage.setItem('token', res.data.access_token);
         await AsyncStorage.setItem('token_exp', JSON.stringify(decode.exp));
+
         if (decode.utilisateur.role === 'Client') {
           axios
             .post(
@@ -59,8 +70,8 @@ const SignInScreen = () => {
                 },
               },
             )
-            .then(async res => {
-              await AsyncStorage.setItem('id', res.data.id.toString());
+            .then(async resCli => {
+              await AsyncStorage.setItem('id', resCli.data.id.toString());
             })
             .finally(() => {
               navigation.navigate('Client');
@@ -76,8 +87,12 @@ const SignInScreen = () => {
                 },
               },
             )
-            .then(async res => {
-              await AsyncStorage.setItem('id', res.data.id.toString());
+            .then(async resCol => {
+              console.log('resultat collecteur');
+              await AsyncStorage.setItem('id', resCol.data.id.toString());
+            })
+            .catch(e => {
+              console.log(e);
             })
             .finally(() => {
               navigation.navigate('Collecteur');
@@ -93,9 +108,6 @@ const SignInScreen = () => {
       });
   };
 
-  // const onSignUpPressed = () => {
-  //   console.warn('Inscrit !');
-  // };
   const onForgotPasswordPressed = () => {
     console.warn('Mot de passe oublié');
   };
@@ -131,12 +143,6 @@ const SignInScreen = () => {
         onChange={e => setPassword(e.target.value)}
       />
       <CustomButton text={'Connexion'} onPress={login} />
-      {/* <CustomButton
-        text={'Inscription'}
-        onPress={() => {
-          navigation.navigate('Collecteur');
-        }}
-      /> */}
       <ButtonMdpForgot
         text={'Mot de passe oublié'}
         onPress={onForgotPasswordPressed}

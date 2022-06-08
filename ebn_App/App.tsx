@@ -23,7 +23,7 @@ const RootStack = createNativeStackNavigator<AuthRootParamList>();
 const Tab = createBottomTabNavigator();
 // ajouter ici les différents routes dans NavTab pour la bottomNav
 
-const NavTab = () => {
+const NavTabClient = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -34,7 +34,7 @@ const NavTab = () => {
         component={DashBordClient}
         options={{
           headerShown: false,
-          tabBarLabel: 'Dashbord',
+          tabBarLabel: 'Dashboard',
           tabBarIcon: () => <Icon name="desktop-outline" type="ionicon" />,
         }}
       />
@@ -45,6 +45,35 @@ const NavTab = () => {
           headerShown: false,
           tabBarLabel: 'Historique',
           tabBarIcon: () => <Icon name="receipt-outline" type="ionicon" />,
+        }}
+      />
+      <Tab.Screen
+        name="Déconnexion"
+        component={SignInScreen}
+        options={{
+          tabBarStyle: {display: 'none'},
+          headerShown: false,
+          tabBarLabel: 'Exit',
+          tabBarIcon: () => <Icon name="enter-outline" type="ionicon" />,
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+const NavTabCollecteur = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#8AC997',
+      }}>
+      <Tab.Screen
+        name="Dashbord"
+        component={DashBordCollecteur}
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Dashboard',
+          tabBarIcon: () => <Icon name="desktop-outline" type="ionicon" />,
         }}
       />
       <Tab.Screen
@@ -73,12 +102,12 @@ const App = () => {
         />
         <RootStack.Screen
           name="Client"
-          component={NavTab}
+          component={NavTabClient}
           options={{headerShown: false}}
         />
         <RootStack.Screen
           name="Collecteur"
-          component={DashBordCollecteur}
+          component={NavTabCollecteur}
           options={{headerShown: false}}
         />
       </RootStack.Navigator>

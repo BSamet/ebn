@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-
 import {
   Image,
   Modal,
@@ -12,19 +11,13 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
-
-// import {AuthRootParamList} from '../../Navigation/RouteNavigator';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useState} from 'react';
-
 import axios from 'axios';
-import {HOST_BACK} from "../../../environment/environment";
-
+import {HOST_BACK} from '../../../environment/environment';
 import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>; a utilisé si direction vers d'autre page
 interface EtapeCollecteur {
   id: number;
   date: string;
@@ -67,8 +60,6 @@ interface collecteurInterface {
 
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
-  // navigation typé
-
   // const navigation = useNavigation<AuthScreenNavigate>();
   const {height} = useWindowDimensions();
   const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
@@ -76,21 +67,35 @@ const DashBordCollecteur = () => {
   const [fetchOnce, setFetchOnce] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [ClientModal, setClientModal] = useState<EtapeCollecteur>();
-  const [CollecteurToken, setCollecteurToken] = useState('');
-  AsyncStorage.getItem('token').then(value => setCollecteurToken(value));
-  useEffect(() => {
-    console.log(CollecteurToken);
+  const [collecteurToken, setCollecteurToken] = useState<string | null>('');
+  const [collecteurId, setCollecteurId] = useState<string | null>('');
+  const [collecteurName, setCollecteurName] = useState<string | null>('');
+  const [collecteurLastname, setCollecteurLastname] = useState<string | null>(
+    '',
+  );
 
+  AsyncStorage.getItem('token').then(value => {
+    setCollecteurToken(value);
+  });
+  AsyncStorage.getItem('id').then(value => {
+    setCollecteurId(value);
+  });
+  AsyncStorage.getItem('nom').then(value => {
+    setCollecteurLastname(value);
+  });
+  AsyncStorage.getItem('prenom').then(value => {
+    setCollecteurName(value);
+  });
+
+  useEffect(() => {
     if (fetchOnce) {
       axios
-        .get(HOST_BACK + '/etape/collecteur/1', {
+        .get(HOST_BACK + '/etape/collecteur/' + collecteurId, {
           headers: {
-            Authorization: `Bearer ${CollecteurToken}`,
+            Authorization: `Bearer ${collecteurToken}`,
           },
         })
         .then(res => {
-          // appel de l'api
-
           setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
           setEtapes(res.data); // recuperation des etapes pour map
 
@@ -98,7 +103,7 @@ const DashBordCollecteur = () => {
           setFetchOnce(false);
         });
     }
-  }, [etapes, userCollecteur, fetchOnce, CollecteurToken]);
+  }, [etapes, userCollecteur, fetchOnce, collecteurToken, collecteurId, collecteurLastname, collecteurName]);
 
   const showModal = (Client: any) => {
     setModalOpen(true);
@@ -127,8 +132,7 @@ const DashBordCollecteur = () => {
             />
 
             <Text style={styles.topText}>
-              Bonjour, {userCollecteur?.utilisateur.nom}{' '}
-              {userCollecteur?.utilisateur.prenom}
+              Bonjour, {collecteurLastname} {collecteurName}
             </Text>
           </LinearGradient>
         </View>
@@ -170,7 +174,7 @@ const DashBordCollecteur = () => {
                 {moment(data.date).format('DD.MM.YYYY  à  HH[h] mm')}
               </Text>
 
-              <QrCodeScanner  data={data.client.id}/>
+              <QrCodeScanner data={data.client.id} />
             </Pressable>
           </View>
         ))}
