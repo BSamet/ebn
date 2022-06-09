@@ -20,10 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `ebn_database`
 --
-DROP DATABASE IF EXISTS `ebn_database`
-CREATE DATABASE IF NOT EXISTS `ebn_database` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE `ebn_database`;
-
 -- --------------------------------------------------------
 
 --

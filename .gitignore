@@ -128,3 +128,4 @@ yarn.lock
  #chemin d'accès sdk
 .ebn_App/android/.local.properties
 /ebn_App/environment/
+/ebn_back/database/data/
