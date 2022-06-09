@@ -25,7 +25,7 @@ services:
       - "8088:80"
     environment:
       PMA_HOST: dev-database
-      MYSQL_ROOT_PASSWORD: ebnrootd
+      MYSQL_ROOT_PASSWORD: ebnroot
 
   dev-api:
     container_name: dev-api
