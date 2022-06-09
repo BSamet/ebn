@@ -27,8 +27,8 @@ export class EtapeController {
     return this.etapeService.create(createEtapeDto);
   }
 
-  // @hasRoles(UserRole.ADMIN)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll() {
     return this.etapeService.findAll();

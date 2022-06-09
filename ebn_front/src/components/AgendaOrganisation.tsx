@@ -28,18 +28,14 @@ interface ramassageInterface {
 }
 
 interface etapesInterface {
-    id: number;
     date: Date;
-    isCollected: number;
-    commentaire: string;
+    isCollected: boolean;
     clientId: number;
+    commentaire: string;
     collecteurId: number;
 }
 
-
-
 export function AgendaOrganisation(){
-
     const [fetchOnce, setFetchOnce] = useState(true);
     const [fetchEtapeOnce, setFetchEtapeOnce] = useState(true);
     const [fetchEtapeTwice, setFetchEtapeTwice] = useState(true);
@@ -50,14 +46,11 @@ export function AgendaOrganisation(){
 
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>();
     const [collectorEtape, setCollectorEtape]= useState<ramassageInterface[]>();
-    let [Collector, setCollector] = React.useState('1');
+    let [Collector, setCollector] = React.useState(1);
 
-    const [checked, setChecked] = React.useState<any>([]);
-    let [left, setLeft] = React.useState<any>([]);
-    const [right, setRight] = React.useState<any>([]);
+    const [checked, setChecked] = React.useState<number[]>([]);
+    
 
-    const leftChecked = intersection(checked, finalEtapeList);
-    const rightChecked = intersection(checked, collectorEtape);
     
     // let collectorList
     useEffect(() => {
@@ -108,7 +101,7 @@ export function AgendaOrganisation(){
             etapesAbonnementList?.map((etapeAbonnement) => {
                 etapesArray?.push(etapeAbonnement);
             });
-            setFinalEtapeList(etapesArray);            
+            setFinalEtapeList(etapesArray);   
     }, [etapesList]);
     
     function fillSelectOptions(){
@@ -120,29 +113,20 @@ export function AgendaOrganisation(){
         })
         return options;
     }
+    // const leftChecked = intersection(checked, finalEtapeList );
+    // const rightChecked = intersection(checked, collectorEtape);
 
-    function getEtapeId(){
-        const etapes = finalEtapeList?.map((etape) => {
-            return etape.id;
-        })
-        return etapes;
-    }
-
-    function stockEtapesInLeftList(){
-        left =  getEtapeId();
-        return left;
-    }
-
-    stockEtapesInLeftList()
-
-    function not(a: any, b:any) {
-        return a.filter((value: any) => b.indexOf(value) === -1);
-      }
-      
-    function intersection(a: any, b: any) {
-      return a.filter((value: any) => 
-      b.indexOf(value) !== -1);
-    }
+    const handleToggle = (value: number) => () => {
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [...checked];
+    
+        if (currentIndex === -1) {
+          newChecked.push(value);
+        } else {
+          newChecked.splice(currentIndex, 1);
+        }
+        setChecked(newChecked);
+    };
 
     const handleChange = (event: any) => {
         setCollector(event.target.value);
@@ -158,34 +142,62 @@ export function AgendaOrganisation(){
       };
     
       const handleCheckedRight = () => {
-        setCollectorEtape(leftChecked);
-        setFinalEtapeList(not(finalEtapeList, leftChecked));
-        setChecked(not(checked, leftChecked));
+        finalEtapeList?.map((etape) => {
+            
+            for(let i = 0; i <= checked.length; i++){
+                
+                if(etape.id == checked[i]){
+                    console.log(etape)
+                    collectorEtape?.push(etape)   
+                    // finalEtapeList?.splice((checked[i] - 1), 1)
+                    console.log(collectorEtape)
+                }
+            }
+        })
+        // setFinalEtapeList(not(finalEtapeList, checked));
+        setChecked([]);
       };
     
       const handleCheckedLeft = () => {
-        setLeft(left.concat(rightChecked));
-        setRight(not(right, rightChecked));
-        setChecked(not(checked, rightChecked));
+        // setLeft(left.concat(rightChecked));
+        // setRight(not(right, rightChecked));
+        // setChecked(not(checked, rightChecked));
       };
     
       const handleAllLeft = () => {
-        setFinalEtapeList(collectorEtape);
-        setCollectorEtape([])
+        if(collectorEtape![0] == undefined){
+
+        } else {
+            setFinalEtapeList(collectorEtape);
+            setCollectorEtape([])
+        }
       };
 
-    const handleToggle = (value: any) => () => {
-        const currentIndex = finalEtapeList?.indexOf(value);
-        const newChecked = [...checked];
-    
-        if (currentIndex === -1) {
-          newChecked.push(value);
-        } else {
-          newChecked.splice(currentIndex!, 1);
-        }
-        setChecked(newChecked);
-    };
-   
+      function sendCollectorEtape() {
+          console.log(collectorEtape);
+            collectorEtape?.map((etape) => {
+                const etapeToAdd: etapesInterface = {
+                    clientId: 1,
+                    collecteurId: Collector,
+                    isCollected: false,
+                    commentaire: "",
+                    date: etape.date,
+                }
+                axios
+                .post(HOST_BACK + "/etape", etapeToAdd, {
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                    }
+                })
+                .then(response => { 
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.log(error.response)
+                });
+            })
+      }
+        
     return (
         <>
             <div>
@@ -207,7 +219,7 @@ export function AgendaOrganisation(){
                     </Select>
                 </FormControl>
 
-                <Grid container spacing={2} justifyContent="center" alignItems="center">
+                <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={8}>
                     <Grid item>
                         <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
                             <List dense component="div" role="list">
@@ -219,7 +231,7 @@ export function AgendaOrganisation(){
                                         key={etape.id}
                                         role="listitem"
                                         button
-                                        // onClick={handleToggle(etape.id)}
+                                        onClick={handleToggle(etape.id)}
                                         >
                                         <ListItemIcon>
                                             <Checkbox
@@ -246,7 +258,7 @@ export function AgendaOrganisation(){
                             variant="outlined"
                             size="small"
                             onClick={handleAllRight}
-                            // disabled={stockEtapesInLeftList().length === 0}
+                            disabled={finalEtapeList?.length === 0}
                             aria-label="move all right"
                         >
                             ≫
@@ -266,7 +278,7 @@ export function AgendaOrganisation(){
                             variant="outlined"
                             size="small"
                             onClick={handleCheckedLeft}
-                            disabled={rightChecked.length === 0}
+                            disabled={collectorEtape?.length === 0}
                             aria-label="move selected left"
                         >
                             &lt;
@@ -276,7 +288,7 @@ export function AgendaOrganisation(){
                             variant="outlined"
                             size="small"
                             onClick={handleAllLeft}
-                            disabled={right.length === 0}
+                            disabled={collectorEtape?.length === 0}
                             aria-label="move all left"
                         >
                             ≪
@@ -313,6 +325,15 @@ export function AgendaOrganisation(){
                                 <ListItem />
                             </List>
                         </Paper>
+                        <Button
+                            sx={{ my: 0.5 }}
+                            variant="outlined"
+                            size="small"
+                            onClick={sendCollectorEtape}
+                            aria-label="move all left"
+                        >
+                            Envoyer
+                        </Button>
                         </Grid>
                     </Grid>
                     </div>
