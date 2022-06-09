@@ -4,6 +4,7 @@ import DashboardAdminHistory from "./DashboardAdminHistory";
 import ConteneursList from './ConteneursList';
 import ClientsList from './ClientsList';
 import CollecteursList from './CollecteursList';
+import DashboardHistoryCollecteur from './DashboardHistoryCollecteur';
 
 interface ViewAdminDashInterface {
     selectNav: string;
@@ -28,6 +29,10 @@ const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, set
     case 'Clients':
         return (
             <ClientsList setSelectClientId={setSelectClientId} selectClientId={selectClientId} />
+        )
+    case 'Agenda':
+        return(
+            <DashboardHistoryCollecteur />
         )
     case 'Collecteurs':
         return (

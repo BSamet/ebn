@@ -2,63 +2,101 @@ import "react-datepicker/dist/react-datepicker.css";
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {HOST_BACK} from "../environment/environment";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-import moment from "moment";
-import Stack from "@mui/material/Stack";
-import Pagination from "@mui/material/Pagination";
-import CircularProgress from '@mui/material/CircularProgress';
-import DatePicker from "react-datepicker";
-import { registerLocale, setDefaultLocale } from  "react-datepicker";
-import fr from 'date-fns/locale/fr';
-import TextField from '@mui/material/TextField';
+import { MenuItem } from "@mui/material";
+import {FormControl, InputLabel, Select} from "@mui/material";
 
 
 
 
 
-interface AgendaCollecteur {
-    date: Date;
-    collecteur:{
-        numeroVelo: number;
+
+interface Collecteur {
+        id: number;
         utilisateur: {
             nom: string;
             prenom: string;
-            telephone: number;
         }
+    
+}
+
+interface InformationEtape{
+    date: Date;
+    client:{
+        nomCommercial: string;
+        nom: string;
+        prenom: string;
+        adresse: string;
     }
 }
 
-const DashboardHistoryCollecteur  = () => {
-    const [agendaCollecteur, setAgendaCollecteur] = useState<AgendaCollecteur>();
+
+export function DashboardHistoryCollecteur () {
+    const [Collecteur, setCollecteur] = useState<Collecteur[]>();
+    const [InformationEtape, setInformationEtape] = useState<InformationEtape[]>();
     const [fetchOnce, setFetchOnce] = useState(true);
+    const [fetchCollectorOnce, setFetchCollectorOnce] = useState(true);
 
 
 
-useEffect(() => {
-    if (fetchOnce) { axios.get(HOST_BACK + '/etape/collecteur/1', {
-        headers: {
-            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-        }}).then(res => {
-        setAgendaCollecteur(res.data)
-    })
-}}, [DashboardHistoryCollecteur, fetchOnce, agendaCollecteur]);
+    useEffect(() => {
+        if (fetchOnce) { axios.get(HOST_BACK + '/etape/collecteur/1', {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }}).then(res => {
+            setInformationEtape(res.data)
+            console.log("etape:" + InformationEtape)
+            setFetchOnce(false)
+            
+            })
+        }      
+    }, [fetchOnce,InformationEtape ]);
 
-<div>
-{agendaCollecteur?.map((agenda, index) => 
+    useEffect(() => {
+        if(fetchCollectorOnce){
+        axios.get(HOST_BACK + '/collecteur',{
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(res => {
+            console.log(res.data)
+            setCollecteur(res.data)
+            console.log("collecteur:" + Collecteur)
+            setFetchCollectorOnce(false)
+
+            })
+        }
+    }, [fetchCollectorOnce, Collecteur])
+
+    return(
     <div>
-        <p>{agenda.date}</p>
-        <p>{agenda.client.id}</p>
-        <p>{agenda.collecteur.utilisateur.nom}</p>
-        <p>{agenda.collecteur.utilisateur.prenom}</p>
-        <p>{agenda.collecteur.utilisateur.telephone}</p>
-        <p>{agenda.collecteur.numeroVelo}</p>
+        
 
+            <div>
+        <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                // value={agendaCollecteur}
+                label="Age"
+                // onChange={agendaCollecteur}
+            >
+                {Collecteur?.map((list) => 
+                    <MenuItem value={list.id}>{list.utilisateur.nom + " " + list.utilisateur.prenom}</MenuItem>
+                
+                )}
+                
+                
+            </Select>
+        </FormControl>
+
+                
+
+            </div>
+            
+        
     </div>
-)}
-</div>
-
+    )
 }
+
+export default DashboardHistoryCollecteur
