@@ -88,7 +88,6 @@ const SignInScreen = () => {
               },
             )
             .then(async resCol => {
-              console.log('resultat collecteur');
               await AsyncStorage.setItem('id', resCol.data.id.toString());
             })
             .catch(e => {

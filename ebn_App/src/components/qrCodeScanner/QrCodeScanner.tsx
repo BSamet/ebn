@@ -1,7 +1,17 @@
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line prettier/prettier
 import React, {useState} from 'react';
-import {Button, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {
+    Button,
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -10,6 +20,7 @@ import PopUp from '../popUp';
 
 const QrCodeScanner = (props: any) => {
 
+    let QRScanner: any
     const [scan, setScan] = useState(false);
     const [result, setResult] = useState();
     const [affichage, setaffichage] = useState(false);
@@ -17,6 +28,7 @@ const QrCodeScanner = (props: any) => {
         res: result,
         clientId: props.data
     }
+    let titleButton = props.titleButton;
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
@@ -45,17 +57,18 @@ const QrCodeScanner = (props: any) => {
                         )}
                         {!scan && (
                             <Button
-                                title="commencer le scan"
+                                title={titleButton}
                                 color="#8AC997"
                                 onPress={startScan}
                             />
                         )}
                         {scan && (
+                            <Modal>
                             <QRCodeScanner
                                 reactivate={true}
                                 showMarker={true}
                                 ref={node => {
-                                    scanner = node;
+                                    QRScanner = node;
                                 }}
                                 onRead={onSuccess}
                                 topContent={
@@ -69,6 +82,7 @@ const QrCodeScanner = (props: any) => {
                                     </TouchableOpacity>
                                 }
                             />
+                            </Modal>
                         )}
                     </View>
                 </ScrollView>

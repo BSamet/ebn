@@ -17,6 +17,9 @@ import {HOST_BACK} from '../../../environment/environment';
 import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Divider} from "react-native-elements";
+import {DataTable, Card, Avatar, Button, Title, Paragraph} from "react-native-paper";
+require('moment/locale/fr.js');
 
 interface EtapeCollecteur {
   id: number;
@@ -96,10 +99,7 @@ const DashBordCollecteur = () => {
           },
         })
         .then(res => {
-          setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
           setEtapes(res.data); // recuperation des etapes pour map
-
-          // on cherche une seul fois
           setFetchOnce(false);
         });
     }
@@ -110,34 +110,45 @@ const DashBordCollecteur = () => {
     setClientModal(Client);
   };
 
+  const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
+
+
   return (
     <ScrollView>
       <View style={styles.page}>
-        <View style={styles.header}>
+        <View>
           <LinearGradient
-            colors={['#8AC997', '#0096f0']}
-            start={{
-              x: 0,
-              y: 1,
-            }}
-            end={{
-              x: 1,
-              y: 2,
-            }}
-            style={styles.box}>
+              colors={['#8AC997', '#0096f0']}
+              start={{
+                x: 0,
+                y: 1,
+              }}
+              end={{
+                x: 1,
+                y: 2,
+              }}
+              style={styles.box}>
             <Image
-              source={Logo}
-              style={[styles.Logo, {height: height * 0.3}]}
-              resizeMode="contain"
+                source={Logo}
+                style={[styles.Logo, {height: height * 0.3}]}
+                resizeMode="contain"
             />
-
             <Text style={styles.topText}>
               Bonjour, {collecteurLastname} {collecteurName}
             </Text>
           </LinearGradient>
         </View>
 
-        <Text style={styles.titleText}>Etape de votre collecte</Text>
+        <View style={styles.header}>
+          <Text style={styles.titleText}>Votre Agenda du {'\n'} {moment(Date.now()).locale('fr').format('DD MMMM YYYY')}</Text>
+        </View>
+
+        <Divider
+            style={{width: '100%', margin: 10}}
+            color="#8AC997"
+            width={2}
+            orientation="horizontal"
+        />
 
         <Modal animationType="slide" transparent={true} visible={modalOpen}>
           <View style={styles.centeredView}>
@@ -164,26 +175,54 @@ const DashBordCollecteur = () => {
           </View>
         </Modal>
 
-        {etapes?.map((data, index) => (
-          <View style={styles.body} key={index}>
-            <Pressable onPress={() => showModal(data)}>
-              <Text style={styles.date}>{data.client.nomCommercial}</Text>
-
-              <Text style={styles.poids}>
-                Heure estimé de passage :{' '}
-                {moment(data.date).format('DD.MM.YYYY  à  HH[h] mm')}
-              </Text>
-
-              <QrCodeScanner data={data.client.id} />
-            </Pressable>
-          </View>
-        ))}
+          {etapes?.map((item, index) => (
+              // <View>
+              //   <DataTable.Header>
+              //     <DataTable.Cell>
+              //       {moment(item.date).format('HH[h] mm')}
+              //     </DataTable.Cell>
+              //     <DataTable.Cell>
+              //       {item.client.nomCommercial}
+              //     </DataTable.Cell>
+              //   </DataTable.Header>
+              //   <DataTable.Header>
+              //     <DataTable.Cell>
+              //       {item.client.adresse}
+              //     </DataTable.Cell>
+              //   </DataTable.Header>
+              //   <DataTable.Header>
+              //     <DataTable.Cell>
+              //       <QrCodeScanner data={item.client.id} titleButton={"Collecter"} />
+              //     </DataTable.Cell>
+              //     <DataTable.Cell>
+              //       <QrCodeScanner data={item.client.id} titleButton={"Remise"} />
+              //     </DataTable.Cell>
+              //   </DataTable.Header>
+              //   <DataTable.Header>
+              //   </DataTable.Header>
+              // </View>
+            <Card>
+            <Card.Title title={item.client.nomCommercial} />
+            <Card.Content>
+            <Paragraph>Heure : {moment(item.date).format('HH[h] mm')}</Paragraph>
+            <Paragraph>Adresse : {item.client.adresse}</Paragraph>
+            </Card.Content>
+            <Card.Actions>
+              <QrCodeScanner data={item.client.id} titleButton={"Collecter"} />
+              <QrCodeScanner data={item.client.id} titleButton={"Remise"} />
+            </Card.Actions>
+            </Card>
+          ))}
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+  },
   buttonModal: {
     borderRadius: 20,
     padding: 10,
@@ -241,9 +280,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   titleText: {
-    fontSize: 22,
+    textAlign: "center",
+    fontSize: 28,
     marginTop: 20,
-    paddingHorizontal: 10,
     color: 'black',
     fontFamily: 'Confortaa-Regular',
   },
