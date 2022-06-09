@@ -2,6 +2,4 @@ FROM node:current-alpine as development
 
 WORKDIR /usr/src/app
 
-ADD package*.json ./
-
 CMD ["node", "dist/src/main"]
