@@ -4,7 +4,7 @@ import {
   Entity,
   JoinTable,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { Client } from '../../client/entities/client.entity';
 import { Collecteur } from '../../collecteur/entities/collecteur.entity';
@@ -27,7 +27,7 @@ export class Utilisateur {
   @Column()
   public prenom: string;
 
-  @Column()
+  @Column({ unique : true })
   public mail: string;
 
   @Column()

@@ -67,6 +67,19 @@ export default function SignInSide() {
     error: false,
     errorMessage: "",
   });
+  let emailEntered: any
+
+  async function isEmailDuplicated(email: string){
+    emailEntered = await axios
+                              .get(HOST_BACK + "/utilisateurs/email/" + email)
+                              .then((res) => {
+                                if(res.data.mail == email){
+                                  return res.data.mail;
+                                } else {
+                                  return "";
+                                }
+                              }) 
+  }
 
   function validatePhone(phone: string) {
     const pattern = /^((\+)33|0)[1-9](\d{2}){4}$/g;
@@ -85,7 +98,7 @@ export default function SignInSide() {
     return pattern.test(password);
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let send = true;
     const data = new FormData(event.currentTarget);
@@ -117,6 +130,21 @@ export default function SignInSide() {
       setErrorMail({
         error: true,
         errorMessage: "Veuillez entrez une adresse email valide.",
+      });
+    } else {
+      setErrorMail({
+        error: false,
+        errorMessage: "",
+      });
+    }
+
+    await isEmailDuplicated(mail)
+
+    if(emailEntered == mail) {
+      send = false;
+      setErrorMail({
+        error: true,
+        errorMessage: "Cette adresse mail est déjà utilisée",
       });
     } else {
       setErrorMail({
@@ -182,6 +210,7 @@ export default function SignInSide() {
           setTimeout(() => {
             navigate("/Connection");
           }, 1500);
+          
         })
         .catch((err) => {
           setErrorRequest(true);

@@ -54,7 +54,7 @@ export class ClientController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.clientService.findOne(+id);
+    return this.clientService.findOne(id);
   }
 
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
@@ -62,6 +62,13 @@ export class ClientController {
   @Post('/mail')
   findByUserMail(@Body() createClientDto: CreateClientDto) {
     return this.clientService.findByUserMail(createClientDto.mail);
+  }
+
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('/:mail')
+  findOneUserByMail(@Param('mail') mail: string) {
+    return this.clientService.findByUserMail(mail);
   }
 
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
@@ -74,7 +81,7 @@ export class ClientController {
   @hasRoles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.clientService.remove(+id);
   }
 }
