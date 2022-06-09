@@ -40,7 +40,11 @@ export class CollecteurService {
   }
 
   findOne(id: number) {
-    return this.collecteurRepository.findOne(id);
+    return this.collecteurRepository.findOne({
+      where: {
+        id: id
+      }
+    });
   }
 
   async findAllCollecteurPagination(take: number, skip: number) {
@@ -82,7 +86,11 @@ export class CollecteurService {
       collecteur,
     );
 
-    const newCollecteur = await this.collecteurRepository.findOne(id);
+    const newCollecteur = await this.collecteurRepository.findOne({
+      where: {
+        id: id
+      }
+    });
 
     const user = {
       nom: updateCollecteurDto.nom,

@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY package.json /usr/src/app
 
-RUN npm install glob rimraf
+RUN npm install -g npm@8.12.1
 
 RUN npm install
 
