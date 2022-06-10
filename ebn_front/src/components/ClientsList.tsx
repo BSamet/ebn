@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateClient from './UpdateClient';
 import AddClient from './AddClient';
+import { Button } from '@mui/material';
 
 
 interface propsClientListInterface {
@@ -35,12 +36,13 @@ interface clientsInterface {
   {
     typeDechets: number
   }
+  clientvalide:boolean,
 }
 
 const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInterface) => {
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-
+  const [clientValid, setclientValid] = React.useState(true);
   const [clientsList, setClientslist] = useState<clientsInterface[]>();
   const [fetchOnce, setFetchOnce] = useState(true);
   //Paginations des clients
@@ -54,8 +56,14 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
       }
   }).then(res => {
       setClientslist(res.data.clients)
+      
     });
   };
+
+  let clientvalide = {
+    "clientvalide": clientValid,
+  
+};
 
   //Fin pagination des clients
 
@@ -73,6 +81,8 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
       });
     }
   }, [clientsList, fetchOnce]);
+ 
+  
 
 
   const handleListItemClick = (
@@ -82,6 +92,26 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
     setSelectedIndex(index);
     setSelectClientId(index);
   }
+
+  const statusClient = (
+    list : clientsInterface
+  ) => {
+    if(list.clientvalide == false){
+      return <p>En attente</p>
+    }
+    else{
+      return <p>Valide</p>
+    }
+  }
+
+  const validClient = (
+   ) => {
+    axios.patch(HOST_BACK + '/client/' + selectClientId, clientvalide, {
+        headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+    })
+}
 
   const deleteClient = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -119,6 +149,7 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
               <ListItemText className='listHeader' primary="Nom" />
               <ListItemText className='listHeader' primary="Prénom" />
               <ListItemText className='listHeader' primary="Téléphone" />
+              <ListItemText className='listHeader' primary="Statut" />
               <ListItemText className='listHeader' primary="Modifier / Supprimer" />
             </ListItem>
             <ListItem className='listItemHeader'>
@@ -135,6 +166,8 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
                 <ListItemText className='listItem' primary={list.utilisateur.nom} />
                 <ListItemText className='listItem' primary={list.utilisateur.prenom} />
                 <ListItemText className='listItem' primary={list.utilisateur.telephone} />
+                <ListItemText className='listItem' primary={statusClient(list)}/>
+                <Button onClick={validClient} variant="outlined" className='buttonStatus'>Modifier</Button>
                 <div>
                   <UpdateClient selectClientId={selectClientId} />
                 </div>
@@ -158,4 +191,8 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
   )
 }
 
+
+
+
+             
 export default ClientsList

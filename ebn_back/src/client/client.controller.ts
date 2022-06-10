@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -73,10 +74,20 @@ export class ClientController {
 
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientService.update(+id, updateClientDto);
   }
+
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch(':id')
+  updateStatus(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+    return this.clientService.updateStatus(+id, updateClientDto);
+  }
+  
+  
+  
 
   @hasRoles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -25,6 +25,7 @@ export class ClientService {
       prenom: createClientDto.prenom,
       mail: createClientDto.mail,
       telephone: createClientDto.telephone,
+      clientvalide:createClientDto.clientvalide
     };
 
     this.utilisateursService.create(userDto).forEach((response) => {
@@ -39,7 +40,9 @@ export class ClientService {
         Object.assign(new TypeDechet(), {
           id: createClientDto.typeDechetsId,
         }),
+        
       ];
+      client.clientvalide= false
       
         return this.clientRepository.save(client);
      
@@ -98,6 +101,8 @@ export class ClientService {
       adresse: updateClientDto.adresse,
     };
     const updatedClient = await this.clientRepository.update(id, client);
+    
+    
 
     const newClient = await this.clientRepository.findOne({
       where: {
@@ -110,6 +115,8 @@ export class ClientService {
       prenom: updateClientDto.prenom,
       telephone: updateClientDto.telephone,
     };
+  
+    
 
     const updateUser = await this.utilisateursService.update(
         newClient.utilisateur.id,
@@ -117,6 +124,15 @@ export class ClientService {
     );
 
     return this.clientRepository.find();
+  }
+
+  async updateStatus(id: number, updateClientDto: UpdateClientDto) {
+    const client = {
+      clientvalide : updateClientDto.clientvalide
+    };
+    const updatedClient = await this.clientRepository.update(id, client);
+   
+    
   }
 
   remove(id: number) {

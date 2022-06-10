@@ -31,4 +31,7 @@ export class CreateClientDto {
 
   @ApiProperty()
   public telephone: string;
+
+  @ApiProperty()
+  public clientvalide:  boolean;
 }
