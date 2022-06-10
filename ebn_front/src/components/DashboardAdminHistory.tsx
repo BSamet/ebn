@@ -101,6 +101,9 @@ interface historyCustomerInterface{
                         "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                     }}).then(res => {
                     setDashboardAdminHistory(res.data.historiques)
+                    setTotalPages(res.data.totalPages)
+                    
+                   
                 })
             }
 
@@ -138,6 +141,7 @@ interface historyCustomerInterface{
                         // appel de l'api
                         setFetchOnce(false);
                         setTotalPages(res.data.totalPages)
+                        
                     })
                 }
             }, [DashboardAdminHistory, fetchOnce]);

@@ -12,4 +12,7 @@ export class CreateEtapeDto {
 
     @ApiProperty()
     public commentaire: string;
+
+    @ApiProperty()
+    public date: Date;
 }

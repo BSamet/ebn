@@ -64,9 +64,7 @@ export class HistoriqueService {
     dateStart: Date,
     dateEnd: Date,
   ) {
-    const historiqueCounted = await this.historiqueRepository.count();
 
-    const totalPages = Math.ceil(historiqueCounted / take);
 
     // Set params for orderBy
     let params: string;
@@ -126,6 +124,35 @@ export class HistoriqueService {
       .skip(skip)
       .getMany();
 
+      let allHistoriquesPagination = await this.historiqueRepository
+      .createQueryBuilder('historique')
+      .leftJoinAndSelect('historique.client', 'client')
+      .leftJoinAndSelect('client.utilisateur', 'utilisateur')
+      .select('historique')
+      .addSelect('client.nomCommercial')
+      .addSelect('utilisateur.nom')
+      .addSelect('utilisateur.prenom')
+      .orderBy(params, orderParams)
+      .where(nomCommercial ? 'client.nomCommercial = :nomCommercial' : '1=1', {
+        nomCommercial,
+      })
+      .andWhere(typeAction ? 'historique.typeAction = :typeAction' : '1=1', {
+        typeAction,
+      })
+      .andWhere(
+        typeDeDechet ? 'historique.typeDeDechet = :typeDeDechet' : '1=1',
+        {
+          typeDeDechet,
+        },
+      )
+      .andWhere(dateStart ? 'historique.date >= :dateStart' : '1=1', {
+        dateStart,
+      })
+      .andWhere(dateEnd ? 'historique.date <= :dateEnd' : '1=1', { dateEnd })
+      .getMany();
+
+    const historiqueCounted = await allHistoriquesPagination.length;
+    const totalPages = Math.ceil(historiqueCounted / take);
 
 
     return {
