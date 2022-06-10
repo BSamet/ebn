@@ -76,18 +76,6 @@ export function AgendaOrganisation(){
         }
     }, [collecteursList, fetchOnce]);
 
-    // useEffect(() => {
-    //     if(fetchEtapeTwice){
-    //         axios.get(HOST_BACK + '/ramassage-abonnement', {
-    //             headers: {
-    //                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-    //             } 
-    //         }).then(ramassageAbonnement =>{
-    //             setEtapesAbonnementlist(ramassageAbonnement.data)
-    //             setFetchEtapeTwice(false);
-    //         })
-    //     }
-    // }, [etapesAbonnementList, fetchEtapeTwice])
     useEffect(() => {
         if(fetchEtapeTwice){
             axios.get(HOST_BACK + '/ramassage-ponctuel', {
@@ -110,9 +98,6 @@ export function AgendaOrganisation(){
                     etapesArray?.push(etape);
                 }
             });
-            etapesAbonnementList?.map((etapeAbonnement) => {
-                etapesArray?.push(etapeAbonnement);
-            });
             setFinalEtapeList(etapesArray);   
     };
     
@@ -125,8 +110,6 @@ export function AgendaOrganisation(){
         })
         return options;
     }
-    // const leftChecked = intersection(checked, finalEtapeList );
-    // const rightChecked = intersection(checked, collectorEtape);
 
     const handleToggle = (value: number) => () => {
         const currentIndex = checked.indexOf(value);
@@ -159,20 +142,24 @@ export function AgendaOrganisation(){
             for(let i = 0; i <= checked.length; i++){
                 
                 if(etape.id == checked[i]){
-                    console.log(etape)
                     collectorEtape?.push(etape)   
-                    console.log(collectorEtape)
                 }
             }
         })
-        // setFinalEtapeList(not(finalEtapeList, checked));
         setChecked([]);
       };
     
       const handleCheckedLeft = () => {
-        // setLeft(left.concat(rightChecked));
-        // setRight(not(right, rightChecked));
-        // setChecked(not(checked, rightChecked));
+        collectorEtape?.map((etape) => {
+            
+            for(let i = 0; i <= checked.length; i++){
+                
+                if(etape.id == checked[i]){
+                    finalEtapeList?.push(etape)   
+                }
+            }
+        })
+        setChecked([]);
       };
     
       const handleAllLeft = () => {
@@ -187,7 +174,6 @@ export function AgendaOrganisation(){
       function sendCollectorEtape() {
           console.log(collectorEtape);
             collectorEtape?.map((etape) => {
-                console.log(etape.clientId)
                 const etapeToAdd = {
                     clientId: 1,
                     collecteurId: Collector,
@@ -213,7 +199,6 @@ export function AgendaOrganisation(){
     return (
         <>
             <div>
-
                 <h1>Organiser l'agenda</h1>
                 <h3>Sélectionner un collecteur:</h3>
                 <FormControl >
@@ -237,10 +222,17 @@ export function AgendaOrganisation(){
                             onChange={(newDate) => {
                                 setDate(newDate);
                                 console.log(date)
-                                setEtapesArray();
                             }}
                             renderInput={(params) => <TextField {...params} helperText={null} />}
                         />
+                        <Button
+                            sx={{ my: 0.5 }}
+                            variant="outlined"
+                            size="medium"
+                            onClick={setEtapesArray}
+                        >
+                            Valider 
+                        </Button>
 
                 </FormControl>
 
@@ -343,7 +335,7 @@ export function AgendaOrganisation(){
                                             }}
                                             />
                                         </ListItemIcon>
-                                        <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY à HH [h] mm')}`} />
+                                        <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY')}`} />
                                     </ListItem>
                                 );
                                 })}
@@ -353,7 +345,7 @@ export function AgendaOrganisation(){
                         <Button
                             sx={{ my: 0.5 }}
                             variant="outlined"
-                            size="small"
+                            size="medium"
                             onClick={sendCollectorEtape}
                             aria-label="move all left"
                         >
