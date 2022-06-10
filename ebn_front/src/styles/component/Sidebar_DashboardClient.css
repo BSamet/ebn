@@ -99,6 +99,7 @@
   margin-right: calc(1rem - 8px);
 }
 
+
 /* Tablets */
 @media screen and (max-width: 1200px) {
   .menuItem > span {
@@ -120,6 +121,7 @@
   }
   .menuItem > span {
     display: block;
+  
   }
   .logo {
     display: -webkit-box;

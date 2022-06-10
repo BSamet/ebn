@@ -81,23 +81,21 @@ export class EtapeService {
 
         const historique = await this.historiqueService.findByClient(+id);
 
-        const etape = await this.etapeRepository
-            .createQueryBuilder('etape')
-            .innerJoinAndSelect('etape.client', 'c')
-            .innerJoinAndSelect('c.utilisateur', 'u')
-            .innerJoinAndSelect('etape.collecteur', 'col')
-            .innerJoinAndSelect('col.utilisateur', 'uCol')
+    const etape = await this.etapeRepository
+      .createQueryBuilder('etape')
+      .innerJoinAndSelect('etape.client', 'c')
+      .innerJoinAndSelect('c.utilisateur', 'u')
+      .innerJoinAndSelect('etape.collecteur', 'col')
+      .innerJoinAndSelect('col.utilisateur', 'uCol')
+      .where('c.id = :id', { id })
+      .andWhere('etape.date >= :today', { today })
+      .getMany();
 
-            .where('c.id = :id', {id})
-            .andWhere('etape.date >= :today', {today})
-
-            .getMany();
-
-        return {
-            historique: historique,
-            etape: etape,
-        };
-    }
+    return {
+      historique: historique,
+      etape: etape,
+    };
+  }
 
     update(id: number, updateEtapeDto: UpdateEtapeDto) {
         return this.etapeRepository.update(id, updateEtapeDto);

@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `client` (
   `nomCommercial` varchar(255) DEFAULT NULL,
   `adresse` varchar(255) NOT NULL,
   `utilisateurId` int DEFAULT NULL,
+  `clientvalide` tinyint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_3ec2749d1f834e4324f496358bf` (`utilisateurId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -43,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `client` (
 --
 
 INSERT INTO `client` (`id`, `siret`, `nomCommercial`, `adresse`, `utilisateurId`) VALUES
-(1, 1256322929, 'Tacos-Pacos', '96 rue des maronniers 68200 Mulhouse', 2),
-(2, 1354294822, 'Les fraises de la pomme', '43 route des chaudrons 68200 Mulhouse', 3);
+(1, 1256322929, 'Tacos-Pacos', '96 rue des maronniers 68200 Mulhouse', 2,1),
+(2, 1354294822, 'Les fraises de la pomme', '43 route des chaudrons 68200 Mulhouse', 3,1);
 
 -- --------------------------------------------------------
 
