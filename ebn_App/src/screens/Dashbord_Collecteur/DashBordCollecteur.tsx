@@ -18,7 +18,7 @@ import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Divider} from "react-native-elements";
-import {DataTable, Card, Avatar, Button, Title, Paragraph} from "react-native-paper";
+import {Card, Avatar, Checkbox, Paragraph} from "react-native-paper";
 require('moment/locale/fr.js');
 
 interface EtapeCollecteur {
@@ -176,41 +176,16 @@ const DashBordCollecteur = () => {
         </Modal>
 
           {etapes?.map((item, index) => (
-              // <View>
-              //   <DataTable.Header>
-              //     <DataTable.Cell>
-              //       {moment(item.date).format('HH[h] mm')}
-              //     </DataTable.Cell>
-              //     <DataTable.Cell>
-              //       {item.client.nomCommercial}
-              //     </DataTable.Cell>
-              //   </DataTable.Header>
-              //   <DataTable.Header>
-              //     <DataTable.Cell>
-              //       {item.client.adresse}
-              //     </DataTable.Cell>
-              //   </DataTable.Header>
-              //   <DataTable.Header>
-              //     <DataTable.Cell>
-              //       <QrCodeScanner data={item.client.id} titleButton={"Collecter"} />
-              //     </DataTable.Cell>
-              //     <DataTable.Cell>
-              //       <QrCodeScanner data={item.client.id} titleButton={"Remise"} />
-              //     </DataTable.Cell>
-              //   </DataTable.Header>
-              //   <DataTable.Header>
-              //   </DataTable.Header>
-              // </View>
-            <Card>
-            <Card.Title title={item.client.nomCommercial} />
-            <Card.Content>
-            <Paragraph>Heure : {moment(item.date).format('HH[h] mm')}</Paragraph>
-            <Paragraph>Adresse : {item.client.adresse}</Paragraph>
-            </Card.Content>
-            <Card.Actions>
-              <QrCodeScanner data={item.client.id} titleButton={"Collecter"} />
-              <QrCodeScanner data={item.client.id} titleButton={"Remise"} />
-            </Card.Actions>
+            <Card style={styles.cardContainer}>
+              <Card.Title title={item.client.nomCommercial}/>
+              <Card.Content style={styles.cardMainContainer}>
+                <Paragraph>Heure : {moment(item.date).utc().format('HH[h] mm')}</Paragraph>
+                <Paragraph>Adresse : {item.client.adresse}</Paragraph>
+              </Card.Content>
+              <Card.Actions style={styles.cardActionContainer}>
+                <QrCodeScanner data={item.client.id} titleButton={"Collecte"} colorButton={"#8AC997"}/>
+                <QrCodeScanner data={item.client.id} titleButton={"Assigner"} colorButton={"#0096f0"}/>
+              </Card.Actions>
             </Card>
           ))}
       </View>
@@ -311,6 +286,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  cardContainer: {
+    borderBottomColor: "black",
+    borderBottomWidth: 0.5,
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+  },
+  cardMainContainer: {
+    display: "flex",
+    alignItems: "center"
+  },
+  cardActionContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    flex: 1
   },
 });
 

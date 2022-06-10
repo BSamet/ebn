@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-// eslint-disable-next-line prettier/prettier
 import React, {useState} from 'react';
 import {
     Button,
@@ -23,22 +21,21 @@ const QrCodeScanner = (props: any) => {
     let QRScanner: any
     const [scan, setScan] = useState(false);
     const [result, setResult] = useState();
-    const [affichage, setaffichage] = useState(false);
+    const [affichage, setAffichage] = useState(false);
     let datas = {
         res: result,
         clientId: props.data
     }
     let titleButton = props.titleButton;
+    let colorButton = props.colorButton;
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
-        setaffichage(true);
+        setAffichage(true)
     };
 
     const startScan = () => {
         setScan(true);
-        setResult;
-        setaffichage(true);
     };
 
     return (
@@ -49,16 +46,13 @@ const QrCodeScanner = (props: any) => {
                     contentInsetAdjustmentBehavior="automatic"
                     style={styles.scrollView}>
                     <View style={styles.body}>
-                        {result && (
-                            <View style={styles.sectionContainer}>
-                                <Text>{result}</Text>
-                                <PopUp data={datas}/>
-                            </View>
+                        {affichage && (
+                            <PopUp data={datas}/>
                         )}
                         {!scan && (
                             <Button
                                 title={titleButton}
-                                color="#8AC997"
+                                color={colorButton}
                                 onPress={startScan}
                             />
                         )}
