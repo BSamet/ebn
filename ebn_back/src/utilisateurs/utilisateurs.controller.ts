@@ -54,8 +54,8 @@ export class UtilisateursController {
     return this.utilisateursService.findOne(+id);
   }
 
-  // @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('email/:mail')
   findOneByMail(@Param('mail') mail: string) {
     return this.utilisateursService.findByMail(mail);

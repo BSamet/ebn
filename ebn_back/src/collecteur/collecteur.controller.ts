@@ -29,8 +29,8 @@ export class CollecteurController {
     return this.collecteurService.create(createCollecteurDto);
   }
 
-  // @hasRoles(UserRole.ADMIN)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll() {
     return this.collecteurService.findAll();

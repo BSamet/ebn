@@ -23,8 +23,23 @@ export class RamassagePonctuelService {
     return this.ramassagePonctuelRepository.save(ramassage);
   }
 
-  findAll() {
+  find(){
     return this.ramassagePonctuelRepository.find();
+  }
+
+  findAllRamassage(clientId: number) {
+    return this.ramassagePonctuelRepository.createQueryBuilder('ramassagePonctuel')
+    .leftJoinAndSelect('ramassagePonctuel.client', 'client')
+    .leftJoinAndSelect('client.utilisateur', 'utilisateur')
+    .select('ramassagePonctuel')
+    .addSelect('utilisateur.nom')
+    .addSelect('utilisateur.prenom')
+    .addSelect('client.id')
+    .addSelect('client.adresse')
+    .where(clientId ? 'client.id = :clientId' : '1=1', {
+      clientId,
+    })
+    .getMany();
   }
 
   findAllByDate(date: Date){

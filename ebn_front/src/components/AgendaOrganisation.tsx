@@ -27,7 +27,8 @@ interface ramassageInterface {
     date: Date;
     clientId: number;
     client: {
-        adresse: string
+        id: number;
+        adresse: string;
         utilisateur:{
             nom: string;
             prenom: string;
@@ -78,7 +79,7 @@ export function AgendaOrganisation(){
 
     useEffect(() => {
         if(fetchEtapeTwice){
-            axios.get(HOST_BACK + '/ramassage-ponctuel', {
+            axios.get(HOST_BACK + '/ramassage-ponctuel/all', {
                 headers: {
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                 } 
@@ -94,7 +95,6 @@ export function AgendaOrganisation(){
     function setEtapesArray() {
             etapesList?.map((etape) => {
                 if(moment(etape.date).format('YYYY-MM-DD') == moment(date).format('YYYY-MM-DD')){
-                    console.log(etape.clientId)
                     etapesArray?.push(etape);
                 }
             });
@@ -175,7 +175,7 @@ export function AgendaOrganisation(){
           console.log(collectorEtape);
             collectorEtape?.map((etape) => {
                 const etapeToAdd = {
-                    clientId: 1,
+                    clientId: etape.client.id,
                     collecteurId: Collector,
                     isCollected: false,
                     commentaire: "",
@@ -260,7 +260,7 @@ export function AgendaOrganisation(){
                                             }}
                                             />
                                         </ListItemIcon>
-                                        <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY')}`} />
+                                        <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`} />
                                     </ListItem>
                                 );
                                 })}
@@ -335,7 +335,7 @@ export function AgendaOrganisation(){
                                             }}
                                             />
                                         </ListItemIcon>
-                                        <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY')}`} />
+                                        <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`} />
                                     </ListItem>
                                 );
                                 })}
