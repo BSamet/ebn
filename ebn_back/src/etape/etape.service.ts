@@ -63,6 +63,10 @@ export class EtapeService {
       .where('etape.collecteur.id = :id', { id })
       .andWhere('etape.date >= :today', { today })
       .andWhere('etape.date <= :tomorrow', { tomorrow })
+<<<<<<< HEAD
+      .orderBy('etape.date', 'ASC')
+=======
+>>>>>>> 5d0b80b04cd1ff972be16e11435420894d9c9853
       .getMany();
   }
 
@@ -83,10 +87,9 @@ export class EtapeService {
       .innerJoinAndSelect('c.utilisateur', 'u')
       .innerJoinAndSelect('etape.collecteur', 'col')
       .innerJoinAndSelect('col.utilisateur', 'uCol')
-
       .where('c.id = :id', { id })
       .andWhere('etape.date >= :today', { today })
-
+      
       .getMany();
 
     return {

@@ -38,8 +38,6 @@ interface historyCustomerInterface{
 }
 
 
-
-
         const DashboardAdminHistory = () => {
             const [DashboardAdminHistory, setDashboardAdminHistory] = useState<historyCustomerInterface[]>();
             const [nomCommercial, setNomCommercial] = useState('');
@@ -54,9 +52,6 @@ interface historyCustomerInterface{
             const [startDate, setStartDate] = useState('');
             const [startTime, setStartTime] = useState('');
             const [endDate, setEndDate] = useState('');
-
-            console.log(startDate +' ' + endDate)
-            
 
             const nomCommercialCat = DashboardAdminHistory?.reduce(
                 (acc, nomCommercial) =>
@@ -299,15 +294,12 @@ interface historyCustomerInterface{
                             </List>
                         </Box>
                     </div>
-
                     <div className='pagination'>
                         <Stack spacing={2}>
                             <Pagination count={parseInt(totalPages)} color="primary" page={page}
                                         onChange={handleChange}/>
                         </Stack>
                     </div>
-
-
                 </div>
             )
         };
