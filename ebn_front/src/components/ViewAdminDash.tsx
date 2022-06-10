@@ -4,11 +4,8 @@ import DashboardAdminHistory from "./DashboardAdminHistory";
 import ConteneursList from './ConteneursList';
 import ClientsList from './ClientsList';
 import CollecteursList from './CollecteursList';
-<<<<<<< HEAD
 import DashboardHistoryCollecteur from './DashboardHistoryCollecteur';
-=======
-import { AgendaOrganisation } from './AgendaOrganisation';
->>>>>>> 5d0b80b04cd1ff972be16e11435420894d9c9853
+import  AgendaOrganisation  from './AgendaOrganisation';
 
 interface ViewAdminDashInterface {
     selectNav: string;
