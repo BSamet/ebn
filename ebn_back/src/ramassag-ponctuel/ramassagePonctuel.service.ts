@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RamassagePonctuel } from './entities/ramassagePonctuel.entity';
 import { Client } from '../client/entities/client.entity';
+import { ClientService } from 'src/client/client.service';
 
 @Injectable()
 export class RamassagePonctuelService {
@@ -24,6 +25,14 @@ export class RamassagePonctuelService {
 
   findAll() {
     return this.ramassagePonctuelRepository.find();
+  }
+
+  findAllByDate(date: Date){
+    return this.ramassagePonctuelRepository.find({
+      where: {
+        date: date
+      }
+    })
   }
 
   findOne(id: number) {

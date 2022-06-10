@@ -1,8 +1,9 @@
 import axios from "axios"
 import React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
+import { Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Paper, TextField } from '@mui/material';
 import { format } from "date-fns";
+import ReactDatePicker from "react-datepicker";
 
 
 import { useEffect, useState } from "react";
@@ -25,6 +26,13 @@ interface ramassageInterface {
     id: number;
     date: Date;
     clientId: number;
+    client: {
+        adresse: string
+        utilisateur:{
+            nom: string;
+            prenom: string;
+        }
+    }
 }
 
 interface etapesInterface {
@@ -47,6 +55,7 @@ export function AgendaOrganisation(){
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>();
     const [collectorEtape, setCollectorEtape]= useState<ramassageInterface[]>();
     let [Collector, setCollector] = React.useState(1);
+    const [date, setDate] = React.useState<Date | null>(new Date());
 
     const [checked, setChecked] = React.useState<number[]>([]);
     
@@ -67,42 +76,45 @@ export function AgendaOrganisation(){
         }
     }, [collecteursList, fetchOnce]);
 
+    // useEffect(() => {
+    //     if(fetchEtapeTwice){
+    //         axios.get(HOST_BACK + '/ramassage-abonnement', {
+    //             headers: {
+    //                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+    //             } 
+    //         }).then(ramassageAbonnement =>{
+    //             setEtapesAbonnementlist(ramassageAbonnement.data)
+    //             setFetchEtapeTwice(false);
+    //         })
+    //     }
+    // }, [etapesAbonnementList, fetchEtapeTwice])
     useEffect(() => {
         if(fetchEtapeTwice){
-            axios.get(HOST_BACK + '/ramassage-abonnement', {
+            axios.get(HOST_BACK + '/ramassage-ponctuel', {
                 headers: {
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                 } 
             }).then(ramassageAbonnement =>{
-                setEtapesAbonnementlist(ramassageAbonnement.data)
-                setFetchEtapeTwice(false);
+                    console.log(ramassageAbonnement.data)
+                    setEtapeslist(ramassageAbonnement.data)
+                    setFetchEtapeTwice(false);
+                
             })
         }
-    }, [etapesAbonnementList, fetchEtapeTwice])
+    }, [etapesList, fetchEtapeTwice])
 
-    useEffect(() => {
-        if (fetchEtapeOnce) {
-            axios.get(HOST_BACK + '/ramassage-ponctuel', {
-                headers: {
-                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                }
-            }).then(ramassagePonctuel => {                
-                setEtapeslist(ramassagePonctuel.data);
-                // appel de l'api
-                setFetchEtapeOnce(false);
-            });
-        }
-    }, [etapesList, fetchEtapeOnce]);
-
-    useEffect(() => {
+    function setEtapesArray() {
             etapesList?.map((etape) => {
-                etapesArray?.push(etape);
+                if(moment(etape.date).format('YYYY-MM-DD') == moment(date).format('YYYY-MM-DD')){
+                    console.log(etape.clientId)
+                    etapesArray?.push(etape);
+                }
             });
             etapesAbonnementList?.map((etapeAbonnement) => {
                 etapesArray?.push(etapeAbonnement);
             });
             setFinalEtapeList(etapesArray);   
-    }, [etapesList]);
+    };
     
     function fillSelectOptions(){
         const options = collecteursList?.map((list) => {
@@ -149,7 +161,6 @@ export function AgendaOrganisation(){
                 if(etape.id == checked[i]){
                     console.log(etape)
                     collectorEtape?.push(etape)   
-                    // finalEtapeList?.splice((checked[i] - 1), 1)
                     console.log(collectorEtape)
                 }
             }
@@ -176,7 +187,8 @@ export function AgendaOrganisation(){
       function sendCollectorEtape() {
           console.log(collectorEtape);
             collectorEtape?.map((etape) => {
-                const etapeToAdd: etapesInterface = {
+                console.log(etape.clientId)
+                const etapeToAdd = {
                     clientId: 1,
                     collecteurId: Collector,
                     isCollected: false,
@@ -217,6 +229,19 @@ export function AgendaOrganisation(){
                             <MenuItem value={list.id}>{list.utilisateur.nom + " " + list.utilisateur.prenom}</MenuItem>
                         )}
                     </Select>
+                    
+                        <ReactDatePicker 
+                            views={['day']}
+                            label="Just date"
+                            value={moment(date).format('DD-MM-YYYY')}
+                            onChange={(newDate) => {
+                                setDate(newDate);
+                                console.log(date)
+                                setEtapesArray();
+                            }}
+                            renderInput={(params) => <TextField {...params} helperText={null} />}
+                        />
+
                 </FormControl>
 
                 <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={8}>
@@ -243,7 +268,7 @@ export function AgendaOrganisation(){
                                             }}
                                             />
                                         </ListItemIcon>
-                                        <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY à HH [h] mm')} ID:${etape.id}`} />
+                                        <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY')}`} />
                                     </ListItem>
                                 );
                                 })}
