@@ -40,20 +40,21 @@ export function DashboardHistoryCollecteur () {
     const [fetchOnce, setFetchOnce] = useState(true);
     const [fetchCollectorOnce, setFetchCollectorOnce] = useState(true);
     const [id, setid] = useState('');
+    const [collecteurid, setCollecteurId] = useState('');
 
 
 
-    useEffect(() => {
-        if (fetchOnce) { axios.get(HOST_BACK + '/etape', {
-            headers: {
-                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            }}).then(res => {
-            setInformationEtape(res.data)
-            setFetchOnce(false)
+    // useEffect(() => {
+    //     if (fetchOnce) { axios.get(HOST_BACK + '/etape', {
+    //         headers: {
+    //             "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+    //         }}).then(res => {
+    //         setInformationEtape(res.data)
+    //         setFetchOnce(false)
             
-            })
-        }      
-    }, [fetchOnce,InformationEtape ]);
+    //         })
+    //     }      
+    // }, [fetchOnce,InformationEtape ]);
 
     useEffect(() => {
         if(fetchCollectorOnce){
@@ -64,7 +65,6 @@ export function DashboardHistoryCollecteur () {
             }}).then(res => {
             setCollecteur(res.data)
             setDashboardHistoryCollecteur(res.data.historiques)
-
             setFetchCollectorOnce(false)
 
 
@@ -85,6 +85,18 @@ export function DashboardHistoryCollecteur () {
         })
     } 
 
+    function getEtapeByCollecteur(){
+        axios.get(HOST_BACK + '/etape/collecteur/' + collecteurid, {
+         headers: {
+             "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }}).then(res => {
+        setInformationEtape(res.data)
+        setFetchOnce(false)
+                    
+     })
+    }      
+    
+
     return(
     <div>
         
@@ -95,9 +107,9 @@ export function DashboardHistoryCollecteur () {
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                 value={id}
+                 value={collecteurid}
                 label="collecteur"
-                onChange={(e) => setid(e.target.value)}
+                onChange={(e) => setCollecteurId(e.target.value)}
                 >
                 {Collecteur?.map((list) => 
                     <MenuItem value={list.id}>{list.utilisateur.nom + " " + list.utilisateur.prenom}</MenuItem>
@@ -105,7 +117,7 @@ export function DashboardHistoryCollecteur () {
                 )}
                 </Select>
         </FormControl>
-        <button onClick={validateFilter}> Valider</button>
+        <button onClick={getEtapeByCollecteur}> Valider</button>
 
               
      </div>
@@ -127,6 +139,7 @@ export function DashboardHistoryCollecteur () {
 }
 
 export default DashboardHistoryCollecteur
+
 
 
 

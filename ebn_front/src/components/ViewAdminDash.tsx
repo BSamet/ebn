@@ -30,7 +30,7 @@ const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, set
         return (
             <ClientsList setSelectClientId={setSelectClientId} selectClientId={selectClientId} />
         )
-    case 'Agenda':
+    case 'Commande':
         return(
             <DashboardHistoryCollecteur />
         )
