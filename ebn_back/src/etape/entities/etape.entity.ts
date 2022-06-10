@@ -15,12 +15,12 @@ export class Etape {
   })
   collecteur: Collecteur;
 
-  @Column()
+  @Column({default: null})
   public date: Date;
 
   @Column({ default: false })
   public isCollected: boolean;
 
-  @Column()
+  @Column({nullable: true})
   public commentaire: string;
 }

@@ -12,10 +12,10 @@ import {
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
-import { hasRoles } from '../auth/decorator/roles.decorator';
+import { hasRoles } from '../collecteur/auth/decorator/roles.decorator';
 import { UserRole } from '../utilisateurs/dto/create-utilisateur.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { JwtAuthGuard } from '../collecteur/auth/guards/jwt-guard';
+import { RolesGuard } from '../collecteur/auth/guards/roles.guard';
 
 @Controller('client')
 export class ClientController {

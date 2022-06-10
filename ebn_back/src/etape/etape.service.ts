@@ -23,6 +23,7 @@ export class EtapeService {
     const etape = new Etape();
     etape.isCollected = createEtapeDto.isCollected;
     etape.commentaire = createEtapeDto.commentaire;
+    etape.date = createEtapeDto.date;
     etape.client = Object.assign(new Client(), {
       id: createEtapeDto.clientId,
     });
@@ -62,7 +63,6 @@ export class EtapeService {
       .where('etape.collecteur.id = :id', { id })
       .andWhere('etape.date >= :today', { today })
       .andWhere('etape.date <= :tomorrow', { tomorrow })
-
       .getMany();
   }
 

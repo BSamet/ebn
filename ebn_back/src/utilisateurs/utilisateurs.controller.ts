@@ -13,9 +13,9 @@ import { CreateUtilisateurDto, UserRole } from './dto/create-utilisateur.dto';
 import { UpdateUtilisateurDto } from './dto/update-utilisateur.dto';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Utilisateur } from './entities/utilisateur.entity';
-import { hasRoles } from '../auth/decorator/roles.decorator';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { JwtAuthGuard } from '../auth/guards/jwt-guard';
+import { hasRoles } from '../collecteur/auth/decorator/roles.decorator';
+import { RolesGuard } from '../collecteur/auth/guards/roles.guard';
+import { JwtAuthGuard } from '../collecteur/auth/guards/jwt-guard';
 
 @Controller('utilisateurs')
 export class UtilisateursController {
@@ -54,8 +54,8 @@ export class UtilisateursController {
     return this.utilisateursService.findOne(+id);
   }
 
-  // @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('email/:mail')
   findOneByMail(@Param('mail') mail: string) {
     return this.utilisateursService.findByMail(mail);

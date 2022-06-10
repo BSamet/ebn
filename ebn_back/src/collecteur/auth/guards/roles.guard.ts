@@ -6,9 +6,9 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { UtilisateursService } from '../../utilisateurs/utilisateurs.service';
+import { UtilisateursService } from '../../../utilisateurs/utilisateurs.service';
 import { map, Observable } from 'rxjs';
-import { Utilisateur } from '../../utilisateurs/entities/utilisateur.entity';
+import { Utilisateur } from '../../../utilisateurs/entities/utilisateur.entity';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
