@@ -1,7 +1,15 @@
-/* eslint-disable prettier/prettier */
-// eslint-disable-next-line prettier/prettier
 import React, {useState} from 'react';
-import {Button, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {
+    Button,
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -10,23 +18,24 @@ import PopUp from '../popUp';
 
 const QrCodeScanner = (props: any) => {
 
+    let QRScanner: any
     const [scan, setScan] = useState(false);
     const [result, setResult] = useState();
-    const [affichage, setaffichage] = useState(false);
+    const [affichage, setAffichage] = useState(false);
     let datas = {
         res: result,
         clientId: props.data
     }
+    let titleButton = props.titleButton;
+    let colorButton = props.colorButton;
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
-        setaffichage(true);
+        setAffichage(true)
     };
 
     const startScan = () => {
         setScan(true);
-        setResult;
-        setaffichage(true);
     };
 
     return (
@@ -37,25 +46,23 @@ const QrCodeScanner = (props: any) => {
                     contentInsetAdjustmentBehavior="automatic"
                     style={styles.scrollView}>
                     <View style={styles.body}>
-                        {result && (
-                            <View style={styles.sectionContainer}>
-                                <Text>{result}</Text>
-                                <PopUp data={datas}/>
-                            </View>
+                        {affichage && (
+                            <PopUp data={datas}/>
                         )}
                         {!scan && (
                             <Button
-                                title="commencer le scan"
-                                color="#8AC997"
+                                title={titleButton}
+                                color={colorButton}
                                 onPress={startScan}
                             />
                         )}
                         {scan && (
+                            <Modal>
                             <QRCodeScanner
                                 reactivate={true}
                                 showMarker={true}
                                 ref={node => {
-                                    scanner = node;
+                                    QRScanner = node;
                                 }}
                                 onRead={onSuccess}
                                 topContent={
@@ -69,6 +76,7 @@ const QrCodeScanner = (props: any) => {
                                     </TouchableOpacity>
                                 }
                             />
+                            </Modal>
                         )}
                     </View>
                 </ScrollView>

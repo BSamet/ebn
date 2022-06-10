@@ -4,6 +4,7 @@ import logo from "../assets/logo.png";
 import Footer from "../components/Footer";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import UpdateClient from "../components/UpdateClient";
 
 const Accueil = () => {
   const navigate = useNavigate();

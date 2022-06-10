@@ -15,10 +15,16 @@ import {
 import {Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
-import {HOST_BACK} from "../../../environment/environment";
-
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {HOST_BACK} from '../../../environment/environment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import {format} from 'date-fns';
+import {DataTable, Snackbar} from 'react-native-paper';
+import {RefreshControl} from 'react-native';
+
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
 
 export interface dashboardClient {
   id: number;
@@ -58,7 +64,7 @@ export interface ShowClient {
 }
 export interface Session {
   idClient: string;
-  token: string;
+  token: string | null;
 }
 export interface DemandePonctuelRamassage {
   date: number;
@@ -80,13 +86,26 @@ const DashBordClient = () => {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState('date');
   const [date, setDate] = useState(new Date());
-  const [textDate, setTextDate] = useState('');
-  const [clientToken, setClienToken] = useState('');
+  const [textDate, setTextDate] = useState('à définir');
+
+  const [clientToken, setClienToken] = useState<string | null>('');
+  const [myClientId, setClientId] = useState<string | null>('');
+  const [clientNom, setClientNom] = useState<string | null>('');
+  const [clientPrenom, setClientPrenom] = useState<string | null>('');
+  const [isVisible, setIsVisible] = React.useState(false);
+  //refresh pages
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    fetchEtape();
+    setRefreshing(true);
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
 
   // fonction pour post
   let data = {
-    date: date.toString(),
-    clientId: myclient?.id,
+    date: date,
+    clientId: myClientId,
   };
   const postRamasagge = () => {
     axios
@@ -97,43 +116,56 @@ const DashBordClient = () => {
       })
       .then(resp => {
         if (resp.status === 201) {
-          Alert.alert('Votre demande de ramassage à bien été pris en compte');
+          setIsVisible(true);
         }
       })
       .catch(function (error) {
         console.log(error + ' sur post');
       })
       .finally(() => {
-        setTextDate('à definir');
+        setTextDate('à définir');
       });
   };
   const submit = () => {
     postRamasagge();
   };
-  // jwt
 
-  AsyncStorage.getItem('token').then(value => setClienToken(value));
+  AsyncStorage.getItem('token').then(value => {
+    setClienToken(value);
+  });
+  AsyncStorage.getItem('id').then(value => {
+    setClientId(value);
+  });
+  AsyncStorage.getItem('nom').then(value => {
+    setClientNom(value);
+  });
+  AsyncStorage.getItem('prenom').then(value => {
+    setClientPrenom(value);
+  });
+
+  const fetchEtape = () => {
+    axios
+      .get(HOST_BACK + '/etape/client/' + myClientId, {
+        headers: {
+          Authorization: `Bearer ${clientToken}`,
+        },
+      })
+      .then(res => {
+        // appel de l'api
+        // recupération client
+        setMyClient(res.data.etape[0].client);
+        // recuperer les infos du collecteur sans map
+        setTouner(res.data.etape);
+        // on cherche une seul fois
+        setFetchOnce(false);
+      });
+  };
+
   useEffect(() => {
     if (fetchOnce) {
-      axios
-        .get(HOST_BACK + '/etape/client/1', {
-          headers: {
-            Authorization: `Bearer ${clientToken}`,
-          },
-        })
-
-        .then(res => {
-          // appel de l'api
-          // recupération client
-          setMyClient(res.data.etape[0].client);
-
-          // recuperer les infos du collecteur sans map
-          setTouner(res.data.etape);
-          // on cherche une seul fois
-          setFetchOnce(false);
-        });
+      fetchEtape();
     }
-  }, [tourner, myclient, fetchOnce, clientToken]);
+  }, [tourner, myclient, fetchOnce, clientToken, myClientId]);
 
   // fonction pour les modales
   const showModal = (Collecteur: any) => {
@@ -145,19 +177,19 @@ const DashBordClient = () => {
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
     setVisible(false);
-    setDate(currentDate);
     let tempDate = new Date(currentDate);
-    let Fdate =
-      tempDate.getDate() +
-      '/' +
-      (tempDate.getMonth() + 1) +
-      '/' +
-      tempDate.getFullYear() +
-      ' à ' +
-      tempDate.getHours() +
-      'h' +
-      tempDate.getMinutes();
 
+    let Fdate = format(currentDate, 'dd/MM/yyyy à H:mm', 'Europe/Berlin');
+
+    let formatDateSave = new Date(
+      +tempDate.getFullYear(),
+      +tempDate.getMonth(),
+      +tempDate.getDate(),
+      +tempDate.getHours() + 2,
+      +tempDate.getMinutes(),
+    );
+
+    setDate(formatDateSave);
     setTextDate(Fdate);
   };
 
@@ -175,10 +207,18 @@ const DashBordClient = () => {
   };
 
   const {height} = useWindowDimensions();
+
+  const onDismissSnackBar = () => {
+    setIsVisible(false);
+  };
+
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <View style={styles.page}>
-        <View style={styles.header}>
+        <View>
           <LinearGradient
             colors={['#8AC997', '#0096f0']}
             start={{
@@ -196,12 +236,32 @@ const DashBordClient = () => {
               resizeMode="contain"
             />
             <Text style={styles.topText}>
-              Bonjour,{myclient?.nomCommercial}
+              Bonjour, {clientNom} {clientPrenom}
             </Text>
           </LinearGradient>
         </View>
         {/* gestion demande de ramassage ponctuel */}
-
+        <Snackbar
+          wrapperStyle={{top: 0}}
+          theme={{
+            colors: {
+              surface: 'white',
+              accent: 'white',
+              onSurface: '#8AC997',
+            },
+            animation: {
+              scale: 2,
+            },
+          }}
+          visible={isVisible}
+          duration={2500}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: 'Ok',
+            onPress: () => {},
+          }}>
+          Votre demande de collecte à été prise en charge !
+        </Snackbar>
         <Modal
           animationType="slide"
           transparent={true}
@@ -209,41 +269,61 @@ const DashBordClient = () => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalTitre}> Votre demande de ramassage</Text>
-              <Pressable style={styles.RamassageModal} onPress={showDate}>
+              <Pressable style={styles.collecteModalSubmit} onPress={showDate}>
                 <Text style={styles.textStyle}> Choisir une date</Text>
               </Pressable>
-              <Pressable style={styles.RamassageModal} onPress={showTime}>
+              <Pressable style={styles.collecteModalSubmit} onPress={showTime}>
                 <Text style={styles.textStyle}>Choisir une heure</Text>
               </Pressable>
-              <Text style={styles.date}>
-                Vous avez demander un ramassage le {textDate}
+              <Text style={styles.textDate}>
+                Vous avez demander un ramassage le {'\n'}
+                <Text style={styles.date}>{textDate}</Text>
               </Text>
               {visible && (
-                <DateTimePicker
+                <RNDateTimePicker
                   testID="dateTimePicker"
                   value={date}
                   mode={mode}
                   onChange={onChange}
                 />
               )}
-              <Pressable
-                style={styles.RamassageModal}
-                onPress={() => {
-                  setModalRamassage(!modalRamassage);
-                  submit();
-                }}>
-                <Text style={styles.textStyle}> Enregistrer </Text>
-              </Pressable>
+              <View style={styles.collecteModalSubmitContainer}>
+                <Pressable
+                  style={styles.collecteModalCancel}
+                  onPress={() => {
+                    setModalRamassage(!modalRamassage);
+                  }}>
+                  <Text style={styles.textStyle}>Annuler</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.collecteModalSubmit}
+                  onPress={() => {
+                    setModalRamassage(!modalRamassage);
+                    submit();
+                  }}>
+                  <Text style={styles.textStyle}>Enregistrer</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
         </Modal>
 
-        <Text style={styles.titleText}>Vos collectes</Text>
-        <Pressable
-          style={styles.Ramassage}
-          onPress={() => setModalRamassage(true)}>
-          <Text style={styles.textStyle}>Besoin d'un ramassage ?</Text>
-        </Pressable>
+        <View style={styles.requestCollecteContainer}>
+          <Text style={styles.titleText}>Vos collectes</Text>
+          <View style={styles.requestCollecteButton}>
+            <Pressable
+              style={styles.Ramassage}
+              onPress={() => setModalRamassage(true)}>
+              <Text style={styles.textStyle}>Collecte</Text>
+            </Pressable>
+            <Pressable
+              style={styles.Ramassage}
+              onPress={() => setModalRamassage(true)}>
+              <Text style={styles.textStyle}>Abonnement</Text>
+            </Pressable>
+          </View>
+        </View>
+
         <Divider
           style={{width: '100%', margin: 10}}
           color="#8AC997"
@@ -251,83 +331,114 @@ const DashBordClient = () => {
           orientation="horizontal"
         />
 
-        {/* modal afficher les collecteur  */}
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
+            <DataTable.Title style={{flex: 1}}>Collecteur</DataTable.Title>
+            <DataTable.Title>Numéro téléphone</DataTable.Title>
+          </DataTable.Header>
 
-        <Modal animationType="slide" transparent={true} visible={modalOpen}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>
-                Nom : {myCollecteurModal?.collecteur.utilisateur.nom}
-              </Text>
-              <Text style={styles.modalText}>
-                Prénom : {myCollecteurModal?.collecteur.utilisateur.prenom}
-              </Text>
-              <Text style={styles.modalText}>
-                Numéro: {myCollecteurModal?.collecteur.utilisateur.telephone}
-              </Text>
-
-              <Pressable
-                style={[styles.buttonModal, styles.buttonClose]}
-                onPress={() => setModalOpen(!modalOpen)}>
-                <Text style={styles.textStyle}>Fermer</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-        {tourner?.map((item, index) => (
-          <View style={styles.body} key={index}>
-            <Pressable onPress={() => showModal(item)}>
-              <Text style={styles.date}>
+          {tourner?.map((item, index) => (
+            <DataTable.Header>
+              <DataTable.Cell style={{flex: 1.5}}>
+                {moment(item.date).format('DD.MM.YYYY à HH[h] mm')}
+              </DataTable.Cell>
+              <DataTable.Cell style={{flex: 1}}>
                 {item.collecteur.utilisateur.nom}{' '}
                 {item.collecteur.utilisateur.prenom}
-              </Text>
-              <Text style={styles.poids}>
-                Heure approximative de votre collecte {'  '}
-                {moment(item.date).format('DD.MM.YYYY  à HH[h] mm')}
-              </Text>
-              <Divider
-                style={{width: '100%', margin: 10}}
-                color="#0096f0"
-                width={2}
-                orientation="horizontal"
-              />
-            </Pressable>
-          </View>
-        ))}
+              </DataTable.Cell>
+              <DataTable.Cell>
+                {item.collecteur.utilisateur.telephone}
+              </DataTable.Cell>
+            </DataTable.Header>
+          ))}
+        </DataTable>
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  RamassageModal: {
-    borderRadius: 30,
-    padding: 10,
-    backgroundColor: '#8AC997',
-    marginTop: 10,
-    borderColor: 'white',
-    borderWidth: 1,
-    width: '50%',
-    marginLeft: '5%',
-    marginVertical: 5,
+  requestCollecteContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  requestCollecteButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  titleText: {
+    fontSize: 28,
+    marginTop: 20,
+    paddingHorizontal: 10,
+    color: 'black',
+    fontFamily: 'Confortaa-Regular',
   },
   Ramassage: {
     borderRadius: 30,
     padding: 10,
     backgroundColor: '#8AC997',
     marginTop: 10,
+    marginRight: 5,
+    marginLeft: 5,
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '40%',
+  },
+  collecteModalSubmitContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  collecteModalSubmit: {
+    borderRadius: 30,
+    padding: 10,
+    backgroundColor: '#8AC997',
+    marginTop: 10,
+    marginRight: 5,
+    marginLeft: 5,
     borderColor: 'white',
     borderWidth: 1,
     width: '50%',
-    marginLeft: '25%',
     marginVertical: 5,
   },
+  collecteModalCancel: {
+    borderRadius: 30,
+    padding: 10,
+    backgroundColor: '#ff0000',
+    marginTop: 10,
+    marginRight: 5,
+    marginLeft: 5,
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '50%',
+    marginVertical: 5,
+  },
+
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   modalTitre: {
+    fontSize: 20,
     marginBottom: 15,
     textAlign: 'center',
     color: 'black',
   },
-
+  textDate: {
+    textAlign: 'center',
+    fontSize: 17,
+    color: '#000000',
+    fontFamily: 'Confortaa-Regular',
+  },
+  date: {
+    textAlign: 'center',
+    fontSize: 17,
+    color: '#8AC997',
+    fontFamily: 'Confortaa-Regular',
+    fontWeight: 'bold',
+  },
   button: {
     borderRadius: 20,
     padding: 10,
@@ -347,16 +458,11 @@ const styles = StyleSheet.create({
   },
 
   divider: {paddingTop: 10, width: 25},
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 10,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -378,7 +484,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
     fontFamily: 'Confortaa-Bold',
-
     fontSize: 18,
   },
   modalText: {
@@ -402,7 +507,6 @@ const styles = StyleSheet.create({
   page: {
     backgroundColor: '#FFFFFF',
   },
-  header: {},
 
   topText: {
     color: 'black',
@@ -421,19 +525,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginVertical: 15,
     marginRight: 20,
-  },
-  titleText: {
-    fontSize: 28,
-    marginTop: 20,
-    paddingHorizontal: 10,
-    color: 'black',
-    fontFamily: 'Confortaa-Regular',
-    marginLeft: 115,
-  },
-  date: {
-    fontSize: 18,
-    color: '#8AC997',
-    fontFamily: 'Confortaa-Regular',
   },
   poids: {
     color: 'black',

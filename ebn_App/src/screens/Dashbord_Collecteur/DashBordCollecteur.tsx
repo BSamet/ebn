@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-
 import {
   Image,
   Modal,
@@ -12,19 +11,16 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
-
-// import {AuthRootParamList} from '../../Navigation/RouteNavigator';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useState} from 'react';
-
 import axios from 'axios';
-import {HOST_BACK} from "../../../environment/environment";
-
+import {HOST_BACK} from '../../../environment/environment';
 import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Divider} from "react-native-elements";
+import {Card, Avatar, Checkbox, Paragraph} from "react-native-paper";
+require('moment/locale/fr.js');
 
-// type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>; a utilisé si direction vers d'autre page
 interface EtapeCollecteur {
   id: number;
   date: string;
@@ -67,8 +63,6 @@ interface collecteurInterface {
 
 // TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
-  // navigation typé
-
   // const navigation = useNavigation<AuthScreenNavigate>();
   const {height} = useWindowDimensions();
   const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
@@ -76,64 +70,85 @@ const DashBordCollecteur = () => {
   const [fetchOnce, setFetchOnce] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [ClientModal, setClientModal] = useState<EtapeCollecteur>();
-  const [CollecteurToken, setCollecteurToken] = useState('');
-  AsyncStorage.getItem('token').then(value => setCollecteurToken(value));
-  useEffect(() => {
-    console.log(CollecteurToken);
+  const [collecteurToken, setCollecteurToken] = useState<string | null>('');
+  const [collecteurId, setCollecteurId] = useState<string | null>('');
+  const [collecteurName, setCollecteurName] = useState<string | null>('');
+  const [collecteurLastname, setCollecteurLastname] = useState<string | null>(
+    '',
+  );
 
+  AsyncStorage.getItem('token').then(value => {
+    setCollecteurToken(value);
+  });
+  AsyncStorage.getItem('id').then(value => {
+    setCollecteurId(value);
+  });
+  AsyncStorage.getItem('nom').then(value => {
+    setCollecteurLastname(value);
+  });
+  AsyncStorage.getItem('prenom').then(value => {
+    setCollecteurName(value);
+  });
+
+  useEffect(() => {
     if (fetchOnce) {
       axios
-        .get(HOST_BACK + '/etape/collecteur/1', {
+        .get(HOST_BACK + '/etape/collecteur/' + collecteurId, {
           headers: {
-            Authorization: `Bearer ${CollecteurToken}`,
+            Authorization: `Bearer ${collecteurToken}`,
           },
         })
         .then(res => {
-          // appel de l'api
-
-          setUserCollecteur(res.data[0].collecteur); // recuperer les infos du collecteur sans map
           setEtapes(res.data); // recuperation des etapes pour map
-
-          // on cherche une seul fois
           setFetchOnce(false);
         });
     }
-  }, [etapes, userCollecteur, fetchOnce, CollecteurToken]);
+  }, [etapes, userCollecteur, fetchOnce, collecteurToken, collecteurId, collecteurLastname, collecteurName]);
 
   const showModal = (Client: any) => {
     setModalOpen(true);
     setClientModal(Client);
   };
 
+  const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
+
+
   return (
     <ScrollView>
       <View style={styles.page}>
-        <View style={styles.header}>
+        <View>
           <LinearGradient
-            colors={['#8AC997', '#0096f0']}
-            start={{
-              x: 0,
-              y: 1,
-            }}
-            end={{
-              x: 1,
-              y: 2,
-            }}
-            style={styles.box}>
+              colors={['#8AC997', '#0096f0']}
+              start={{
+                x: 0,
+                y: 1,
+              }}
+              end={{
+                x: 1,
+                y: 2,
+              }}
+              style={styles.box}>
             <Image
-              source={Logo}
-              style={[styles.Logo, {height: height * 0.3}]}
-              resizeMode="contain"
+                source={Logo}
+                style={[styles.Logo, {height: height * 0.3}]}
+                resizeMode="contain"
             />
-
             <Text style={styles.topText}>
-              Bonjour, {userCollecteur?.utilisateur.nom}{' '}
-              {userCollecteur?.utilisateur.prenom}
+              Bonjour, {collecteurLastname} {collecteurName}
             </Text>
           </LinearGradient>
         </View>
 
-        <Text style={styles.titleText}>Etape de votre collecte</Text>
+        <View style={styles.header}>
+          <Text style={styles.titleText}>Votre Agenda du {'\n'} {moment(Date.now()).locale('fr').format('DD MMMM YYYY')}</Text>
+        </View>
+
+        <Divider
+            style={{width: '100%', margin: 10}}
+            color="#8AC997"
+            width={2}
+            orientation="horizontal"
+        />
 
         <Modal animationType="slide" transparent={true} visible={modalOpen}>
           <View style={styles.centeredView}>
@@ -160,26 +175,29 @@ const DashBordCollecteur = () => {
           </View>
         </Modal>
 
-        {etapes?.map((data, index) => (
-          <View style={styles.body} key={index}>
-            <Pressable onPress={() => showModal(data)}>
-              <Text style={styles.date}>{data.client.nomCommercial}</Text>
-
-              <Text style={styles.poids}>
-                Heure estimé de passage :{' '}
-                {moment(data.date).format('DD.MM.YYYY  à  HH[h] mm')}
-              </Text>
-
-              <QrCodeScanner  data={data.client.id}/>
-            </Pressable>
-          </View>
-        ))}
+          {etapes?.map((item, index) => (
+            <Card style={styles.cardContainer}>
+              <Card.Title title={item.client.nomCommercial}/>
+              <Card.Content style={styles.cardMainContainer}>
+                <Paragraph>Heure : {moment(item.date).utc().format('HH[h] mm')}</Paragraph>
+                <Paragraph>Adresse : {item.client.adresse}</Paragraph>
+              </Card.Content>
+              <Card.Actions style={styles.cardActionContainer}>
+                <QrCodeScanner data={item.client.id} titleButton={"Collecte"} colorButton={"#8AC997"}/>
+                <QrCodeScanner data={item.client.id} titleButton={"Assigner"} colorButton={"#0096f0"}/>
+              </Card.Actions>
+            </Card>
+          ))}
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+  },
   buttonModal: {
     borderRadius: 20,
     padding: 10,
@@ -237,9 +255,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   titleText: {
-    fontSize: 22,
+    textAlign: "center",
+    fontSize: 28,
     marginTop: 20,
-    paddingHorizontal: 10,
     color: 'black',
     fontFamily: 'Confortaa-Regular',
   },
@@ -268,6 +286,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  cardContainer: {
+    borderBottomColor: "black",
+    borderBottomWidth: 0.5,
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+  },
+  cardMainContainer: {
+    display: "flex",
+    alignItems: "center"
+  },
+  cardActionContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    flex: 1
   },
 });
 
