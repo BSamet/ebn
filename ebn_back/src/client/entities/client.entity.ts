@@ -29,6 +29,9 @@ export class Client {
   @Column({ nullable: false })
   public adresse: string;
 
+  @Column({ nullable: false })
+  public clientvalide: boolean;
+
   @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.client, {
     onDelete: 'CASCADE',
     eager: true,

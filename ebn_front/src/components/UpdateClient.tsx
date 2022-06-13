@@ -70,11 +70,13 @@ export default function UpdateClient({ selectClientId}: propsUpdateClientListInt
 
     const updateClient = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        axios.patch(HOST_BACK + '/client/' + selectClientId, dataConteneur, {
+        axios.put(HOST_BACK + '/client/' + selectClientId, dataConteneur, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
         })
+        
+        
         handleClose()
     }
     return (
