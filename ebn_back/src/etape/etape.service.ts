@@ -24,6 +24,7 @@ export class EtapeService {
     create(createEtapeDto: CreateEtapeDto) {
         const etape = new Etape();
         etape.isCollected = createEtapeDto.isCollected;
+        etape.isAssigned = createEtapeDto.isAssigned;
         etape.date = createEtapeDto.date;
         etape.commentaire = createEtapeDto.commentaire;
         etape.client = Object.assign(new Client(), {
