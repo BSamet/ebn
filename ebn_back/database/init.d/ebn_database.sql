@@ -301,12 +301,12 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 -- Dumping data for table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id`, `utilisateur`, `password`, `nom`, `prenom`, `mail`, `telephone`, `role`) VALUES
-(1, 'Admin', '$2a$12$Gam3pe.3fRNKrZDKlT59pe8psHNnXXvUFNGmiOPpraECkj595gJwW', 'Admin', 'Admin', 'admin@ebn.com', '0625361478', 'Admin'),
-(2, 'FlorianG', '$2a$12$TlL2OWofElFwdS9cKDntV..KGLCea3KQy6WPyJE7eGyQqiaOAdFHq', 'Georges', 'Florian', 'flogeo@gmail.com', '0725361489', 'Client'),
-(3, 'BryanC', '$2a$12$gW0MSnMQ2rWzUZ5CN9HbMuESDqWnpc2sc1zHkezG1qtwGEyc2H1iK', 'Chaine', 'Bryan', 'brycha@gmail.com', '0725369841', 'Client'),
-(4, 'AnesV', '$2a$12$ywi/SzAp2Z9zJjSEp74W3u3Co8MU8Z9sqb5BAX4o.QXajw6HuKT/S', 'Vucelj', 'Anes', 'AnesV@gmail.com', '0636251452', 'Collecteur'),
-(5, 'Motoyasu', '$2a$12$ywi/SzAp2Z9zJjSEp74W3u3Co8MU8Z9sqb5BAX4o.QXajw6HuKT/S', 'Adjei', 'Kojo', 'kojadj@gmail.com', '0636251489', 'Collecteur');
+INSERT INTO `utilisateur` (`id`, `password`, `nom`, `prenom`, `mail`, `telephone`, `role`) VALUES
+(1, '$2a$12$Gam3pe.3fRNKrZDKlT59pe8psHNnXXvUFNGmiOPpraECkj595gJwW', 'Admin', 'Admin', 'admin@ebn.com', '0625361478', 'Admin'),
+(2, '$2a$12$TlL2OWofElFwdS9cKDntV..KGLCea3KQy6WPyJE7eGyQqiaOAdFHq', 'Georges', 'Florian', 'flogeo@gmail.com', '0725361489', 'Client'),
+(3, '$2a$12$gW0MSnMQ2rWzUZ5CN9HbMuESDqWnpc2sc1zHkezG1qtwGEyc2H1iK', 'Chaine', 'Bryan', 'brycha@gmail.com', '0725369841', 'Client'),
+(4, '$2a$12$ywi/SzAp2Z9zJjSEp74W3u3Co8MU8Z9sqb5BAX4o.QXajw6HuKT/S', 'Vucelj', 'Anes', 'AnesV@gmail.com', '0636251452', 'Collecteur'),
+(5, '$2a$12$ywi/SzAp2Z9zJjSEp74W3u3Co8MU8Z9sqb5BAX4o.QXajw6HuKT/S', 'Adjei', 'Kojo', 'kojadj@gmail.com', '0636251489', 'Collecteur');
 
 --
 -- Constraints for dumped tables
