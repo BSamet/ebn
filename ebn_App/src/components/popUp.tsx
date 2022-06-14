@@ -26,7 +26,6 @@ const popUp = (props: any) => {
     const scanValue = props.data.res;
     const date = new Date();
     const poidMax: number | undefined = info?.capaciteMax;
-    const [selectedValue, setSelectedValue] = useState("Séléctionné une action");
     const [modalVisible, setModalVisible] = useState(true);
     const [poids, setPoids] = useState<string | number>(0);
     const [commentaire, setCommentaire] = useState('');
@@ -35,7 +34,9 @@ const popUp = (props: any) => {
     let etapeid = props.etapeId;
     let etapeIndex = props.etapeIndex;
     let setIscollected = props.setIscollected;
+    let setIsAssigned = props.setIsAssigned;
     let setModalOff = props.setModalOff;
+    let action = props.action;
     let Assignation = {
         isAvailable: false,
         client: props.data.clientId
@@ -45,7 +46,7 @@ const popUp = (props: any) => {
         client: null
     };
     let dataPost = {
-        typeAction: selectedValue,
+        typeAction: action,
         date: date,
         typeDeDechet: info?.typeDechet.typeDechets,
         commentaire: commentaire,
@@ -54,7 +55,7 @@ const popUp = (props: any) => {
         collecteurId: 1,
         conteneurId: scanValue,
     };
-    let updateEtape = {
+    let updateEtapeCollected = {
         isCollected: true,
         commentaire: commentaire,
     }
@@ -82,20 +83,20 @@ const popUp = (props: any) => {
     }, [info]);
 
     const submit = () => {
-        switch (selectedValue) {
-            case "Dépot du seau":
+        switch (action) {
+            case "Assigne":
                 if (info?.client != null) {
                     setError("Ce seau est déjà assigner à un client, veuillez contacter l'administrateur !")
                 } else {
-                    depotConteneur(selectedValue);
+                    depotConteneur(action);
                     postPoids();
                 }
                 break;
-            case "Récupération du seau":
+            case "Collecte":
                 if (info?.client === null) {
                     setError("Ce seau n'est assigner à aucun client, veuillez contacter l'administrateur !")
                 } else {
-                    retraitConteneur(selectedValue);
+                    retraitConteneur(action);
                     postPoids();
                 }
                 break;
@@ -124,8 +125,8 @@ const popUp = (props: any) => {
     };
 
     //permet de déassigner le conteneur bdd (Table conteneur)
-    const retraitConteneur = (value) => {
-        if (value == "Récupération du seau") {
+    const retraitConteneur = (value: string) => {
+        if (value == "Collecte") {
             axios
                 .patch(HOST_BACK + '/conteneur/' + scanValue, DeAssignation, {
                     headers: {
@@ -134,7 +135,7 @@ const popUp = (props: any) => {
                 })
                 .then(function (result) {
                     axios
-                        .patch(HOST_BACK + '/etape/' + etapeid, updateEtape, {
+                        .patch(HOST_BACK + '/etape/' + etapeid, updateEtapeCollected, {
                             headers: {
                                 'Authorization': `Bearer ${clientToken}`
                             }
@@ -155,12 +156,26 @@ const popUp = (props: any) => {
 
     //permet d'assigner le conteneur en bdd (Table conteneur)
     const depotConteneur = (value: string) => {
-        if (value == "Dépot du seau") {
+        if (value == "Assigne") {
             axios
                 .patch(HOST_BACK + '/conteneur/' + scanValue, Assignation, {
                     headers: {
                         'Authorization': `Bearer ${clientToken}`
                     }
+                })
+                .then(function (result) {
+                    axios
+                        .patch(HOST_BACK + '/etape/' + etapeid, {isAssigned: true}, {
+                            headers: {
+                                'Authorization': `Bearer ${clientToken}`
+                            }
+                        })
+                        .then(function (result) {
+                            setIsAssigned(etapeIndex);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
                 })
                 .catch(function (error) {
                     alert("le seau n'a pas été assigné")
@@ -168,6 +183,21 @@ const popUp = (props: any) => {
                 });
         }
     };
+
+    const setAllModal = () => {
+        setModalVisible(!modalVisible)
+        setModalOff()
+    }
+
+    const assignedOrCollected = () => {
+        if (action === "Assigne") {
+            return true
+        } else if (action === "Collecte") {
+            return true
+        } else {
+            return false
+        }
+    }
 
 
     return (
@@ -179,19 +209,12 @@ const popUp = (props: any) => {
             >
                 <View style={popUpStyles.centeredView}>
                     <View style={popUpStyles.modalView}>
-                        <Text style={popUpStyles.modalTitre}>Information du seau</Text>
-                        <Text style={popUpStyles.modalError}>{error}</Text>
-                        <Picker
-                            selectedValue={selectedValue}
-                            style={popUpStyles.pickerSelection}
-                            onValueChange={(itemValue) => {
-                                setSelectedValue(itemValue);
-                            }}>
-                            <Picker.Item label="Séléctionné une action" value="Séléctionné une action"/>
-                            <Picker.Item label="Récupération du seau" value="Récupération du seau"/>
-                            <Picker.Item label="Dépot du seau" value="Dépot du seau"/>
-                        </Picker>
-                        {selectedValue === "Récupération du seau" &&
+                        <Text
+                            style={popUpStyles.modalTitre}>{action === "Collecte" ? "Collecte d'un seau" : action === "Assigne" ? "Assigner un seau" : "Une erreur c'est produite"}</Text>
+                        {error != null &&
+                            <Text style={popUpStyles.modalError}>{error}</Text>
+                        }
+                        {action === "Collecte" &&
                             <View>
                                 <TextInput
                                     style={popUpStyles.input}
@@ -209,7 +232,7 @@ const popUp = (props: any) => {
                                 </Text>
                             </View>
                         }
-                        {selectedValue !== "Séléctionné une action" &&
+                        {assignedOrCollected() &&
                             <View>
                                 <TextInput
                                     style={popUpStyles.input}
@@ -223,17 +246,19 @@ const popUp = (props: any) => {
                             <Pressable
                                 style={[popUpStyles.button, popUpStyles.buttonClose]}
                                 onPress={() => {
-                                    setModalVisible(!modalVisible);
+                                    setAllModal();
                                 }}>
                                 <Text style={popUpStyles.textStyle}>Annuler</Text>
                             </Pressable>
-                            <Pressable
-                                style={[popUpStyles.button, popUpStyles.buttonSave]}
-                                onPress={() => {
-                                    submit();
-                                }}>
-                                <Text style={popUpStyles.textStyle}>Enregistrer</Text>
-                            </Pressable>
+                            {assignedOrCollected() &&
+                                <Pressable
+                                    style={[popUpStyles.button, popUpStyles.buttonSave]}
+                                    onPress={() => {
+                                        submit();
+                                    }}>
+                                    <Text style={popUpStyles.textStyle}>Enregistrer</Text>
+                                </Pressable>
+                            }
                         </View>
                     </View>
                 </View>

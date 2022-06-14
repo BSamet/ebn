@@ -27,8 +27,8 @@ interface EtapeCollecteur {
     id: number;
     date: string;
     isCollected: boolean;
+    isAssigned: boolean;
     commentaire: string;
-
     client: {
         id: number;
         siret: number;
@@ -70,25 +70,23 @@ const DashBordCollecteur = () => {
     const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
     const [fetchOnce, setFetchOnce] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
-    const [assigne, setAssigne] = useState(true);
     const [ClientModal, setClientModal] = useState<EtapeCollecteur>();
-    const [collecteurToken, setCollecteurToken] = useState<string | null>('');
-    const [collecteurId, setCollecteurId] = useState<string | null>('');
-    const [collecteurName, setCollecteurName] = useState<string | null>('');
-    const [collecteurLastname, setCollecteurLastname] = useState<string | null>(
-        '',
-    );
+    const [collecteurName, setCollecteurName] = useState<string | null>();
+    const [collecteurLastname, setCollecteurLastname] = useState<string | null>();
+
+    let collecteurId: string | null;
+    let collecteurToken: string | null;
 
     useEffect(() => {
         if (fetchOnce) {
-            AsyncStorage.getItem('id').then(value => {
-                setCollecteurId(value);
-                AsyncStorage.getItem('token').then(value => {
-                    setCollecteurToken(value);
-                    AsyncStorage.getItem('nom').then(value => {
-                        setCollecteurLastname(value);
-                        AsyncStorage.getItem('prenom').then(value => {
-                            setCollecteurName(value);
+            AsyncStorage.getItem('id').then(idValue => {
+                collecteurId = idValue;
+                AsyncStorage.getItem('token').then(tokenValue => {
+                    collecteurToken = tokenValue;
+                    AsyncStorage.getItem('prenom').then(nameValue => {
+                        setCollecteurName(nameValue);
+                        AsyncStorage.getItem('nom').then(lastnameValue => {
+                            setCollecteurLastname(lastnameValue);
                             axios
                                 .get(HOST_BACK + '/etape/collecteur/' + collecteurId, {
                                     headers: {
@@ -109,6 +107,7 @@ const DashBordCollecteur = () => {
         }
     }, [etapes, fetchOnce]);
 
+
     const updateCollecte = (index: number) => {
         setEtapes((etapes) => {
             const updatedEtape = [...etapes];
@@ -117,8 +116,16 @@ const DashBordCollecteur = () => {
         })
     }
 
+    const updateAssigned = (index: number) => {
+        setEtapes((etapes) => {
+            const updatedEtape = [...etapes];
+            updatedEtape[index].isAssigned = true
+            return updatedEtape
+        })
+    }
+
     const collectedOrAssigned = (index: number) => {
-        if (etapes[index].isCollected && assigne === true) {
+        if (etapes[index].isCollected && etapes[index].isAssigned) {
             return "Collecté et Assigné"
         } else if (etapes[index].isCollected) {
             return "Collecté"
@@ -128,7 +135,7 @@ const DashBordCollecteur = () => {
     }
 
     const collectedOrAssignedColor = (index: number) => {
-        if (etapes[index].isCollected && assigne === true) {
+        if (etapes[index].isCollected && etapes[index].isAssigned) {
             return "#0096f0"
         } else if (etapes[index].isCollected) {
             return "#8AC997"
@@ -211,17 +218,20 @@ const DashBordCollecteur = () => {
                                 <Paragraph>Adresse : {item.client.adresse}</Paragraph>
                             </Card.Content>
                             <Card.Actions style={styles.cardActionContainer}>
-                                <QrCodeScanner data={item.client.id} titleButton={"Collecte"} colorButton={"#8AC997"}
+                                <QrCodeScanner data={item.client.id} titleButton={"Collecte"} action={"Collecte"}
+                                               colorButton={"#8AC997"}
                                                etapeIndex={index} setIscollected={updateCollecte} etapeId={item.id}
                                                disabled={item.isCollected}/>
-                                <QrCodeScanner data={item.client.id} titleButton={"Assigner"} colorButton={"#0096f0"}
-                                               disabled={!item.isCollected}/>
+                                <QrCodeScanner data={item.client.id} titleButton={"Assigner"} action={"Assigne"}
+                                               colorButton={"#0096f0"}
+                                               etapeIndex={index} setIsAssigned={updateAssigned} etapeId={item.id}
+                                               disabled={item.isAssigned}/>
                             </Card.Actions>
                         </Card>
                     ))
                 }
                 {fetchOnce &&
-                    <ActivityIndicator animating={true} color={"#8AC997"} />
+                    <ActivityIndicator animating={true} color={"#8AC997"}/>
                 }
             </View>
         </ScrollView>

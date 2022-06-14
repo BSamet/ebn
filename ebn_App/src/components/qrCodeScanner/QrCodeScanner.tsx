@@ -31,7 +31,9 @@ const QrCodeScanner = (props: any) => {
     let etapeId = props.etapeId;
     let etapeIndex = props.etapeIndex;
     let setIscollected = props.setIscollected;
+    let setIsAssigned = props.setIsAssigned;
     let buttonDisabled = props.disabled;
+    let action = props.action
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
@@ -43,7 +45,7 @@ const QrCodeScanner = (props: any) => {
     };
 
     const setModalOff = () => {
-        setAffichage(!affichage)
+        setAffichage(false)
     }
 
     return (
@@ -55,8 +57,8 @@ const QrCodeScanner = (props: any) => {
                     style={styles.scrollView}>
                     <View style={styles.body}>
                         {affichage && (
-                            <PopUp data={datas} etapeId={etapeId} etapeIndex={etapeIndex}
-                                   setIscollected={setIscollected} setModalOff={setModalOff}/>
+                            <PopUp data={datas} etapeId={etapeId} etapeIndex={etapeIndex} action={action}
+                                   setIscollected={setIscollected} setIsAssigned={setIsAssigned} setModalOff={setModalOff}/>
                         )}
                         {!scan && (
                             <Button
