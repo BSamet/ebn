@@ -28,6 +28,10 @@ const QrCodeScanner = (props: any) => {
     }
     let titleButton = props.titleButton;
     let colorButton = props.colorButton;
+    let etapeId = props.etapeId;
+    let etapeIndex = props.etapeIndex;
+    let setIscollected = props.setIscollected;
+    let buttonDisabled = props.disabled;
     const onSuccess = (e: any) => {
         setResult(e.data);
         setScan(false);
@@ -38,6 +42,10 @@ const QrCodeScanner = (props: any) => {
         setScan(true);
     };
 
+    const setModalOff = () => {
+        setAffichage(!affichage)
+    }
+
     return (
         <>
             <StatusBar barStyle="dark-content"/>
@@ -47,35 +55,37 @@ const QrCodeScanner = (props: any) => {
                     style={styles.scrollView}>
                     <View style={styles.body}>
                         {affichage && (
-                            <PopUp data={datas}/>
+                            <PopUp data={datas} etapeId={etapeId} etapeIndex={etapeIndex}
+                                   setIscollected={setIscollected} setModalOff={setModalOff}/>
                         )}
                         {!scan && (
                             <Button
                                 title={titleButton}
                                 color={colorButton}
+                                disabled={buttonDisabled}
                                 onPress={startScan}
                             />
                         )}
                         {scan && (
                             <Modal>
-                            <QRCodeScanner
-                                reactivate={true}
-                                showMarker={true}
-                                ref={node => {
-                                    QRScanner = node;
-                                }}
-                                onRead={onSuccess}
-                                topContent={
-                                    <Text style={styles.centerText}>Scannez votre QRCode!</Text>
-                                }
-                                bottomContent={
-                                    <TouchableOpacity
-                                        style={styles.buttonTouchable}
-                                        onPress={() => setScan(false)}>
-                                        <Text style={styles.buttonText}>Annuler Scan</Text>
-                                    </TouchableOpacity>
-                                }
-                            />
+                                <QRCodeScanner
+                                    reactivate={true}
+                                    showMarker={true}
+                                    ref={node => {
+                                        QRScanner = node;
+                                    }}
+                                    onRead={onSuccess}
+                                    topContent={
+                                        <Text style={styles.centerText}>Scannez votre QRCode!</Text>
+                                    }
+                                    bottomContent={
+                                        <TouchableOpacity
+                                            style={styles.buttonTouchable}
+                                            onPress={() => setScan(false)}>
+                                            <Text style={styles.buttonText}>Annuler Scan</Text>
+                                        </TouchableOpacity>
+                                    }
+                                />
                             </Modal>
                         )}
                     </View>

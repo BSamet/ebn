@@ -32,6 +32,10 @@ const popUp = (props: any) => {
     const [commentaire, setCommentaire] = useState('');
     const [clientToken, setClienToken] = useState<string | null>();
     const [error, setError] = useState<string | null>();
+    let etapeid = props.etapeId;
+    let etapeIndex = props.etapeIndex;
+    let setIscollected = props.setIscollected;
+    let setModalOff = props.setModalOff;
     let Assignation = {
         isAvailable: false,
         client: props.data.clientId
@@ -50,9 +54,10 @@ const popUp = (props: any) => {
         collecteurId: 1,
         conteneurId: scanValue,
     };
-
-    //permet de recupérer le token
-    AsyncStorage.getItem('token').then(value => setClienToken(value));
+    let updateEtape = {
+        isCollected: true,
+        commentaire: commentaire,
+    }
 
     useEffect(() => {
         if (fetchOnce) {
@@ -111,6 +116,7 @@ const popUp = (props: any) => {
             .then(res => {
                 console.log(res.data)
                 setModalVisible(!modalVisible);
+                setModalOff();
             })
             .catch(function (error) {
                 console.log(error, ' sur post');
@@ -125,6 +131,20 @@ const popUp = (props: any) => {
                     headers: {
                         'Authorization': `Bearer ${clientToken}`
                     }
+                })
+                .then(function (result) {
+                    axios
+                        .patch(HOST_BACK + '/etape/' + etapeid, updateEtape, {
+                            headers: {
+                                'Authorization': `Bearer ${clientToken}`
+                            }
+                        })
+                        .then(function (result) {
+                            setIscollected(etapeIndex);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
                 })
                 .catch(function (error) {
                     alert("le seau n'a pas été collecté");
