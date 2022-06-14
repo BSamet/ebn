@@ -65,8 +65,7 @@ export class ClientController {
     return this.clientService.findByUserMail(createClientDto.mail);
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+
   @Get('/:mail')
   findOneUserByMail(@Param('mail') mail: string) {
     return this.clientService.findByUserMail(mail);
