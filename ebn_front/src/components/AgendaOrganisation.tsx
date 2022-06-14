@@ -1,17 +1,11 @@
 import axios from "axios"
 import React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import { Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Paper, TextField } from '@mui/material';
-import { format } from "date-fns";
+import { Alert, Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Paper, Snackbar, TextField } from '@mui/material';
 import ReactDatePicker from "react-datepicker";
-
-
 import { useEffect, useState } from "react";
 import { HOST_BACK } from "../environment/environment"
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { CheckBox } from "@mui/icons-material";
 import moment from "moment";
-import { useIsomorphicLayoutEffect } from "framer-motion";
 
 interface collecteursInterface {
     id: number;
@@ -37,6 +31,7 @@ interface ramassageInterface {
 }
 
 interface etapesInterface {
+    id: number;
     date: Date;
     isCollected: boolean;
     clientId: number;
@@ -51,12 +46,17 @@ export function AgendaOrganisation(){
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [etapesList, setEtapeslist] = useState<ramassageInterface[]>();
     const [etapesAbonnementList, setEtapesAbonnementlist] = useState<ramassageInterface[]>();
+    const [etapeSend, setEtapeSend] = useState(false);
+    const [sendMessage, setSendMessage] = useState('');
+    const [open, setOpen] = React.useState(false);
+
     const etapesArray: ramassageInterface[] = [];
 
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>();
     const [collectorEtape, setCollectorEtape]= useState<ramassageInterface[]>();
-    let [Collector, setCollector] = React.useState(1);
+    let [Collector, setCollector] = useState(1);
     const [date, setDate] = React.useState<Date | null>(new Date());
+    let transitArray: any[] = [];
 
     const [checked, setChecked] = React.useState<number[]>([]);
     
@@ -125,35 +125,37 @@ export function AgendaOrganisation(){
 
     const handleChange = (event: any) => {
         setCollector(event.target.value);
+        setSendMessage('')
+
     }
 
-      const handleAllRight = () => {
-        if(finalEtapeList![0] == undefined){
-
-        }else{
-            setCollectorEtape(finalEtapeList);
-            setFinalEtapeList([]);
+    const handleAllRight = () => {
+      if(finalEtapeList![0] == undefined){
+      }else{
+          setCollectorEtape(finalEtapeList);
+          setFinalEtapeList([]);
         }
       };
     
-      const handleCheckedRight = () => {
-        finalEtapeList?.map((etape) => {
-            
-            for(let i = 0; i <= checked.length; i++){
-                
+    const handleCheckedRight = () => {
+      finalEtapeList?.map((etape) => {   
+          for(let i = 0; i <= checked.length; i++){            
                 if(etape.id == checked[i]){
-                    collectorEtape?.push(etape)   
+                    let etapeIndex = finalEtapeList.indexOf(etape);
+                    let checkedIndex = checked.indexOf(checked[i])
+                    transitArray.push(etape);
+                    setCollectorEtape(transitArray);
+                    // finalEtapeList?.splice(etapeIndex, 1);   
+                    checked.splice(checkedIndex, 1);
+                    console.log(collectorEtape)
                 }
             }
         })
-        setChecked([]);
       };
-    
-      const handleCheckedLeft = () => {
-        collectorEtape?.map((etape) => {
-            
+
+    const handleCheckedLeft = () => {
+        collectorEtape?.map((etape) => {   
             for(let i = 0; i <= checked.length; i++){
-                
                 if(etape.id == checked[i]){
                     finalEtapeList?.push(etape)   
                 }
@@ -162,7 +164,7 @@ export function AgendaOrganisation(){
         setChecked([]);
       };
     
-      const handleAllLeft = () => {
+    const handleAllLeft = () => {
         if(collectorEtape![0] == undefined){
 
         } else {
@@ -171,16 +173,23 @@ export function AgendaOrganisation(){
         }
       };
 
-      function sendCollectorEtape() {
-          console.log(collectorEtape);
-            collectorEtape?.map((etape) => {
-                const etapeToAdd = {
-                    clientId: etape.client.id,
-                    collecteurId: Collector,
-                    isCollected: false,
-                    commentaire: "",
-                    date: etape.date,
-                }
+    const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setOpen(false);
+    };
+
+    function sendCollectorEtape() {
+        let numberOfEtape = 0;
+        collectorEtape?.map((etape) => {
+            const etapeToAdd = {
+                clientId: etape.client.id,
+                collecteurId: Collector,
+                isCollected: false,
+                commentaire: "",
+                date: etape.date,
+            }
                 axios
                 .post(HOST_BACK + "/etape", etapeToAdd, {
                     headers: {
@@ -189,11 +198,20 @@ export function AgendaOrganisation(){
                 })
                 .then(response => { 
                     console.log(response)
+                    
+                    numberOfEtape ++;
+                    if(numberOfEtape == collectorEtape?.length){
+                        setCollectorEtape([]);
+                        setOpen(true)
+                        setSendMessage('Les étapes ont été assignées au collecteur')
+
+                    }
                 })
                 .catch(error => {
-                    console.log(error.response)
+                    console.log(error)
                 });
             })
+        
       }
         
     return (
@@ -351,6 +369,9 @@ export function AgendaOrganisation(){
                         >
                             Envoyer
                         </Button>
+                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert severity="success">{sendMessage}</Alert>
+                        </Snackbar>
                         </Grid>
                     </Grid>
                     </div>
