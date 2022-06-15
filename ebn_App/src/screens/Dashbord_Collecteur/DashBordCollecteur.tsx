@@ -63,7 +63,6 @@ interface collecteurInterface {
     };
 }
 
-// TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordCollecteur = () => {
     // const navigation = useNavigation<AuthScreenNavigate>();
     const {height} = useWindowDimensions();
@@ -207,7 +206,7 @@ const DashBordCollecteur = () => {
                     </View>
                 </Modal>
 
-                {!fetchOnce &&
+                {fetchOnce &&
                     etapes?.map((item, index) => (
                         <Card style={styles.cardContainer} key={index}>
                             <Card.Title title={item.client.nomCommercial}
@@ -230,8 +229,10 @@ const DashBordCollecteur = () => {
                         </Card>
                     ))
                 }
-                {fetchOnce &&
-                    <ActivityIndicator animating={true} color={"#8AC997"}/>
+                {!fetchOnce &&
+                    <View style={styles.loader}>
+                        <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
+                    </View>
                 }
             </View>
         </ScrollView>
@@ -239,6 +240,12 @@ const DashBordCollecteur = () => {
 };
 
 const styles = StyleSheet.create({
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        width:'100%',
+        height:250,
+    },
     header: {
         display: 'flex',
         alignItems: 'center',
