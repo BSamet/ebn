@@ -19,6 +19,7 @@ clean-dev:
 	@docker system prune -f
 	@docker image prune -f --all
 	@docker volume prune -f
+	@sudo rm -rf ebn_back/database/data
 
 #Production
 
@@ -39,3 +40,4 @@ clean-prod:
 	@docker system prune -f
 	@docker image prune -f --all
 	@docker volume prune -f
+	@sudo rm -rf ebn_back/database/data
