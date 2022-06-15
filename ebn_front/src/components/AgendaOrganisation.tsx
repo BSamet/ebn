@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { HOST_BACK } from "../environment/environment"
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import moment from "moment";
+import '../styles/component/_AgendaOrganisation.scss';
+
 
 interface collecteursInterface {
     id: number;
@@ -79,11 +81,13 @@ export function AgendaOrganisation(){
                 headers: {
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                 } 
-            }).then(ramassageAbonnement =>{
-                    console.log(ramassageAbonnement.data)
-                    setEtapeslist(ramassageAbonnement.data)
+            }).then(ramassage =>{
+                    console.log(ramassage.data)
+                    setEtapeslist(ramassage.data)
                     setFetchEtapeTwice(false);
                 
+            }).catch((err) => {
+                console.log(err)
             })
         }
     }, [etapesList, fetchEtapeTwice])
@@ -225,7 +229,7 @@ export function AgendaOrganisation(){
         
     return (
         <>
-            <div>
+            <div className="conteneur">
                 <h1>Organiser l'agenda</h1>
                     
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -261,12 +265,13 @@ export function AgendaOrganisation(){
                                     Valider
                                 </Button>
                             </Grid>
-                            <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
+                            <Paper sx={{ width: 400, height: 530, overflow: 'auto', fontSize: 10 }}>
                                 <List dense component="div" role="list">
                                     {finalEtapeList?.map((etape: any) => {
                                     const labelId = `transfer-list-item-${etape.id}-label`;
                                     const date = etape.date;
                                     return (
+                                        
                                         <ListItem
                                             key={etape.id}
                                             role="listitem"
@@ -383,7 +388,6 @@ export function AgendaOrganisation(){
                                 </List>
                             </Paper>
                         </Grid>
-                        
                     </Grid>
                     <Button
                                 sx={{ width: 200, my: 0.5, mt: 1.5 }}
