@@ -129,3 +129,7 @@ yarn.lock
 .ebn_App/android/.local.properties
 /ebn_App/environment/
 /ebn_back/database/data/
+
+package.json
+package-lock.json
+.idea
