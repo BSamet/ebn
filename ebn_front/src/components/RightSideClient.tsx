@@ -14,6 +14,8 @@ interface historyCustomerInterface {
 const RightSideClient = () => {
   const [history, setHistory] = useState<historyCustomerInterface[]>([]);
   const { id } = useParams();
+  const clientvalide : any = sessionStorage.getItem("clientvalide");
+  
 
   useEffect(() => {
     axios
@@ -24,6 +26,8 @@ const RightSideClient = () => {
       })
       .then((res) => {
         setHistory(res.data);
+        console.log(res.data);
+        
       })
       .catch(function (error) {
         console.log(error);
@@ -32,18 +36,26 @@ const RightSideClient = () => {
 
   const formatDate = moment().format("DD-MM-YYYY");
 
-  return (
-    <div>
-      <h3>MON HISTORIQUE</h3>
-      {history.map((data) => (
-        <div className="historique">
-          <h3>{data.typeAction}</h3>
-          <p>{moment(data.date).format("DD.MM.YYYY à HH [h] mm")} </p>
-          <p>{data.commentaire}</p>
-        </div>
-      ))}
-    </div>
-  );
+  if(clientvalide == "true"){
+    return (
+      <div>
+        <h3>MON HISTORIQUE</h3>
+        {history.map((data) => (
+          <div className="historique">
+            <h3>{data.typeAction}</h3>
+            <p>{moment(data.date).format("DD.MM.YYYY à HH [h] mm")} </p>
+            <p>{data.commentaire}</p>
+          </div>
+        ))}
+      </div>
+    );
+
+  }
+  else{
+    
+    
+  }
+  
 };
 
 export default RightSideClient;
