@@ -60,7 +60,7 @@ export class CollecteurController {
     );
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/mail')
   findByUserMail(@Body() createCollecteurDto: CreateCollecteurDto) {

@@ -57,6 +57,7 @@ export default function SignInSide() {
       })
       .then((res) => {
         const decode: any = jwt_decode(res.data.access_token);
+
         sessionStorage.setItem("role", decode.utilisateur.role);
         sessionStorage.setItem("name", decode.utilisateur.nom);
         sessionStorage.setItem("lastname", decode.utilisateur.lastname);

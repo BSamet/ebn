@@ -2,9 +2,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View, StyleSheet, Text} from 'react-native';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  useWindowDimensions,
+  Pressable,
+  Alert,
+  Modal,
+} from 'react-native';
 import {Card, Divider} from 'react-native-elements';
-import {HOST_BACK} from "../../../environment/environment";
+import {HOST_BACK} from '../../../environment/environment';
+import LinearGradient from 'react-native-linear-gradient';
+import Logo from '../../../assets/images/logo.png';
+import {DataTable} from 'react-native-paper';
+import {RefreshControl} from 'react-native';
+
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
 
 export interface HistoriqueClient {
   id: number;
@@ -14,70 +32,178 @@ export interface HistoriqueClient {
   commentaire: string;
   poids: number;
 }
+
 const HistoriqueClient = () => {
   const [myHistorique, setMyHistorique] = useState<HistoriqueClient[]>();
-
   const [fetchOnce, setFetchOnce] = useState(true);
-  const [clientToken, setClienToken] = useState('');
-  AsyncStorage.getItem('token').then(value => setClienToken(value));
+  const [clientToken, setClienToken] = useState<string | null>('');
+  const [myClientId, setClientId] = useState<string | null>('');
+  const [clientNom, setClientNom] = useState<string | null>('');
+  const [clientPrenom, setClientPrenom] = useState<string | null>('');
+  const [modalHistorique, setModalHistorique] = useState(false);
+  const [infoHistorique, setInfoHistorique] = useState<HistoriqueClient>();
+  //refresh pages
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    fetchHistorique();
+    setRefreshing(true);
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
+
+  AsyncStorage.getItem('token').then(value => {
+    setClienToken(value);
+  });
+  AsyncStorage.getItem('id').then(value => {
+    setClientId(value);
+  });
+  AsyncStorage.getItem('nom').then(value => {
+    setClientNom(value);
+  });
+  AsyncStorage.getItem('prenom').then(value => {
+    setClientPrenom(value);
+  });
+
+  const fetchHistorique = () => {
+    axios
+      .get(HOST_BACK + '/etape/client/' + myClientId, {
+        headers: {
+          Authorization: `Bearer ${clientToken}`,
+        },
+      })
+      .then(res => {
+        // recupération historique
+        setMyHistorique(res.data.historique);
+        setFetchOnce(false);
+      });
+  };
+
   useEffect(() => {
-    console.log(clientToken, ' historique');
     if (fetchOnce) {
-      axios
-        .get(HOST_BACK + '/etape/client/2', {
-          headers: {
-            Authorization: `Bearer ${clientToken}`,
-          },
-        })
-        .then(res => {
-          // appel de l'api
-
-          // recupération historique
-          setMyHistorique(res.data.historique);
-          setFetchOnce(false);
-        });
+      fetchHistorique();
     }
-  }, [myHistorique, fetchOnce, clientToken]);
-  return (
-    <ScrollView>
-      <Card.Title h1={true}>Mon historique</Card.Title>
-      <Card.Divider>
-        {myHistorique?.map((hist, index) => (
-          <View key={index}>
-            <Text style={styles.modalText}>Récuperer le :</Text>
-            <Text style={styles.modalHistoriqueText}>
-              {moment(hist.date).format('DD.MM.YYYY  à HH[h] mm')}
-            </Text>
-            <Text style={styles.modalText}>Conteneur :</Text>
-            <Text style={styles.modalHistoriqueText}>
-              {hist.typeAction} {hist.id}
-            </Text>
-            <Text style={styles.modalText}>Type de dechet :</Text>
-            <Text style={styles.modalHistoriqueText}>{hist.typeDeDechet}</Text>
-            <Text style={styles.modalText}>Commentaire du Collecteur :</Text>
-            <Text style={styles.modalHistoriqueText}>{hist.commentaire}</Text>
-            <Text style={styles.modalText}>Poids total récuperé:</Text>
-            <Text style={styles.modalHistoriqueText}>{hist.poids} KG</Text>
+  }, [myHistorique, fetchOnce, clientToken, myClientId]);
 
-            <Divider
-              style={{width: '100%', margin: 10}}
-              color="#0096f0"
-              width={2}
-              orientation="horizontal"
+  const {height} = useWindowDimensions();
+
+  const openModalHistorique = (historique: HistoriqueClient) => {
+    setInfoHistorique(historique);
+    setModalHistorique(true);
+  };
+
+  return (
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
+      <View style={styles.page}>
+        <View>
+          <LinearGradient
+            colors={['#8AC997', '#0096f0']}
+            start={{
+              x: 0,
+              y: 1,
+            }}
+            end={{
+              x: 1,
+              y: 2,
+            }}
+            style={styles.box}>
+            <Image
+              source={Logo}
+              style={[styles.Logo, {height: height * 0.3}]}
+              resizeMode="contain"
             />
+            <Text style={styles.topText}>
+              Bonjour, {clientNom} {clientPrenom}
+            </Text>
+          </LinearGradient>
+        </View>
+
+        <View style={styles.historiqueTitleContainer}>
+          <Text style={styles.titleText}>Votre historique</Text>
+        </View>
+        <Divider
+          style={{width: '100%', margin: 10}}
+          color="#8AC997"
+          width={2}
+          orientation="horizontal"
+        />
+
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
+            <DataTable.Title style={{flex: 1}}>Type de déchets</DataTable.Title>
+            <DataTable.Title>poids</DataTable.Title>
+          </DataTable.Header>
+
+          {myHistorique?.map((hist, index) => (
+            <Pressable onPress={() => openModalHistorique(hist)}>
+              <DataTable.Header>
+                <DataTable.Cell style={{flex: 1.5}}>
+                  {moment(hist.date).format('DD.MM.YYYY à HH[h] mm')}
+                </DataTable.Cell>
+                <DataTable.Cell style={{flex: 1}}>
+                  {hist.typeDeDechet}
+                </DataTable.Cell>
+                <DataTable.Cell>{hist.poids} kg</DataTable.Cell>
+              </DataTable.Header>
+            </Pressable>
+          ))}
+        </DataTable>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalHistorique}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitre}>
+                Historique du {'\n'}
+                {moment(infoHistorique?.date).format('DD/MM/YYYY à HH[h]mm')}
+              </Text>
+              <Text style={styles.modalText}>
+                Type de déchets : {infoHistorique?.typeDeDechet}
+              </Text>
+              <Text style={styles.modalText}>
+                Action : {infoHistorique?.typeAction}
+              </Text>
+              <Text style={styles.modalText}>
+                Poids récuperé : {infoHistorique?.poids} kg
+              </Text>
+              <Text style={styles.modalText}>
+                Commentaire : {infoHistorique?.commentaire}
+              </Text>
+              <Pressable
+                style={styles.historiqueModalCancel}
+                onPress={() => {
+                  setModalHistorique(!modalHistorique);
+                }}>
+                <Text style={styles.textStyle}>Fermer</Text>
+              </Pressable>
+            </View>
           </View>
-        ))}
-      </Card.Divider>
+        </Modal>
+      </View>
     </ScrollView>
   );
 };
 const styles = StyleSheet.create({
+  historiqueTitleContainer: {
+    backgroundColor: 'white',
+    display: 'flex',
+    alignItems: 'center',
+  },
   modalTitre: {
     marginBottom: 15,
     textAlign: 'center',
-    color: 'black',
+    fontFamily: 'Confortaa-Bold',
+    color: '#8AC997',
+    fontSize: 20,
   },
-
+  page: {
+    backgroundColor: '#FFFFFF',
+  },
   button: {
     borderRadius: 20,
     padding: 10,
@@ -123,19 +249,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 22,
   },
-  modalHistoriqueText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    fontFamily: 'Confortaa-Bold',
-
-    fontSize: 18,
+  historiqueModalCancel: {
+    borderRadius: 30,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 30,
+    paddingRight: 30,
+    backgroundColor: '#8AC997',
+    marginTop: 10,
+    marginRight: 5,
+    marginLeft: 5,
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '50%',
+    marginVertical: 5,
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    fontFamily: 'Confortaa-Bold',
-    color: '#8AC997',
-    fontSize: 20,
+    color: 'black',
   },
   buttonModal: {
     borderRadius: 20,
@@ -147,9 +279,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderBottomRightRadius: 25,
     borderBottomLeftRadius: 25,
-  },
-  page: {
-    backgroundColor: '#FFFFFF',
   },
   header: {},
 
@@ -172,7 +301,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   titleText: {
-    fontSize: 22,
+    fontSize: 28,
     marginTop: 20,
     paddingHorizontal: 10,
     color: 'black',
