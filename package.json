@@ -1,9 +1,0 @@
-{
-  "devDependencies": {
-    "@types/react-datepicker": "^4.4.1"
-  },
-  "dependencies": {
-    "apexcharts": "^3.35.3",
-    "react-apexcharts": "^1.4.0"
-  }
-}

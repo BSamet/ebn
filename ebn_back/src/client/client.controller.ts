@@ -65,7 +65,6 @@ export class ClientController {
     return this.clientService.findByUserMail(createClientDto.mail);
   }
 
-
   @Get('/:mail')
   findOneUserByMail(@Param('mail') mail: string) {
     return this.clientService.findByUserMail(mail);
