@@ -21,6 +21,9 @@ export class Etape {
   @Column({ default: false })
   public isCollected: boolean;
 
+  @Column({ default: false })
+  public isAssigned: boolean;
+
   @Column({nullable: true})
   public commentaire: string;
 }

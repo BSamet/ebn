@@ -13,6 +13,7 @@ const popUpStyles = StyleSheet.create({
         padding: 35,
         alignItems: 'center',
         shadowColor: '#000',
+        width: '75%',
         shadowOffset: {
             width: 0,
             height: 2,
