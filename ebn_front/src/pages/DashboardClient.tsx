@@ -20,17 +20,23 @@ const DashboardClient = () => {
   useEffect(() => {
     const sessionExp: any = sessionStorage.getItem("token_exp");
     const role: any = sessionStorage.getItem("role");
-    if (!sessionStorage.getItem("role")) {
-      navigate("/");
-    } else if (role !== "Client") {
-      navigate("/admin");
-    } else if (sessionExp * 1000 < Date.now()) {
-      sessionStorage.clear();
-      setTimeout(() => {
+   
+    
+      if (!sessionStorage.getItem("role")) {
         navigate("/");
-      }, 100);
-    }
+      } else if (role !== "Client") {
+        navigate("/admin");
+      } else if (sessionExp * 1000 < Date.now()) {
+        sessionStorage.clear();
+        setTimeout(() => {
+          navigate("/");
+        }, 100);
+      }
+
+   
+    
   });
+ 
 
   return (
     <div className="App">

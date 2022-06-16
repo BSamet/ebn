@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import ViewAdminDash from "../components/ViewAdminDash";
 import ViewAdminRightSide from "../components/ViewAdminRightSide";
 import { useNavigate } from "react-router-dom";
+import { Button, Snackbar } from "@mui/material";
 
 const DashboardAdmin = () => {
   const navigate = useNavigate();
@@ -36,7 +37,14 @@ const DashboardAdmin = () => {
   });
 
   return (
+    
     <div className="App">
+     
+<Snackbar
+
+  message="Note archived"
+
+/>
       <div className="AppGlass">
         <Sidebar setSelectNav={setSelectNav} setSelectRight={setSelectRight} />
 
@@ -53,6 +61,7 @@ const DashboardAdmin = () => {
           selectRight={selectRight}
           selectConteneurId={selectConteneurId}
         />
+  
       </div>
     </div>
   );

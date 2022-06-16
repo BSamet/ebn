@@ -12,6 +12,8 @@ const SidebarDashboardClient = ({ setSelectNav, setSelectRight }: any) => {
   const [selected, setSelected] = useState(0);
 
   const [expanded, setExpaned] = useState(true);
+  const clientvalide : any = sessionStorage.getItem("clientvalide");
+    
 
   function onClickOnNav(index: number, heading: string) {
     setSelected(index);

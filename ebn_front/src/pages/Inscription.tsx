@@ -205,9 +205,6 @@ export default function SignInSide() {
           password: password,
           nomCommercial: commercialName,
           adresse: adresse,
-          headers: {
-            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-          }
         })
         .then((res) => {
           setTimeout(() => {
@@ -447,7 +444,12 @@ export default function SignInSide() {
               </div>
             )}
             <div className="isSignupLoading">
+              <div>
+              <p>Merci pour votre inscription, un administrateur va valider votre compte</p>
+              </div>
+              <div>
               <CircularProgress size={75} />
+              </div>
             </div>
           </Grid>
         </Grid>

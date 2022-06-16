@@ -43,6 +43,7 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [clientValid, setclientValid] = React.useState(true);
+  const [clientNotValid, setclientNotValid] = React.useState(false);
   const [clientsList, setClientslist] = useState<clientsInterface[]>();
   const [fetchOnce, setFetchOnce] = useState(true);
   //Paginations des clients
@@ -62,8 +63,10 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
 
   let clientvalide = {
     "clientvalide": clientValid,
-  
 };
+  let clientnonvalide = {
+    "clientvalide" : clientNotValid,
+  }
 
   //Fin pagination des clients
 
@@ -105,12 +108,28 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
   }
 
   const validClient = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    list : clientsInterface
    ) => {
-    axios.patch(HOST_BACK + '/client/' + selectClientId, clientvalide, {
+     if(list.clientvalide == true){
+   
+      axios.patch(HOST_BACK + '/client/' + list.id, clientnonvalide, {
+        headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+      })
+      list.clientvalide = false;
+     }
+     else{
+       
+       axios.patch(HOST_BACK + '/client/' + list.id, clientvalide, {
         headers: {
             "Authorization": `Bearer ${sessionStorage.getItem('token')}`
         }
     })
+    list.clientvalide = true;
+     }
+     
 }
 
   const deleteClient = (
@@ -166,8 +185,9 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
                 <ListItemText className='listItem' primary={list.utilisateur.nom} />
                 <ListItemText className='listItem' primary={list.utilisateur.prenom} />
                 <ListItemText className='listItem' primary={list.utilisateur.telephone} />
-                <ListItemText className='listItem' primary={statusClient(list)}/>
-                <Button onClick={validClient} variant="outlined" className='buttonStatus'>Modifier</Button>
+                <ListItemButton >
+                <ListItemText onClick={(event) => validClient(event, list)}  className='ValidClient' primary={statusClient(list)}/>
+                </ListItemButton>
                 <div>
                   <UpdateClient selectClientId={selectClientId} />
                 </div>
