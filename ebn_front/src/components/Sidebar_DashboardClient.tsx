@@ -12,6 +12,8 @@ const SidebarDashboardClient = () => {
   const [selected, setSelected] = useState(0);
 
   const [expanded, setExpaned] = useState(true);
+  const clientvalide : any = sessionStorage.getItem("clientvalide");
+    
 
   function logOut() {
     sessionStorage.clear();
@@ -49,16 +51,32 @@ const SidebarDashboardClient = () => {
 
         <div className="menu">
           {SidebarClientData.map((item, index) => {
-            return (
-              <div
-                className={selected === index ? "menuItem active" : "menuItem"}
-                key={index}
-                onClick={() => setSelected(index)}
-              >
-                <item.icon />
-                <span>{item.heading}</span>
-              </div>
-            );
+            if(clientvalide == "true")
+            {
+              return (
+                <div
+                  className={selected === index ? "menuItem active" : "menuItem"}
+                  key={index}
+                  onClick={() => setSelected(index)}
+                >
+                  <item.icon />
+                  <span>{item.heading}</span>
+                </div>
+              );
+
+            }
+            else{
+              return (
+                <div
+                  className={selected === index ? "menuItem active" : "menuItemDontValid"}
+                  key={index}
+                >
+                  <item.icon />
+                  <span>{item.heading}</span>
+                </div>
+              );
+
+            }
           })}
           {/* signoutIcon */}
           <div className="menuItem" onClick={() => logOut()}>
