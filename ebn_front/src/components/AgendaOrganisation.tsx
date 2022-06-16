@@ -46,7 +46,6 @@ export function AgendaOrganisation(){
     const [fetchEtapeTwice, setFetchEtapeTwice] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [etapesList, setEtapeslist] = useState<ramassageInterface[]>([]);
-    const [etapesAbonnementList, setEtapesAbonnementlist] = useState<ramassageInterface[]>();
     const [etapeSend, setEtapeSend] = useState(false);
     const [sendMessage, setSendMessage] = useState('');
     const [open, setOpen] = React.useState(false);
@@ -94,6 +93,7 @@ export function AgendaOrganisation(){
 
     function setEtapesArray() {
             etapesList?.map((etape) => {
+                console.log(etape)
                 if(moment(etape.date).format('YYYY-MM-DD') == moment(date).format('YYYY-MM-DD')){
                     etapesArray?.push(etape);
                 }

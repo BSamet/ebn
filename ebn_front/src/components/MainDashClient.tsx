@@ -3,6 +3,7 @@ import axios from "axios";
 import { HOST_BACK } from "../environment/environment";
 import { useParams } from "react-router-dom";
 import moment from "moment";
+import { ClientAskCollect } from "./ClientAskCollect";
 
 
 interface clientInterface {
@@ -33,7 +34,16 @@ interface clientInterface {
   ];
 }
 
-const MainDashClient = () => {
+interface ClientDashInterface{
+  selectNav: string;
+    setSelectConteneurId: any;
+    selectConteneurId: string;
+    setSelectClientId: any;
+    selectClientId: string
+    setSelectCollecteurId: any;
+    selectCollecteurId: string
+}
+const MainDashClient = ({ selectNav, setSelectConteneurId, selectConteneurId, setSelectClientId, selectClientId, setSelectCollecteurId, selectCollecteurId }: ClientDashInterface) => {
   const { id } = useParams();
   const [client, setClient] = useState<clientInterface>();
   const formatDate = moment().format("DD-MM-YYYY");
@@ -52,56 +62,63 @@ const MainDashClient = () => {
         console.log(error);
       });
   }, []);
-
-  return (
-    <div className="scroll">
-      <div className="MainDashClient">
-        <h1>Tableau de bord</h1>
-        <div className="idClient">
-          <h4>Information Client</h4>
-          <p>
-            {client?.utilisateur?.nom} {client?.utilisateur?.prenom}
-          </p>
-          <p>{client?.nomCommercial}</p>
-          <p> Adresse: {client?.adresse}</p>
-          <p> e-mail: {client?.utilisateur.mail}</p>
-          <p> téléphone: {client?.utilisateur.telephone}</p>
-        </div>
-        {/*TODO: gérer les multiples abonnement via une message*/}
-        <div className="abonnement">
-          <h4>Ramassage</h4>
-          <h3>Abonnement</h3>
-          {client?.ramassageAbonnement?.map((abonnement) => (
-            <div>
+  switch(selectNav){
+    
+    case 'Demande de collecte':
+      return (
+        <ClientAskCollect />
+      );
+    default:
+      return (
+        <div className="scroll">
+          <div className="MainDashClient">
+            <h1>Tableau de bord</h1>
+            <div className="idClient">
+              <h4>Information Client</h4>
               <p>
-                Vous avez un abonnement actif depuis le:{" "}
-                {moment(abonnement.dateReference).format(
-                  "DD.MM.YYYY à HH [h] mm"
-                )}{" "}
+                {client?.utilisateur?.nom} {client?.utilisateur?.prenom}
               </p>
-              <p>Collecte tout les {abonnement.periodicite} jours</p>
+              <p>{client?.nomCommercial}</p>
+              <p> Adresse: {client?.adresse}</p>
+              <p> e-mail: {client?.utilisateur.mail}</p>
+              <p> téléphone: {client?.utilisateur.telephone}</p>
             </div>
-          ))}
+            {/*TODO: gérer les multiples abonnement via une message*/}
+            <div className="abonnement">
+              <h4>Ramassage</h4>
+              <h3>Abonnement</h3>
+              {client?.ramassageAbonnement?.map((abonnement) => (
+                <div>
+                  <p>
+                    Vous avez un abonnement actif depuis le:{" "}
+                    {moment(abonnement.dateReference).format(
+                      "DD.MM.YYYY à HH [h] mm"
+                    )}{" "}
+                  </p>
+                  <p>Collecte tout les {abonnement.periodicite} jours</p>
+                </div>
+              ))}
 
-          <h3>Ponctuel</h3>
-          {client?.ramassagePonctuel.map((ponctuel) => (
-            <div>
-              <p>
-                Vous avez demandé un ramassage ponctuel le :{" "}
-                {moment(ponctuel.date).format("DD.MM.YYYY à HH [h] mm")}{" "}
-              </p>
+              <h3>Ponctuel</h3>
+              {client?.ramassagePonctuel.map((ponctuel) => (
+                <div>
+                  <p>
+                    Vous avez demandé un ramassage ponctuel le :{" "}
+                    {moment(ponctuel.date).format("DD.MM.YYYY à HH [h] mm")}{" "}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <div className="typeDechets">
-          <h4>Type de déchets</h4>
-          {client?.typeDechet?.map((dechets) => (
-            <p>{dechets.typeDechets}</p>
-          ))}
+            <div className="typeDechets">
+              <h4>Type de déchets</h4>
+              {client?.typeDechet?.map((dechets) => (
+                <p>{dechets.typeDechets}</p>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      );
+    }
 };
 export default MainDashClient;

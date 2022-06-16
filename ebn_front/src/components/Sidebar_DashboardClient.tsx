@@ -6,12 +6,18 @@ import Logo from "../assets/logo.png";
 import { SidebarClientData } from "../Data/Data";
 import { useNavigate } from "react-router-dom";
 
-const SidebarDashboardClient = () => {
+const SidebarDashboardClient = ({ setSelectNav, setSelectRight }: any) => {
   const navigate = useNavigate();
 
   const [selected, setSelected] = useState(0);
 
   const [expanded, setExpaned] = useState(true);
+
+  function onClickOnNav(index: number, heading: string) {
+    setSelected(index);
+    setSelectNav(heading);
+    setSelectRight(heading);
+  }
 
   function logOut() {
     sessionStorage.clear();
@@ -53,7 +59,7 @@ const SidebarDashboardClient = () => {
               <div
                 className={selected === index ? "menuItem active" : "menuItem"}
                 key={index}
-                onClick={() => setSelected(index)}
+                onClick={() => onClickOnNav(index, item.heading)}
               >
                 <item.icon />
                 <span>{item.heading}</span>

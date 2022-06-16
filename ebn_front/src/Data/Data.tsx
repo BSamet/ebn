@@ -81,6 +81,11 @@ export const SidebarClientData = [
 
   {
     icon: UilPackage,
+    heading: "Demande de collecte"
+  },
+
+  {
+    icon: UilTrash,
     heading: "Suspension de collecte",
   },
 
