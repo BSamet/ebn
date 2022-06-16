@@ -27,34 +27,6 @@ export class CollectService {
 
             let cronGenerate = "0 " + timeSlot + " * * " + allDays + ",";
             collect.cronExpression = cronGenerate.replace(/,\s*$/, "");
-
-            // let currentDay = new Date();
-            // let futureDay = new Date().setDate(currentDay.getDate() + 2)
-            // let futureDayFormated = new Date(futureDay);
-            //
-            // var options = {
-            //     currentDate: checkDateHours,
-            //     endDate: futureDayFormated,
-            //     iterator: true,
-            //     utc: true
-            // };
-            //
-            // try {
-            //     let interval = parser.parseExpression(str, options);
-            //
-            //     while (true) {
-            //         try {
-            //             let obj = interval.next();
-            //             if (new Date(obj.value) > currentDay) {
-            //                 console.log("day", new Date(obj.value));
-            //             }
-            //         } catch (e) {
-            //             break;
-            //         }
-            //     }
-            // } catch (err) {
-            //     console.log('Error: ' + err.message);
-            // }
         }
         collect.refDate = createCollectDto.refDate;
         collect.client = Object.assign(new Client(), {
@@ -76,14 +48,64 @@ export class CollectService {
     }
 
     async findAllByDate(date: Date){
-        const allCollect = await this.collectRepository
+        console.log(date)
+        let myAwesomeCollectObject= [];
+
+        const allCollectSubscribe = await this.collectRepository
             .createQueryBuilder('collect')
             .leftJoinAndSelect('collect.client', 'client')
             .leftJoinAndSelect('client.utilisateur', 'utilisateur')
+            .select('collect')
+            .addSelect('client.id')
+            .where("collect.cronExpression != ''")
             .andWhere(date ? 'collect.refDate >= :date' : '1=1', {date})
             .getMany();
 
-        console.log(allCollect)
+        let currentDay = new Date();
+        let futureDay = new Date().setDate(currentDay.getDate() + 31)
+        let futureDayFormated = new Date(futureDay);
+
+        allCollectSubscribe.forEach((subscribe) => {
+            let parserOption = {
+                currentDate: new Date(subscribe.refDate),
+                endDate: futureDayFormated,
+                iterator: true,
+                utc: true
+            };
+
+            try {
+                let intervalSubscribe = parser.parseExpression(subscribe.cronExpression, parserOption);
+                while (true) {
+                    try {
+                        let obj = intervalSubscribe.next();
+                        if (date != undefined) {
+                            if (new Date(obj.value) == date) {
+                                let toPushInObject = {
+                                    refDate: new Date(obj.value),
+                                    client: subscribe.client,
+                                    isSubscribe: true
+                                }
+                                myAwesomeCollectObject.push(toPushInObject)
+                            }
+                        }
+                        else if (new Date(obj.value) > currentDay) {
+                            // console.log("day", new Date(obj.value));
+                            let toPushInObject = {
+                                refDate: new Date(obj.value),
+                                client: subscribe.client,
+                                isSubscribe: true
+                            }
+                            myAwesomeCollectObject.push(toPushInObject)
+                        }
+                    } catch (e) {
+                        break;
+                    }
+                }
+            } catch (err) {
+                console.log('Error: ' + err.message);
+            }
+        })
+        // console.log(myAwesomeCollectObject)
         return null;
     }
 
