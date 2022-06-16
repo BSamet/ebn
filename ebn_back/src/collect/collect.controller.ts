@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards} from '@nestjs/common';
 import {CollectService} from './collect.service';
 import {CreateCollectDto} from './dto/create-collect.dto';
 import {UpdateCollectDto} from './dto/update-collect.dto';
@@ -29,9 +29,7 @@ export class CollectController {
     @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get('/date')
-    findAllByDate(@Param('d') date: Date | null) {
-        let dateParams = date;
-        console.log(dateParams)
+    findAllByDate(@Query('date') date: Date) {
         return this.collectService.findAllByDate(date);
     }
 
