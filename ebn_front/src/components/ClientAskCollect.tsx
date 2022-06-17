@@ -38,7 +38,7 @@ export function ClientAskCollect(){
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setHour(event.target.value);
-      };
+    };
     
       function setTimePeriod(){
           if(hour == "T08:00:00.000Z"){
