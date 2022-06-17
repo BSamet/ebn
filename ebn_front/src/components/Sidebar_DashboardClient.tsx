@@ -6,7 +6,7 @@ import Logo from "../assets/logo.png";
 import { SidebarClientData } from "../Data/Data";
 import { useNavigate } from "react-router-dom";
 
-const SidebarDashboardClient = () => {
+const SidebarDashboardClient = ({ setSelectNav, setSelectRight }: any) => {
   const navigate = useNavigate();
 
   const [selected, setSelected] = useState(0);
@@ -14,6 +14,12 @@ const SidebarDashboardClient = () => {
   const [expanded, setExpaned] = useState(true);
   const clientvalide : any = sessionStorage.getItem("clientvalide");
     
+
+  function onClickOnNav(index: number, heading: string) {
+    setSelected(index);
+    setSelectNav(heading);
+    setSelectRight(heading);
+  }
 
   function logOut() {
     sessionStorage.clear();
@@ -51,32 +57,16 @@ const SidebarDashboardClient = () => {
 
         <div className="menu">
           {SidebarClientData.map((item, index) => {
-            if(clientvalide == "true")
-            {
-              return (
-                <div
-                  className={selected === index ? "menuItem active" : "menuItem"}
-                  key={index}
-                  onClick={() => setSelected(index)}
-                >
-                  <item.icon />
-                  <span>{item.heading}</span>
-                </div>
-              );
-
-            }
-            else{
-              return (
-                <div
-                  className={selected === index ? "menuItem active" : "menuItemDontValid"}
-                  key={index}
-                >
-                  <item.icon />
-                  <span>{item.heading}</span>
-                </div>
-              );
-
-            }
+            return (
+              <div
+                className={selected === index ? "menuItem active" : "menuItem"}
+                key={index}
+                onClick={() => onClickOnNav(index, item.heading)}
+              >
+                <item.icon />
+                <span>{item.heading}</span>
+              </div>
+            );
           })}
           {/* signoutIcon */}
           <div className="menuItem" onClick={() => logOut()}>
