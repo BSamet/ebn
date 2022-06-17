@@ -5,7 +5,7 @@ export class CreateCollectDto {
     public refDate: Date;
 
     @ApiProperty()
-    public days: string[];
+    public days: number[];
 
     @ApiProperty()
     public isSubscribe: boolean;
