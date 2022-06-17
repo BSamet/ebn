@@ -9,12 +9,13 @@ import {Etape} from "../etape/entities/etape.entity";
 
 const parser = require('cron-parser');
 
-interface collectInterface {
+export interface collectInterface {
     id: number | null;
     refDate: Date,
     Client: {
         id: number,
         nomCommercial: string,
+        adresse: string,
         Utilisateur: {
             nom: string,
             prenom: string
@@ -78,6 +79,7 @@ export class CollectService {
             .select('collect')
             .addSelect('client.id')
             .addSelect('client.nomCommercial')
+            .addSelect('client.adresse')
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression != ''")
@@ -94,6 +96,7 @@ export class CollectService {
             .select('collect')
             .addSelect('client.id')
             .addSelect('client.nomCommercial')
+            .addSelect('client.adresse')
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression IS NULL")
@@ -195,6 +198,7 @@ export class CollectService {
             Client: {
                 id: client.id,
                 nomCommercial: client.nomCommercial,
+                adresse: client.adresse,
                 Utilisateur: {
                     nom: client.utilisateur.nom,
                     prenom: client.utilisateur.prenom
@@ -211,6 +215,7 @@ export class CollectService {
             Client: {
                 id: collect.client.id,
                 nomCommercial: collect.client.nomCommercial,
+                adresse: collect.client.adresse,
                 Utilisateur: {
                     nom: collect.client.utilisateur.nom,
                     prenom: collect.client.utilisateur.prenom
@@ -221,7 +226,16 @@ export class CollectService {
     }
 
     dateEquals(sourceDate: Date, targetDate: Date): boolean {
-        return new Date(sourceDate).toString() === new Date(targetDate).toString();
+        let targetToFormate = new Date(targetDate)
+
+        const targetDay = String(targetToFormate.getDate()).padStart(2, '0');
+        const targetMonth = String(targetToFormate.getMonth() + 1).padStart(2, '0');
+        const targetYear = targetToFormate.getFullYear();
+
+        const today = targetYear + '-' + targetMonth + '-' + targetDay + 'T00:00:00.000';
+        const tomorrow = targetYear + '-' + targetMonth + '-' + targetDay + 'T23:59:59.000';
+        
+        return new Date(sourceDate).toString() > new Date(today).toString() && new Date(sourceDate).toString() < new Date(tomorrow).toString();
     }
 
     dateSup(sourceDate: Date, targetDate: Date): boolean {
@@ -247,7 +261,7 @@ export class CollectService {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
                 }
             } else {
-                if (this.dateSup(collect[i].refDate, currentDay) && this.dateSup(collect[i].refDate, futureDayFormated) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id)) {
+                if (this.dateSup(collect[i].refDate, currentDay) && this.dateInf(collect[i].refDate, futureDayFormated) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id)) {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
                 }
             }
