@@ -67,7 +67,7 @@ export class CollectService {
         });
     }
 
-    async findAllByDate(date: Date) {
+    async findAllByDate(date: Date, clientId: number) {
         // Récupération de la liste des étapes pour vérifié si la collecte à déjà été programmé
         const allStepObjectForCheck = await this.getStepArray();
 
@@ -83,6 +83,7 @@ export class CollectService {
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression != ''")
+            .andWhere(clientId ? "collect.client.id = :clientId" : '1=1', {clientId})
             .getMany();
 
         // C'est ici que la magie va opéré pour renvoyer une liste des prochaines collecte des abonnements
@@ -100,6 +101,7 @@ export class CollectService {
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression IS NULL")
+            .andWhere(clientId ? "collect.client.id = :clientId" : '1=1', {clientId})
             .getMany();
 
         // Et c'est également ici que la magie va opéré pour renvoyer une liste des prochaines collecte ponctuelle
@@ -234,7 +236,7 @@ export class CollectService {
 
         const today = targetYear + '-' + targetMonth + '-' + targetDay + 'T00:00:00.000';
         const tomorrow = targetYear + '-' + targetMonth + '-' + targetDay + 'T23:59:59.000';
-        
+
         return new Date(sourceDate).toString() > new Date(today).toString() && new Date(sourceDate).toString() < new Date(tomorrow).toString();
     }
 
