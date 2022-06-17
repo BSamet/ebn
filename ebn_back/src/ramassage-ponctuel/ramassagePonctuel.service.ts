@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { CreateRamassagePonctuelDto } from './dto/create-ramassagePonctuel.dto';
 import { UpdateRamassagePonctuelDto } from './dto/update-ramassagePonctuel.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RamassagePonctuel } from './entities/ramassagePonctuel.entity';
 import { Client } from '../client/entities/client.entity';
-import { ClientService } from 'src/client/client.service';
 
 @Injectable()
 export class RamassagePonctuelService {
