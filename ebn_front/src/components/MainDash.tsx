@@ -68,7 +68,7 @@ const action = (
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
-        message="Des clients sont en attente de validation"
+        message="Des clients sont en attentes de validation"
         action={action}  
       />
     </div>
