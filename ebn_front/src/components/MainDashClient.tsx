@@ -37,6 +37,7 @@ const MainDashClient = () => {
   const { id } = useParams();
   const [client, setClient] = useState<clientInterface>();
   const formatDate = moment().format("DD-MM-YYYY");
+  const clientvalide = sessionStorage.getItem("clientvalide");
 
   useEffect(() => {
     axios
@@ -53,8 +54,10 @@ const MainDashClient = () => {
       });
   }, []);
 
+  console.log(clientvalide)
+if(clientvalide == "true"){
   return (
-    <div className="scroll">
+    
       <div className="MainDashClient">
         <h1>Tableau de bord</h1>
         <div className="idClient">
@@ -101,7 +104,31 @@ const MainDashClient = () => {
           ))}
         </div>
       </div>
-    </div>
   );
+}
+else {
+  return (
+  
+      <div className="MainDashClient">
+        <h1>Tableau de bord</h1>
+        <div className = "dontvalid">
+          <p>Votre compte est en attente de validation, lorsque celui-ci sera validé vous aurez accès à l'ensemble de l'application</p>
+        </div>
+        <div className="idClient">
+          <h4>Information Client</h4>
+          <p>
+            {client?.utilisateur?.nom} {client?.utilisateur?.prenom}
+          </p>
+          <p>{client?.nomCommercial}</p>
+          <p> Adresse: {client?.adresse}</p>
+          <p> e-mail: {client?.utilisateur.mail}</p>
+          <p> téléphone: {client?.utilisateur.telephone}</p>
+        </div>
+   </div>
+    
+   );   
+}
+  
+  
 };
 export default MainDashClient;

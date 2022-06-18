@@ -444,7 +444,12 @@ export default function SignInSide() {
               </div>
             )}
             <div className="isSignupLoading">
+              <div>
+              <p>Merci pour votre inscription, un administrateur vas valider votre compte</p>
+              </div>
+              <div>
               <CircularProgress size={75} />
+              </div>
             </div>
           </Grid>
         </Grid>

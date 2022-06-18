@@ -57,14 +57,18 @@ export default function SignInSide() {
       })
       .then((res) => {
         const decode: any = jwt_decode(res.data.access_token);
-        sessionStorage.setItem("role", decode.utilisateur.role);
+        if(decode.utilisateur.role === "Collecteur"){
+          console.log("vous êtes un collecteur");
+          
+        } else {
+          sessionStorage.setItem("role", decode.utilisateur.role);
         sessionStorage.setItem("name", decode.utilisateur.nom);
         sessionStorage.setItem("lastname", decode.utilisateur.lastname);
         sessionStorage.setItem("token", res.data.access_token);
         sessionStorage.setItem("token_exp", decode.exp);
         if (decode.utilisateur.role === "Admin") {
           sessionStorage.setItem("id", decode.utilisateur.id);
-        } else {
+        } else if (decode.utilisateur.role === "Client") {
           axios
             .post(
               HOST_BACK + "/client/mail",
@@ -77,15 +81,25 @@ export default function SignInSide() {
             )
             .then((res) => {
               sessionStorage.setItem("id", res.data.id);
+              sessionStorage.setItem("clientvalide", res.data.clientvalide);
+              console.log(res.data);
+              
             });
+        }
+        else{
+          return null
         }
         setTimeout(() => {
           if (decode.utilisateur.role === "Admin") {
             navigate("/admin");
-          } else {
+          } else if (decode.utilisateur.role === "Client") {
             navigate("/client");
           }
+          else {
+            navigate("/")
+          }
         }, 100);
+        }
       })
       .catch((err) => {
         setErrorRequest(true);
@@ -102,7 +116,7 @@ export default function SignInSide() {
           </Fab>
         </Link>
       </div>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid container component="main" sx={{height: "100vh"}}>
         <CssBaseline />
         <Grid
           item
