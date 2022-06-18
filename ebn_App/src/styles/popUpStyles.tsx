@@ -5,7 +5,6 @@ const popUpStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
     },
     modalView: {
         margin: 20,
@@ -14,6 +13,7 @@ const popUpStyles = StyleSheet.create({
         padding: 35,
         alignItems: 'center',
         shadowColor: '#000',
+        width: '75%',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -22,16 +22,27 @@ const popUpStyles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    buttonContainer: {
+        display: "flex",
+        flexDirection: "row",
+    },
     button: {
         borderRadius: 20,
-        padding: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 20,
+        paddingRight: 20,
         elevation: 2,
-    },
-    buttonOpen: {
-        backgroundColor: '#F194FF',
+        marginLeft: 7,
+        marginRight: 7,
     },
     buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: '#ff0000',
+        marginTop: 10,
+    },
+    buttonSave: {
+        backgroundColor: '#8AC997',
+        marginTop: 10,
     },
     textStyle: {
         color: 'white',
@@ -42,12 +53,19 @@ const popUpStyles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
-
+        color: 'black'
     },
     modalTitre: {
-        marginBottom: 15,
+        fontSize: 18,
+        marginBottom: 10,
         textAlign: 'center',
         color: 'black',
+    },
+    modalError: {
+        fontSize: 15,
+        marginBottom: 10,
+        textAlign: 'center',
+        color: '#ff0000',
     },
     input: {
         marginBottom: 15,
@@ -55,6 +73,13 @@ const popUpStyles = StyleSheet.create({
         borderBottomWidth: 1,
         color: '#000000'
     },
+    pickerSelection: {
+        height: 50,
+        width: 250,
+        justifyContent: "center",
+        backgroundColor: '#f1f1f1',
+        color: "black"
+    }
 });
 
 export default popUpStyles;

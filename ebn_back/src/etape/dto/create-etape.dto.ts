@@ -11,5 +11,11 @@ export class CreateEtapeDto {
     public isCollected: boolean;
 
     @ApiProperty()
+    public isAssigned: boolean;
+
+    @ApiProperty()
     public commentaire: string;
+
+    @ApiProperty()
+    public date: Date;
 }

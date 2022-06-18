@@ -57,11 +57,16 @@ export default function SignInSide() {
       })
       .then((res) => {
         const decode: any = jwt_decode(res.data.access_token);
+<<<<<<< HEAD
         if(decode.utilisateur.role === "Collecteur"){
           console.log("vous êtes un collecteur");
           
         } else {
           sessionStorage.setItem("role", decode.utilisateur.role);
+=======
+
+        sessionStorage.setItem("role", decode.utilisateur.role);
+>>>>>>> 457dddce55842168801ba5dd066c4a5cc7885301
         sessionStorage.setItem("name", decode.utilisateur.nom);
         sessionStorage.setItem("lastname", decode.utilisateur.lastname);
         sessionStorage.setItem("token", res.data.access_token);

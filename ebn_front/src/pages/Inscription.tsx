@@ -205,6 +205,9 @@ export default function SignInSide() {
           password: password,
           nomCommercial: commercialName,
           adresse: adresse,
+          headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+          }
         })
         .then((res) => {
           setTimeout(() => {

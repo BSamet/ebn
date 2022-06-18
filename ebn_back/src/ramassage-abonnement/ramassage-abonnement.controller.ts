@@ -11,10 +11,10 @@ import {
 import { RamassageAbonnementService } from './ramassage-abonnement.service';
 import { CreateRamassageAbonnementDto } from './dto/create-ramassage-abonnement.dto';
 import { UpdateRamassageAbonnementDto } from './dto/update-ramassage-abonnement.dto';
-import { hasRoles } from '../auth/decorator/roles.decorator';
+import { hasRoles } from '../collecteur/auth/decorator/roles.decorator';
 import { UserRole } from '../utilisateurs/dto/create-utilisateur.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { JwtAuthGuard } from '../collecteur/auth/guards/jwt-guard';
+import { RolesGuard } from '../collecteur/auth/guards/roles.guard';
 
 @Controller('ramassage-abonnement')
 export class RamassageAbonnementController {

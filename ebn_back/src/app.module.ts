@@ -11,7 +11,7 @@ import { TypeDechetsModule } from './type-dechets/type-dechets.module';
 import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
 import { RamassageAbonnementModule } from './ramassage-abonnement/ramassage-abonnement.module';
 import { EtapeModule } from './etape/etape.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './collecteur/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({

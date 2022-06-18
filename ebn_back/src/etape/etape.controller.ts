@@ -11,10 +11,10 @@ import {
 import { EtapeService } from './etape.service';
 import { CreateEtapeDto } from './dto/create-etape.dto';
 import { UpdateEtapeDto } from './dto/update-etape.dto';
-import { hasRoles } from '../auth/decorator/roles.decorator';
+import { hasRoles } from '../collecteur/auth/decorator/roles.decorator';
 import { UserRole } from '../utilisateurs/dto/create-utilisateur.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { JwtAuthGuard } from '../collecteur/auth/guards/jwt-guard';
+import { RolesGuard } from '../collecteur/auth/guards/roles.guard';
 
 @Controller('etape')
 export class EtapeController {
@@ -26,7 +26,7 @@ export class EtapeController {
   create(@Body() createEtapeDto: CreateEtapeDto) {
     return this.etapeService.create(createEtapeDto);
   }
-
+  
   @hasRoles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()

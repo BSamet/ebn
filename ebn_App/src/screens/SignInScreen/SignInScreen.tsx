@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack/lib/typescript/src/types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -22,12 +22,22 @@ type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
 
 const SignInScreen = () => {
   const navigation = useNavigation<AuthScreenNavigate>();
-
   // const [passwordForgot, setpasswordForgot] = useState(''); // TODO redirection vers modal reset password
   const {height} = useWindowDimensions();
-
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
+
+  const clearAll = async () => {
+    try {
+      await AsyncStorage.clear();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    clearAll().then(() => {});
+  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,34 +50,63 @@ const SignInScreen = () => {
         mail: mail,
         password: password,
       })
-        .then(async (res: {data: {access_token: string}}) => {
-          const decode: any = jwt_decode(res.data.access_token);
+      .then(async (res: {data: {access_token: string}}) => {
+        const decode: any = jwt_decode(res.data.access_token);
 
-          await AsyncStorage.setItem('id', JSON.stringify(decode.utilisateur.id));
-          await AsyncStorage.setItem('role', decode.utilisateur.role);
-          await AsyncStorage.setItem('prenom', decode.utilisateur.prenom);
-          await AsyncStorage.setItem('nom', decode.utilisateur.nom);
-          await AsyncStorage.setItem('token', res.data.access_token);
-          await AsyncStorage.setItem('token_exp', JSON.stringify(decode.exp));
-          setTimeout(() => {
-            if (decode.utilisateur.role === 'Client') {
+        await AsyncStorage.setItem('role', decode.utilisateur.role);
+        await AsyncStorage.setItem('prenom', decode.utilisateur.prenom);
+        await AsyncStorage.setItem('nom', decode.utilisateur.nom);
+        await AsyncStorage.setItem('token', res.data.access_token);
+        await AsyncStorage.setItem('token_exp', JSON.stringify(decode.exp));
+
+        if (decode.utilisateur.role === 'Client') {
+          axios
+            .post(
+              HOST_BACK + '/client/mail',
+              {mail: decode.utilisateur.mail},
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.access_token}`,
+                },
+              },
+            )
+            .then(async resCli => {
+              await AsyncStorage.setItem('id', resCli.data.id.toString());
+            })
+            .finally(() => {
               navigation.navigate('Client');
-            } else if (decode.utilisateur.role === 'Collecteur') {
+            });
+        } else if (decode.utilisateur.role === 'Collecteur') {
+          axios
+            .post(
+              HOST_BACK + '/collecteur/mail',
+              {mail: decode.utilisateur.mail},
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.access_token}`,
+                },
+              },
+            )
+            .then(async resCol => {
+              await AsyncStorage.setItem('id', resCol.data.id.toString());
+            })
+            .catch(e => {
+              console.log(e);
+            })
+            .finally(() => {
               navigation.navigate('Collecteur');
-            } else {
-                Alert.alert('Veuillez vous connecter avec vos login de client ou de collecteur');
-            }
-          }, 100);
-        })
+            });
+        } else {
+          Alert.alert(
+            'Veuillez vous connecter avec vos login de client ou de collecteur',
+          );
+        }
+      })
       .catch(res => {
-      console.log(res)
-        Alert.alert('Une erreur c\'est produite lors de la connexion');
+        Alert.alert("Une erreur c'est produite lors de la connexion");
       });
   };
 
-  // const onSignUpPressed = () => {
-  //   console.warn('Inscrit !');
-  // };
   const onForgotPasswordPressed = () => {
     console.warn('Mot de passe oublié');
   };
@@ -103,12 +142,6 @@ const SignInScreen = () => {
         onChange={e => setPassword(e.target.value)}
       />
       <CustomButton text={'Connexion'} onPress={login} />
-      {/* <CustomButton
-        text={'Inscription'}
-        onPress={() => {
-          navigation.navigate('Collecteur');
-        }}
-      /> */}
       <ButtonMdpForgot
         text={'Mot de passe oublié'}
         onPress={onForgotPasswordPressed}

@@ -13,10 +13,10 @@ import {
 import { CollecteurService } from './collecteur.service';
 import { CreateCollecteurDto } from './dto/create-collecteur.dto';
 import { UpdateCollecteurDto } from './dto/update-collecteur.dto';
-import { hasRoles } from '../auth/decorator/roles.decorator';
+import { hasRoles } from './auth/decorator/roles.decorator';
 import { UserRole } from '../utilisateurs/dto/create-utilisateur.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-guard';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 @Controller('collecteur')
 export class CollecteurController {
@@ -60,7 +60,7 @@ export class CollecteurController {
     );
   }
 
-  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/mail')
   findByUserMail(@Body() createCollecteurDto: CreateCollecteurDto) {
