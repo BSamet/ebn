@@ -49,6 +49,18 @@ export class HistoriqueController {
     return this.historiqueService.findByClient(+id);
   }
 
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('date/:dateStart/:dateEnd')
+  findByDate(
+    @Param('dateStart') dateStart: Date,
+    @Param('dateEnd') dateEnd: Date,
+  )
+     { 
+    return this.historiqueService.findByDate(dateStart, dateEnd);
+  }
+  
+
   @hasRoles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('/all/:pages')
