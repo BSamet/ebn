@@ -24,7 +24,6 @@ export interface collectInterface {
     isSubscribe: boolean
 }
 
-
 @Injectable()
 export class CollectService {
 

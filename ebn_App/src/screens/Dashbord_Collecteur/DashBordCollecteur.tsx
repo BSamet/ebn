@@ -77,34 +77,32 @@ const DashBordCollecteur = () => {
     let collecteurToken: string | null;
 
     useEffect(() => {
-        if (fetchOnce) {
-            AsyncStorage.getItem('id').then(idValue => {
-                collecteurId = idValue;
-                AsyncStorage.getItem('token').then(tokenValue => {
-                    collecteurToken = tokenValue;
-                    AsyncStorage.getItem('prenom').then(nameValue => {
-                        setCollecteurName(nameValue);
-                        AsyncStorage.getItem('nom').then(lastnameValue => {
-                            setCollecteurLastname(lastnameValue);
-                            axios
-                                .get(HOST_BACK + '/etape/collecteur/' + collecteurId, {
-                                    headers: {
-                                        Authorization: `Bearer ${collecteurToken}`,
-                                    },
-                                })
-                                .then(res => {
-                                    setEtapes(res.data); // recuperation des etapes pour map
-                                    setFetchOnce(false);
-                                })
-                                .catch((e) => {
-                                    console.log(e)
-                                });
-                        });
+        AsyncStorage.getItem('id').then(idValue => {
+            collecteurId = idValue;
+            AsyncStorage.getItem('token').then(tokenValue => {
+                collecteurToken = tokenValue;
+                AsyncStorage.getItem('prenom').then(nameValue => {
+                    setCollecteurName(nameValue);
+                    AsyncStorage.getItem('nom').then(lastnameValue => {
+                        setCollecteurLastname(lastnameValue);
+                        axios
+                            .get(HOST_BACK + '/etape/collecteur/' + collecteurId, {
+                                headers: {
+                                    Authorization: `Bearer ${collecteurToken}`,
+                                },
+                            })
+                            .then(res => {
+                                setEtapes(res.data); // recuperation des etapes pour map
+                                setFetchOnce(false);
+                            })
+                            .catch((e) => {
+                                console.log(e)
+                            });
                     });
                 });
             });
-        }
-    }, [etapes, fetchOnce]);
+        });
+    }, []);
 
 
     const updateCollecte = (index: number) => {
@@ -243,8 +241,8 @@ const styles = StyleSheet.create({
     loader: {
         flex: 1,
         justifyContent: 'center',
-        width:'100%',
-        height:250,
+        width: '100%',
+        height: 250,
     },
     header: {
         display: 'flex',

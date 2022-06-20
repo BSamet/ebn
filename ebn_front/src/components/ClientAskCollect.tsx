@@ -38,7 +38,7 @@ export function ClientAskCollect(){
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setHour(event.target.value);
-      };
+    };
     
       function setTimePeriod(){
           if(hour == "T08:00:00.000Z"){
@@ -53,10 +53,10 @@ export function ClientAskCollect(){
       function sendClientCollect() {
             const collectToAdd = {
                 clientId: clientId,
-                date: date + hour,
+                refDate: date + hour,
             }
                 axios
-                .post(HOST_BACK + "/ramassage-ponctuel", collectToAdd, {
+                .post(HOST_BACK + "/collect", collectToAdd, {
                     headers: {
                         "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                     }

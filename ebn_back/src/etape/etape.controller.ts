@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { EtapeService } from './etape.service';
@@ -36,9 +37,48 @@ export class EtapeController {
 
   @hasRoles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('day/:page')
+  findAllOfTheDay(
+    @Param('page') page: number,
+    @Query('take') take: number,
+  ) {
+    const takeForBuilder = take || 10;
+    const pagesForBuilder = page || 1;
+    const skipForBuilder = takeForBuilder * (pagesForBuilder - 1);
+
+    return this.etapeService.findAllOfTheDay(
+      takeForBuilder,
+      skipForBuilder,
+    );
+  }
+
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.etapeService.findOne(+id);
+  }
+
+  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('collecteur/:id/:date/:limitDate/:page')
+  findByCollecteurAndDate(
+      @Param('id') id: number, 
+      @Param('date') date: string, 
+      @Param('limitDate') limitDate: string, 
+      @Param('page') page: number,
+      @Query('take') take: number,
+    ) {
+      const takeForBuilder = take || 10;
+      const pagesForBuilder = page || 1;
+      const skipForBuilder = takeForBuilder * (pagesForBuilder - 1);
+      return this.etapeService.findByCollecteurAndDate(
+        takeForBuilder,
+        skipForBuilder,
+        +id, 
+        date, 
+        limitDate
+      );
   }
 
   @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
