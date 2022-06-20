@@ -50,19 +50,34 @@ export class HistoriqueController {
         return this.historiqueService.findByClient(+id);
     }
 
-    @hasRoles(UserRole.ADMIN)
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Get('/all/:pages')
-    findAllHistoriquesPagination(
-        @Param('pages') pages: number,
-        @Query('take') take: number,
-        @Query('orderBy') orderBy: string,
-        @Query('nomCommercial') nomCommercial: string,
-        @Query('typeAction') typeAction: string,
-        @Query('typeDeDechet') typeDeDechet: string,
-        @Query('startDate') dateStart: Date,
-        @Query('enDate') dateEnd: Date,
-    ) {
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('date/:dateStart/:dateEnd')
+  findByDate(
+    @Param('dateStart') dateStart: Date,
+    @Param('dateEnd') dateEnd: Date,
+  )
+     { 
+    return this.historiqueService.findByDate(dateStart, dateEnd);
+  }
+  
+
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('/all/:pages')
+  findAllHistoriquesPagination(
+    @Param('pages') pages: number,
+    @Query('take') take: number,
+    @Query('orderBy') orderBy: string,
+    @Query('nomCommercial') nomCommercial: string,
+    @Query('typeAction') typeAction: string,
+    @Query('typeDeDechet') typeDeDechet: string,
+    @Query('startDate') dateStart: Date,
+    @Query('enDate') dateEnd: Date,
+    
+  ) {
+ 
+
 
         const takeForBuilder = take || 10;
         const pagesForBuilder = pages || 1;
