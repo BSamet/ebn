@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { HOST_BACK } from "../environment/environment"
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import moment from "moment";
+import '../styles/component/_AgendaOrganisation.scss';
+
 
 interface collecteursInterface {
     id: number;
@@ -17,16 +19,16 @@ interface collecteursInterface {
 
 interface ramassageInterface {
     id: number;
-    date: Date;
-    clientId: number;
-    client: {
+    refDate: Date;
+    Client: {
         id: number;
         adresse: string;
-        utilisateur:{
+        Utilisateur:{
             nom: string;
             prenom: string;
         }
-    }
+    };
+    isSubscribe: boolean;
 }
 
 interface etapesInterface {
@@ -40,15 +42,9 @@ interface etapesInterface {
 
 export function AgendaOrganisation(){
     const [fetchOnce, setFetchOnce] = useState(true);
-    const [fetchEtapeOnce, setFetchEtapeOnce] = useState(true);
-    const [fetchEtapeTwice, setFetchEtapeTwice] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
-    const [etapesList, setEtapeslist] = useState<ramassageInterface[]>([]);
-    const [etapesAbonnementList, setEtapesAbonnementlist] = useState<ramassageInterface[]>();
-    const [etapeSend, setEtapeSend] = useState(false);
     const [sendMessage, setSendMessage] = useState('');
     const [open, setOpen] = React.useState(false);
-    const etapesArray: ramassageInterface[] = [];
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
     const [collectorEtape, setCollectorEtape]= useState<ramassageInterface[]>([]);
     let [Collector, setCollector] = useState(1);
@@ -73,28 +69,29 @@ export function AgendaOrganisation(){
         }
     }, [collecteursList, fetchOnce]);
 
-    useEffect(() => {
-        if(fetchEtapeTwice){
-            axios.get(HOST_BACK + '/ramassage-ponctuel/all', {
-                headers: {
-                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                } 
-            }).then(ramassageAbonnement =>{
-                    console.log(ramassageAbonnement.data)
-                    setEtapeslist(ramassageAbonnement.data)
-                    setFetchEtapeTwice(false);
-                
-            })
-        }
-    }, [etapesList, fetchEtapeTwice])
-
     function setEtapesArray() {
-            etapesList?.map((etape) => {
-                if(moment(etape.date).format('YYYY-MM-DD') == moment(date).format('YYYY-MM-DD')){
-                    etapesArray?.push(etape);
-                }
-            });
-            setFinalEtapeList(etapesArray);   
+        axios.get(HOST_BACK + '/collect/date?date=' + date, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            } 
+        }).then(ramassage =>{
+                console.log(ramassage.data)
+                ramassage.data.map((etape: ramassageInterface) => {
+                    let isAlreadyFetch = false;
+                    finalEtapeList.map((finalEtape) => {
+                        if(etape.toString() == finalEtape.toString()){
+                            isAlreadyFetch = true;
+                        }
+                    })
+                    if(isAlreadyFetch == false){
+                        setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
+                    }
+                })
+        }).catch((err) => {
+            console.log(err)
+        })
+        console.log(finalEtapeList)
+
     };
     
     function fillSelectOptions(){
@@ -134,7 +131,6 @@ export function AgendaOrganisation(){
     const handleChange = (event: any) => {
         setCollector(event.target.value);
         setSendMessage('')
-
     }
 
     const handleAllRight = () => {
@@ -180,7 +176,7 @@ export function AgendaOrganisation(){
             setFinalEtapeList(collectorEtape);
             setCollectorEtape([])
         }
-      };
+    };
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -189,15 +185,42 @@ export function AgendaOrganisation(){
         setOpen(false);
     };
 
+    function deleteCollect(id: number){
+        axios.delete(HOST_BACK + "/collect/" + id, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
+    };
+
+
     function sendCollectorEtape() {
         let numberOfEtape = 0;
+        //heure matin
+        let h1am = 0;
+        let h2am = 8;
+        let m1am = 0;
+        let m2am = 0;
+        //heure aprem
+        let h1pm = 1;
+        let h2pm = 2;
+        let m1pm = 0;
+        let m2pm = 0;
+        //set Date
+        let date: string;
+
         collectorEtape?.map((etape) => {
+            if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
+                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z";
+            } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){
+                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1pm + h2pm + ":" + m1pm + m2pm + "" + ":00.000Z";
+            }  
             const etapeToAdd = {
-                clientId: etape.client.id,
+                clientId: etape.Client.id,
                 collecteurId: Collector,
                 isCollected: false,
                 commentaire: "",
-                date: etape.date,
+                date: date,
             }
                 axios
                 .post(HOST_BACK + "/etape", etapeToAdd, {
@@ -206,26 +229,58 @@ export function AgendaOrganisation(){
                     }
                 })
                 .then(response => { 
-                    console.log(response)
-                    
+                    console.log(etape.refDate)    
+                    console.log("Format: " + moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z")                
                     numberOfEtape ++;
                     if(numberOfEtape == collectorEtape?.length){
                         setCollectorEtape([]);
                         setOpen(true)
                         setSendMessage('Les étapes ont été assignées au collecteur')
-
+                    }
+                    if(etape.isSubscribe == false){
+                        deleteCollect(etape.id);
                     }
                 })
                 .catch(error => {
                     console.log(error)
                 });
+                if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
+                    m1am += 2;
+                    if(m1am == 6){
+                        m1am = 0;
+                        h2am += 1;
+                    }
+                    if(h2am == 10){
+                        h2am = 0;
+                        h1am += 1;
+                    }
+                    if(h1am == 2 && h2am == 4){
+                        h1am = 0;
+                        h2am = 0;
+                    }
+                } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){
+                    m1pm += 2;
+                    if(m1pm == 6){
+                        m1pm = 0;
+                        h2pm += 1;
+                    }
+                    if(h2pm == 10){
+                        h2pm = 0;
+                        h1pm += 1;
+                    }
+                    if(h1pm == 2 && h2pm == 4){
+                        h1pm = 0;
+                        h2pm = 0;
+                    }
+                }  
+                
             })
         
       }
         
     return (
         <>
-            <div>
+            <div className="conteneur">
                 <h1>Organiser l'agenda</h1>
                     
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -261,12 +316,13 @@ export function AgendaOrganisation(){
                                     Valider
                                 </Button>
                             </Grid>
-                            <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
+                            <Paper sx={{ width: 400, height: 530, overflow: 'auto', fontSize: 10 }}>
                                 <List dense component="div" role="list">
                                     {finalEtapeList?.map((etape: any) => {
                                     const labelId = `transfer-list-item-${etape.id}-label`;
-                                    const date = etape.date;
+                                    const date = etape.refDate;
                                     return (
+                                        
                                         <ListItem
                                             key={etape.id}
                                             role="listitem"
@@ -283,7 +339,7 @@ export function AgendaOrganisation(){
                                                 }}
                                                 />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`} />
+                                            <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
                                         </ListItem>
                                     );
                                     })}
@@ -357,7 +413,7 @@ export function AgendaOrganisation(){
                                 <List dense component="div" role="list">
                                     {collectorEtape?.map((etape: any) => {
                                     const labelId = `transfer-list-item-${etape.id}-label`;
-                                    const date = etape.date;
+                                    const date = etape.refDate;
                                     return (
                                         <ListItem
                                             key={etape.id}
@@ -375,7 +431,7 @@ export function AgendaOrganisation(){
                                                 }}
                                                 />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`} />
+                                            <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
                                         </ListItem>
                                     );
                                     })}
@@ -383,7 +439,6 @@ export function AgendaOrganisation(){
                                 </List>
                             </Paper>
                         </Grid>
-                        
                     </Grid>
                     <Button
                                 sx={{ width: 200, my: 0.5, mt: 1.5 }}

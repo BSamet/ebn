@@ -4,15 +4,16 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientModule } from './client/client.module';
 import { CollecteurModule } from './collecteur/collecteur.module';
-import { RamassagePonctuelModule } from './ramassag-ponctuel/ramassagePonctuel.module';
+import { RamassagePonctuelModule } from "./ramassage-ponctuel/ramassagePonctuel.module";
 import { HistoriqueModule } from './historique/historique.module';
 import { ConteneurModule } from './conteneur/conteneur.module';
 import { TypeDechetsModule } from './type-dechets/type-dechets.module';
 import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
 import { RamassageAbonnementModule } from './ramassage-abonnement/ramassage-abonnement.module';
 import { EtapeModule } from './etape/etape.module';
-import { AuthModule } from './collecteur/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { CollectModule } from './collect/collect.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ConfigModule } from '@nestjs/config';
     RamassageAbonnementModule,
     EtapeModule,
     AuthModule,
+    CollectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

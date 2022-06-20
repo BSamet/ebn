@@ -13,7 +13,8 @@ import { Historique } from '../../historique/entities/historique.entity';
 import { Utilisateur } from '../../utilisateurs/entities/utilisateur.entity';
 import { RamassageAbonnement } from '../../ramassage-abonnement/entities/ramassage-abonnement.entity';
 import { Etape } from '../../etape/entities/etape.entity';
-import { RamassagePonctuel } from '../../ramassag-ponctuel/entities/ramassagePonctuel.entity';
+import { RamassagePonctuel } from '../../ramassage-ponctuel/entities/ramassagePonctuel.entity';
+import {Collect} from "../../collect/entities/collect.entity";
 
 @Entity()
 export class Client {
@@ -60,6 +61,17 @@ export class Client {
   )
   @JoinTable()
   ramassageAbonnement: RamassageAbonnement[];
+
+  @OneToMany(
+      () => Collect,
+      (collect) => collect.client,
+      {
+        onDelete: 'CASCADE',
+        eager: true,
+      },
+  )
+  @JoinTable()
+  collect: Collect[];
 
   @OneToMany(() => Conteneur, (conteneur) => conteneur.client, { eager: true })
   @JoinTable()
