@@ -4,7 +4,7 @@ import { UpdateUtilisateurDto } from './dto/update-utilisateur.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Utilisateur } from './entities/utilisateur.entity';
-import { AuthService } from '../collecteur/auth/services/auth.service';
+import { AuthService } from '../auth/services/auth.service';
 import { catchError, from, map, Observable, switchMap, throwError } from 'rxjs';
 
 @Injectable()

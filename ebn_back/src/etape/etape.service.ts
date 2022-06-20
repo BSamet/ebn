@@ -48,7 +48,54 @@ export class EtapeService {
         });
     }
 
-    
+    async findAllOfTheDay(
+        take: number,
+        skip: number,
+    ){
+        const dateNow = new Date();
+
+        const dd = String(dateNow.getDate()).padStart(2, '0');
+        const mm = String(dateNow.getMonth() + 1).padStart(2, '0');
+        const yyyy = dateNow.getFullYear();
+
+        const today = yyyy + '-' + mm + '-' + dd + 'T00:00:00.000';
+        const tomorrow = yyyy + '-' + mm + '-' + dd + 'T23:59:59.000';
+
+        const allEtapesPagination = await this.etapeRepository
+            .createQueryBuilder('etape')
+            .innerJoinAndSelect('etape.client', 'c')
+            .innerJoinAndSelect('c.utilisateur', 'u')
+            .innerJoinAndSelect('etape.collecteur', 'col')
+            .innerJoinAndSelect('col.utilisateur', 'uCol')
+            .andWhere('etape.date >= :today', {today})
+            .andWhere('etape.date <= :tomorrow', {tomorrow})
+            .orderBy('etape.date', "ASC")
+            .take(take)
+            .skip(skip)
+            .getMany();
+
+        const allEtapes = await this.etapeRepository
+            .createQueryBuilder('etape')
+            .innerJoinAndSelect('etape.client', 'c')
+            .innerJoinAndSelect('c.utilisateur', 'u')
+            .innerJoinAndSelect('etape.collecteur', 'col')
+            .innerJoinAndSelect('col.utilisateur', 'uCol')
+            .andWhere('etape.date >= :today', {today})
+            .andWhere('etape.date <= :tomorrow', {tomorrow})
+            .orderBy('etape.date', "ASC")
+            .getMany();
+
+        const etapesCounted = await allEtapes.length;
+        const totalPages = Math.ceil(etapesCounted / take);
+
+
+        return {
+            totalPages: totalPages,
+            totalEtapes: etapesCounted,
+            etapes: allEtapesPagination,
+        };
+    }
+
     findByCollecteur(id: number) {
         const dateNow = new Date();
 
@@ -70,6 +117,51 @@ export class EtapeService {
             .andWhere('etape.date <= :tomorrow', {tomorrow})
             .orderBy('etape.date', "ASC")
             .getMany();
+    }
+
+
+    async findByCollecteurAndDate(
+        take: number,
+        skip: number,
+        id: number, 
+        date: string, 
+        limitDate: string
+    ){
+        const allEtapesPagination = await this.etapeRepository
+            .createQueryBuilder('etape')
+            .innerJoinAndSelect('etape.client', 'c')
+            .innerJoinAndSelect('c.utilisateur', 'u')
+            .innerJoinAndSelect('etape.collecteur', 'col')
+            .innerJoinAndSelect('col.utilisateur', 'uCol')
+            .where(id ? 'etape.collecteur.id = :id' : '1=1', {id})
+            .andWhere(date ? 'etape.date >= :date' : '1=1', {date})
+            .andWhere(limitDate ? 'etape.date <= :limitDate' : '1=1', {limitDate})
+            .orderBy('etape.date', "ASC")
+            .take(take)
+            .skip(skip)
+            .getMany();
+
+        const allEtapes = await this.etapeRepository
+            .createQueryBuilder('etape')
+            .innerJoinAndSelect('etape.client', 'c')
+            .innerJoinAndSelect('c.utilisateur', 'u')
+            .innerJoinAndSelect('etape.collecteur', 'col')
+            .innerJoinAndSelect('col.utilisateur', 'uCol')
+            .where(id ? 'etape.collecteur.id = :id' : '1=1', {id})
+            .andWhere(date ? 'etape.date >= :date' : '1=1', {date})
+            .andWhere(limitDate ? 'etape.date <= :limitDate' : '1=1', {limitDate})
+            .orderBy('etape.date', "ASC")
+            .getMany();
+        
+            const etapesCounted = await allEtapes.length;
+            const totalPages = Math.ceil(etapesCounted / take);
+
+
+        return {
+            totalPages: totalPages,
+            totalEtapes: etapesCounted,
+            etapes: allEtapesPagination,
+        };
     }
 
     async findByClient(id: number) {
