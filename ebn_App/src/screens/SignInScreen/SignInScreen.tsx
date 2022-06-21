@@ -47,7 +47,7 @@ const SignInScreen = () => {
   const login = () => {
     axios
       .post(HOST_BACK + '/utilisateurs/login', {
-        mail: mail,
+        mail: mail.trim(),
         password: password,
       })
       .then(async (res: {data: {access_token: string}}) => {

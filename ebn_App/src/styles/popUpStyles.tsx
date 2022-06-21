@@ -62,12 +62,14 @@ const popUpStyles = StyleSheet.create({
         color: 'black',
     },
     modalError: {
-        fontSize: 15,
+        fontSize: 13,
+        fontWeight: 'bold',
         marginBottom: 10,
         textAlign: 'center',
         color: '#ff0000',
     },
     input: {
+        width: 175,
         marginBottom: 15,
         borderBottomColor: '#000000',
         borderBottomWidth: 1,

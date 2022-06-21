@@ -226,10 +226,12 @@ const popUp = (props: any) => {
                                     placeholder="Entrer le poids"
                                     placeholderTextColor={"lightgrey"}
                                 />
-                                <Text style={popUpStyles.modalText}>
-                                    Vous avez collecter {limite ? <Text style={popUpStyles.textStyle}>{poids}</Text> :
-                                    <Text style={{color: "red"}}>{poids}</Text>} kg
-                                </Text>
+                                {!limite
+                                    ? <Text style={popUpStyles.modalError}>
+                                    Limite de poids dépassé !
+                                    </Text>
+                                    : <Text></Text>
+                                }
                             </View>
                         }
                         {assignedOrCollected() &&

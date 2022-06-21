@@ -19,7 +19,7 @@ import moment from 'moment';
 import QrCodeScanner from '../../components/qrCodeScanner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Divider} from "react-native-elements";
-import {Card, Avatar, Checkbox, Paragraph, ActivityIndicator} from "react-native-paper";
+import {Card, Paragraph, ActivityIndicator} from "react-native-paper";
 
 require('moment/locale/fr.js');
 
@@ -67,42 +67,44 @@ const DashBordCollecteur = () => {
     // const navigation = useNavigation<AuthScreenNavigate>();
     const {height} = useWindowDimensions();
     const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
-    const [fetchOnce, setFetchOnce] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [ClientModal, setClientModal] = useState<EtapeCollecteur>();
     const [collecteurName, setCollecteurName] = useState<string | null>();
     const [collecteurLastname, setCollecteurLastname] = useState<string | null>();
-
-    let collecteurId: string | null;
-    let collecteurToken: string | null;
+    const [collecteurId, setCollecteurId] = useState<string | null>();
+    const [collecteurToken, setCollecteurToken] = useState<string | null>();
 
     useEffect(() => {
         AsyncStorage.getItem('id').then(idValue => {
-            collecteurId = idValue;
+            setCollecteurId(idValue);
             AsyncStorage.getItem('token').then(tokenValue => {
-                collecteurToken = tokenValue;
+                setCollecteurToken(tokenValue);
                 AsyncStorage.getItem('prenom').then(nameValue => {
                     setCollecteurName(nameValue);
                     AsyncStorage.getItem('nom').then(lastnameValue => {
                         setCollecteurLastname(lastnameValue);
-                        axios
-                            .get(HOST_BACK + '/etape/collecteur/' + collecteurId, {
-                                headers: {
-                                    Authorization: `Bearer ${collecteurToken}`,
-                                },
-                            })
-                            .then(res => {
-                                setEtapes(res.data); // recuperation des etapes pour map
-                                setFetchOnce(false);
-                            })
-                            .catch((e) => {
-                                console.log(e)
-                            });
                     });
                 });
             });
         });
     }, []);
+
+    useEffect(() => {
+        if(collecteurToken != null && collecteurId != null) {
+            axios
+                .get(HOST_BACK + '/etape/collecteur/' + collecteurId, {
+                    headers: {
+                        Authorization: `Bearer ${collecteurToken}`,
+                    },
+                })
+                .then(res => {
+                    setEtapes(res.data); // recuperation des etapes pour map
+                })
+                .catch((e) => {
+                    console.log(e)
+                });
+        }
+    }, [collecteurToken, collecteurId])
 
 
     const updateCollecte = (index: number) => {
@@ -204,7 +206,7 @@ const DashBordCollecteur = () => {
                     </View>
                 </Modal>
 
-                {fetchOnce &&
+                {etapes != null &&
                     etapes?.map((item, index) => (
                         <Card style={styles.cardContainer} key={index}>
                             <Card.Title title={item.client.nomCommercial}
@@ -227,7 +229,7 @@ const DashBordCollecteur = () => {
                         </Card>
                     ))
                 }
-                {!fetchOnce &&
+                {etapes === null &&
                     <View style={styles.loader}>
                         <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
                     </View>
