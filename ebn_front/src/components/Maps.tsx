@@ -20,13 +20,14 @@ import * as React from "react";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import Map from "./Map"
 import Marker from "./Marker"
-import etapeList from "./AgendaOrganisation"
+import Geocode from "react-geocode";
+
 
 const render = (status: Status) => {
   return <h1>{status}</h1>;
 };
 
-const Maps: React.VFC = () => {
+const Maps: React.VFC = ({collectorEtape}: any) => {
   const [clicks, setClicks] = React.useState<google.maps.LatLng[]>([]);
   const [zoom, setZoom] = React.useState(15); // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
@@ -34,11 +35,20 @@ const Maps: React.VFC = () => {
     lng: 7.3388671875,
   });
 
-  const onClick = (e: google.maps.MapMouseEvent) => {
-    // avoid directly mutating state
-    console.log(etapeList)
-    // setClicks([...clicks, e.latLng!]);
-  };
+  function getLongLatFromAdress(){
+    collectorEtape.map((etape: any) => {
+    Geocode.setApiKey("AIzaSyDaZBte_ogmCrXVJ4cAy5E1bN5lQu8wnIw")
+    Geocode.fromAddress(etape.Client.adresse).then(
+      (response) => {
+        const { lat, lng } = response.results[0].geometry.location;
+        const latLng = new google.maps.LatLng(lat, lng)
+            setClicks([...clicks, latLng]);
+            console.log(clicks)
+          
+        
+      })
+    })
+  }
 
   const onIdle = (m: google.maps.Map) => {
     console.log("onIdle");
@@ -101,7 +111,7 @@ const Maps: React.VFC = () => {
       <Wrapper apiKey={"AIzaSyDaZBte_ogmCrXVJ4cAy5E1bN5lQu8wnIw"} render={render}>
         <Map
           center={center}
-          onClick={onClick}
+          onClick={getLongLatFromAdress}
           onIdle={onIdle}
           zoom={zoom}
           style={{ flexGrow: "1", height: "100%", marginLeft: '-10px' }}

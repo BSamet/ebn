@@ -40,14 +40,13 @@ interface etapesInterface {
     collecteurId: number;
 }
 
-export function AgendaOrganisation(){
+export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
     const [open, setOpen] = React.useState(false);
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
-    const [collectorEtape, setCollectorEtape]= useState<ramassageInterface[]>([]);
-    let [Collector, setCollector] = useState(1);
+    const [Collector, setCollector] = useState(1);
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
@@ -136,10 +135,16 @@ export function AgendaOrganisation(){
     const handleAllRight = () => {
       if(finalEtapeList![0] == undefined){
       }else{
-          setCollectorEtape(finalEtapeList);
+          console.log('yo', finalEtapeList);
+          
+            setCollectorEtape(finalEtapeList);
+          
           setFinalEtapeList([]);
         }
       };
+
+      console.log(collectorEtape);
+      
     
     const handleCheckedRight = () => {
         for(let i = 0; i <= leftChecked.length; i++){
@@ -147,7 +152,7 @@ export function AgendaOrganisation(){
                         if(etape.id == leftChecked[i]){
                             let etapeIndex = finalEtapeList.indexOf(etape);
                             let checkedIndex = leftChecked.indexOf(leftChecked[i]);
-                            setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
+                            setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
                             finalEtapeList?.splice(etapeIndex, 1);   
                             leftChecked.splice(checkedIndex, 1);
                         }
@@ -157,7 +162,7 @@ export function AgendaOrganisation(){
 
     const handleCheckedLeft = () => {
         for(let i = 0; i <= rightChecked.length; i++){
-            collectorEtape?.map((etape) => {   
+            collectorEtape?.map((etape: ramassageInterface) => {   
                     if(etape.id == rightChecked[i]){
                         let etapeIndex = collectorEtape.indexOf(etape);
                         let checkedIndex = rightChecked.indexOf(rightChecked[i]);
@@ -209,7 +214,7 @@ export function AgendaOrganisation(){
         //set Date
         let date: string;
 
-        collectorEtape?.map((etape) => {
+        collectorEtape.map((etape: { refDate: moment.MomentInput; Client: { id: any; }; isSubscribe: boolean; id: number; }) => {
             if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
                 date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z";
             } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){

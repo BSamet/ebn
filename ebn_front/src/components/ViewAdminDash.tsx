@@ -13,12 +13,14 @@ interface ViewAdminDashInterface {
     setSelectConteneurId: any;
     selectConteneurId: string;
     setSelectClientId: any;
-    selectClientId: string
+    selectClientId: string;
     setSelectCollecteurId: any;
-    selectCollecteurId: string
+    selectCollecteurId: string;
+    setCollectorEtape: any;
+    collectorEtape: any;
 }
 
-const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, setSelectClientId, selectClientId, setSelectCollecteurId, selectCollecteurId }: ViewAdminDashInterface) => {
+const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, setSelectClientId, selectClientId, setSelectCollecteurId, selectCollecteurId, setCollectorEtape, collectorEtape }: ViewAdminDashInterface) => {
     switch (selectNav) {
     case 'Historique':
         return (
@@ -38,7 +40,7 @@ const ViewAdminDash = ({ selectNav, setSelectConteneurId, selectConteneurId, set
         )
     case 'Agenda':
         return (
-            <AgendaDash />
+            <AgendaDash setCollectorEtape={setCollectorEtape} collectorEtape={collectorEtape} />
         )
     default:
         return (

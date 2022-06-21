@@ -31,6 +31,7 @@
     "react-circular-progressbar": "^2.0.4",
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.2.0",
+    "react-geocode": "^0.2.3",
     "react-multi-select-component": "^4.2.5",
     "react-native-dotenv": "^3.3.1",
     "react-router-dom": "^6.3.0",
@@ -67,6 +68,7 @@
   },
   "devDependencies": {
     "@types/google.maps": "^3.49.2",
+    "@types/react-geocode": "^0.2.0",
     "@types/react-native-dotenv": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
