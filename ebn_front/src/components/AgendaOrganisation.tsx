@@ -77,7 +77,15 @@ export function AgendaOrganisation(){
         }).then(ramassage =>{
                 console.log(ramassage.data)
                 ramassage.data.map((etape: ramassageInterface) => {
-                    setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
+                    let isAlreadyFetch = false;
+                    finalEtapeList.map((finalEtape) => {
+                        if(etape.toString() == finalEtape.toString()){
+                            isAlreadyFetch = true;
+                        }
+                    })
+                    if(isAlreadyFetch == false){
+                        setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
+                    }
                 })
         }).catch((err) => {
             console.log(err)
@@ -168,7 +176,7 @@ export function AgendaOrganisation(){
             setFinalEtapeList(collectorEtape);
             setCollectorEtape([])
         }
-      };
+    };
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -183,7 +191,7 @@ export function AgendaOrganisation(){
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
         })
-    }
+    };
 
 
     function sendCollectorEtape() {

@@ -54,6 +54,19 @@ export class HistoriqueService {
       .getMany();
   }
 
+  findByDate(dateStart: Date, dateEnd : Date) {
+    console.log(dateStart);
+    return this.historiqueRepository
+      .createQueryBuilder('historique')
+      .where('historique.date >= :dateStart' , {
+        dateStart,
+      })
+      .andWhere(dateEnd ? 'historique.date <= :dateEnd' : '1=1', { dateEnd })
+      .getMany();
+      
+      
+  }
+
   async findAllHistoriquesPagination(
     take: number,
     skip: number,
