@@ -2,7 +2,6 @@ import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
-    Alert,
     Image,
     Modal,
     Pressable,
@@ -19,7 +18,7 @@ import {HOST_BACK} from '../../../environment/environment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {format} from 'date-fns';
-import {ActivityIndicator, DataTable, RadioButton, Snackbar} from 'react-native-paper';
+import {ActivityIndicator, Checkbox, DataTable, RadioButton, Snackbar} from 'react-native-paper';
 import {RefreshControl} from 'react-native';
 
 const wait = timeout => {
@@ -63,37 +62,39 @@ export interface ShowClient {
     };
 }
 
-export interface Session {
-    idClient: string;
-    token: string | null;
-}
 
-export interface DemandePonctuelRamassage {
-    date: number;
-    client: {
-        id: number;
-    };
-}
-
-// TODO rendre la list cliquable OnPress() et faire intervenir les données
 const DashBordClient = () => {
-    const [tourner, setTouner] = useState<dashboardClient[]>();
-    const [myclient, setMyClient] = useState<ShowClient>();
-    const [modalOpen, setModalOpen] = useState(false);
-    const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
-    const [modalRamassage, setModalRamassage] = useState(false);
-    const [visible, setVisible] = useState(false);
-    const [mode, setMode] = useState('date');
-    const [date, setDate] = useState(new Date());
-    const [timeSlot, setTimeSlot] = useState('');
-    const [textDate, setTextDate] = useState('');
-    const [errorOneTimeCollect, setErrorOneTimeCollect] = useState<string>();
+    // AsyncStorage
     const [clientToken, setClienToken] = useState<string | null>();
     const [myClientId, setClientId] = useState<string | null>();
     const [clientLastname, setClientLastname] = useState<string | null>();
     const [clientName, setClientName] = useState<string | null>();
+
+    const [tourner, setTouner] = useState<dashboardClient[]>();
+    const [myclient, setMyClient] = useState<ShowClient>();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
     const [isVisible, setIsVisible] = React.useState(false);
-    //refresh pages
+    // Modal Collect
+    const [modalRamassage, setModalRamassage] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [wichModalCollect, setWichModalCollect] = useState<string>();
+    const [mode, setMode] = useState('date');
+    // Modal Collect OneTime
+    const [date, setDate] = useState(new Date());
+    const [timeSlot, setTimeSlot] = useState('');
+    const [textDate, setTextDate] = useState('');
+    const [errorOneTimeCollect, setErrorOneTimeCollect] = useState<string>();
+    //Modal Subscribe
+    const [selectedDay, setSelectedDay] = useState([
+        {id: 1, day: 'Lundi', status: false},
+        {id: 2, day: 'Mardi', status: false},
+        {id: 3, day: 'Mercredi', status: false},
+        {id: 4, day: 'Jeudi', status: false},
+        {id: 5, day: 'Vendredi', status: false},
+    ]);
+
+    //Refresh pages
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(() => {
@@ -102,14 +103,24 @@ const DashBordClient = () => {
         wait(1000).then(() => setRefreshing(false));
     }, []);
 
-    const postRamasagge = () => {
+    const postRamasagge = (dayToPost: number[]) => {
         let formatDateSave = formatDateForPost(date)
+        let data;
 
-        let data = {
-            refDate: formatDateSave,
-            clientId: myClientId,
-            isSubscribe: false,
-        };
+        if (wichModalCollect === 'subscribe') {
+            data = {
+                refDate: formatDateSave,
+                clientId: myClientId,
+                days: dayToPost,
+                isSubscribe: true,
+            };
+        } else {
+            data = {
+                refDate: formatDateSave,
+                clientId: myClientId,
+                isSubscribe: false,
+            };
+        }
 
         axios
             .post(HOST_BACK + '/collect', data, {
@@ -131,19 +142,29 @@ const DashBordClient = () => {
             });
     };
     const submit = () => {
+        let dayToPost: number[] = []
+        selectedDay.map((e) => {
+            if (e.status) {
+                dayToPost.push(e.id);
+            }
+        })
         if (textDate === '') {
             setErrorOneTimeCollect('Veuillez sélectionner une date !')
         } else if (timeSlot === '') {
             setErrorOneTimeCollect('Veuillez sélectionner une tranche horaire !')
+        } else if(wichModalCollect === 'subscribe' && dayToPost.length === 0) {
+            setErrorOneTimeCollect('Veuillez sélectionner au moins un jour !')
         } else {
+        updateAllCheckedDayToFalse();
             setErrorOneTimeCollect('')
             setTextDate('')
             setTimeSlot('')
             setModalRamassage(!modalRamassage);
-            postRamasagge();
+            postRamasagge(dayToPost);
         }
     };
     const cancel = () => {
+        updateAllCheckedDayToFalse();
         setErrorOneTimeCollect('')
         setTextDate('')
         setTimeSlot('')
@@ -188,9 +209,14 @@ const DashBordClient = () => {
     }, [clientToken, myClientId]);
 
     // fonction pour les modales
-    const showModal = (Collecteur: any) => {
-        setModalOpen(true);
-        setMyCollecteurModal(Collecteur);
+    const showOneTimeModal = () => {
+        setWichModalCollect('oneTime')
+        setModalRamassage(true);
+    };
+
+    const showSubscribeModal = () => {
+        setWichModalCollect('subscribe')
+        setModalRamassage(true);
     };
 
     const formatDateForPost = (date: Date) => {
@@ -226,12 +252,36 @@ const DashBordClient = () => {
         setVisible(true);
     };
 
+    const selectDayForChecked = (dayNumber: number) => {
+        const newCheckedDay = selectedDay.map(day => {
+            if (day.id === dayNumber) {
+                return {...day, status: !day.status};
+            }
+            return day;
+        });
+
+        setSelectedDay(newCheckedDay);
+    }
+
+    const updateAllCheckedDayToFalse = () => {
+        const newCheckedDay = selectedDay.map(day => {
+            return {...day, status: false};
+        });
+
+        setSelectedDay(newCheckedDay);
+    }
+
+    const onPressOnCheckbox = (dayNumber: number) => {
+        selectDayForChecked(dayNumber);
+    }
+
     const {height} = useWindowDimensions();
 
     const onDismissSnackBar = () => {
         setIsVisible(false);
     };
 
+    const [testDay, setTestDay] = useState(['lundi', 'jeudi', 'vendredi'])
     return (
         <ScrollView
             refreshControl={
@@ -289,10 +339,30 @@ const DashBordClient = () => {
                     visible={modalRamassage}>
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <Text style={styles.modalTitre}> Votre demande de ramassage</Text>
+                            <Text style={styles.modalTitre}> Votre demande
+                                {wichModalCollect === 'oneTime' ? ' de collecte' : wichModalCollect === 'subscribe' ? ' d\'abonnement' : ' ERREUR !'}
+                            </Text>
                             <Pressable style={styles.collecteModalSubmit} onPress={showDate}>
                                 <Text style={styles.textStyle}> Choisir une date</Text>
                             </Pressable>
+                            <View style={styles.timeSlotContainer}>
+                                {wichModalCollect === 'subscribe' &&
+                                    selectedDay.map((day, index) => (
+                                        <Pressable key={index}
+                                                   style={styles.timeSlot}
+                                                   onPress={() => {
+                                                       onPressOnCheckbox(day.id)
+                                                   }}>
+                                            <Text
+                                                style={[styles.timeSlotBaseButton, day.status ? styles.daySelected : '']}>{day.day}</Text>
+                                            <Checkbox
+                                                color={'#2196F3'} uncheckedColor={'lightgrey'}
+                                                status={selectedDay[index].status ? 'checked' : 'unchecked'}
+                                            />
+                                        </Pressable>
+                                    ))
+                                }
+                            </View>
                             <View style={styles.timeSlotContainer}>
                                 <Pressable style={styles.timeSlot} onPress={() => setTimeSlot('Matin')}>
                                     <Text
@@ -312,11 +382,25 @@ const DashBordClient = () => {
                                 </Pressable>
                             </View>
                             <Text style={styles.textDate}>
-                                Vous avez demander un ramassage : {'\n'}
-                                <Text style={styles.date}>
-                                    {textDate != '' ? 'Le ' + textDate : ''}
-                                    {textDate != '' && timeSlot != '' ? ' entre ' : textDate === '' && timeSlot != '' ? ' Entre ' : ''}
-                                    {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}</Text>
+                                Vous avez
+                                demander {wichModalCollect === "oneTime" ? 'une collecte' : wichModalCollect === 'subscribe' ? 'un abonnement' : ''} : {'\n'}
+                                {wichModalCollect === "oneTime" &&
+                                    <Text style={styles.date}>
+                                        {textDate != '' ? 'Le ' + textDate : ''}
+                                        {textDate != '' && timeSlot != '' ? ' entre ' : textDate === '' && timeSlot != '' ? ' Entre ' : ''}
+                                        {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
+                                    </Text>
+                                }
+                                {wichModalCollect === "subscribe" &&
+                                    <Text style={styles.date}>
+                                        {textDate != '' ? 'A partir du ' + textDate + ',\n' : ''}
+                                        {textDate != '' && timeSlot != '' ? 'entre ' : textDate === '' && timeSlot != '' ? 'Entre ' : ''}
+                                        {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
+                                        {selectedDay.filter((checkDay) => checkDay.status).map(day =>
+                                            ' le ' + day.day
+                                        ).join(',')}
+                                    </Text>
+                                }
                             </Text>
                             {visible && (
                                 <RNDateTimePicker
@@ -352,12 +436,12 @@ const DashBordClient = () => {
                     <View style={styles.requestCollecteButton}>
                         <Pressable
                             style={[styles.Ramassage, styles.collectButton]}
-                            onPress={() => setModalRamassage(true)}>
+                            onPress={() => showOneTimeModal()}>
                             <Text style={styles.textStyle}>Collecte</Text>
                         </Pressable>
                         <Pressable
                             style={[styles.Ramassage, styles.subscribeButton]}
-                            onPress={() => setModalRamassage(true)}>
+                            onPress={() => showSubscribeModal()}>
                             <Text style={styles.textStyle}>Abonnement</Text>
                         </Pressable>
                     </View>
@@ -446,6 +530,10 @@ const styles = StyleSheet.create({
     timeSlotSelected: {
         fontWeight: 'bold',
         color: '#8AC997'
+    },
+    daySelected: {
+        fontWeight: 'bold',
+        color: '#2196F3'
     },
     Ramassage: {
         borderRadius: 30,
