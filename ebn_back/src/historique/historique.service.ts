@@ -69,11 +69,7 @@ export class HistoriqueService {
       .groupBy('historique.date')
       .addGroupBy('historique.typeDeDechet')
       .orderBy('historique.date')
-      .getRawMany();
-      
-      
-      
-      
+      .getRawMany();  
   }
 
   async findAllHistoriquesPagination(
