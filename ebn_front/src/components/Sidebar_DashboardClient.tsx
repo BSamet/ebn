@@ -36,47 +36,95 @@ const SidebarDashboardClient = ({ setSelectNav, setSelectRight }: any) => {
       left: "-60%",
     },
   };
-  return (
-    <>
-      <div
-        className="bars"
-        style={expanded ? { left: "60%" } : { left: "5%" }}
-        onClick={() => setExpaned(!expanded)}
-      >
-        <UilBars />
-      </div>
-      <motion.div
-        className="_sidebar"
-        variants={sidebarVariants}
-        animate={window.innerWidth <= 768 ? `${expanded}` : ""}
-      >
-        {/* logo */}
-        <div className="logo">
-          <img src={Logo} alt="logo" />
-        </div>
 
-        <div className="menu">
-          {SidebarClientData.map((item, index) => {
-            return (
-              <div
-                className={selected === index ? "menuItem active" : "menuItem"}
-                key={index}
-                onClick={() => onClickOnNav(index, item.heading)}
-              >
-                <item.icon />
-                <span>{item.heading}</span>
-              </div>
-            );
-          })}
-          {/* signoutIcon */}
-          <div className="menuItem" onClick={() => logOut()}>
-            <UilSignOutAlt />
-            <span>Déconnexion</span>
+  if (clientvalide == "true"){
+    return (
+      <>
+        <div
+          className="bars"
+          style={expanded ? { left: "60%" } : { left: "5%" }}
+          onClick={() => setExpaned(!expanded)}
+        >
+          <UilBars />
+        </div>
+        <motion.div
+          className="_sidebar"
+          variants={sidebarVariants}
+          animate={window.innerWidth <= 768 ? `${expanded}` : ""}
+        >
+          {/* logo */}
+          <div className="logo">
+            <img src={Logo} alt="logo" />
           </div>
-        </div>
-      </motion.div>
-    </>
-  );
-};
+  
+          <div className="menu">
+            {SidebarClientData.map((item, index) => {
+              return (
+                <div
+                  className={selected === index ? "menuItem active" : "menuItem"}
+                  key={index}
+                  onClick={() => onClickOnNav(index, item.heading)}
+                >
+                  <item.icon />
+                  <span>{item.heading}</span>
+                </div>
+              );
+            })}
+            {/* signoutIcon */}
+            <div className="menuItem" onClick={() => logOut()}>
+              <UilSignOutAlt />
+              <span>Déconnexion</span>
+            </div>
+          </div>
+        </motion.div>
+      </>
+    );
+  }
 
+  
+  else{
+    return (
+      <>
+        <div
+          className="bars"
+          style={expanded ? { left: "60%" } : { left: "5%" }}
+          onClick={() => setExpaned(!expanded)}
+        >
+          <UilBars />
+        </div>
+        <motion.div
+          className="_sidebar"
+          variants={sidebarVariants}
+          animate={window.innerWidth <= 768 ? `${expanded}` : ""}
+        >
+          {/* logo */}
+          <div className="logo">
+            <img src={Logo} alt="logo" />
+          </div>
+  
+          <div className="menu">
+            {SidebarClientData.map((item, index) => {
+              return (
+                <div
+                  className={selected === index ? "menuItem active" : "menuItem1"}
+                  key={index}
+                >
+                  <item.icon />
+                  <span>{item.heading}</span>
+                </div>
+              );
+            })}
+            {/* signoutIcon */}
+            <div className="menuItem" onClick={() => logOut()}>
+              <UilSignOutAlt />
+              <span>Déconnexion</span>
+            </div>
+          </div>
+        </motion.div>
+      </>
+    );
+
+  }
+ 
+}
 export default SidebarDashboardClient;

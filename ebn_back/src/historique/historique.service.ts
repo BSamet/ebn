@@ -54,6 +54,28 @@ export class HistoriqueService {
       .getMany();
   }
 
+  findByDate(dateStart: Date, dateEnd:Date) {
+    console.log(dateStart);
+    console.log(dateEnd);
+    return this.historiqueRepository
+      .createQueryBuilder('historique')
+      .select('MAX(historique.date)', 'date')
+      .addSelect('MIN(historique.typeDeDechet)','typeDeDechet')
+      .addSelect('SUM(historique.poids)','poids')
+      .where('historique.date >= :dateStart', {
+        dateStart,
+      })
+      .andWhere('historique.date <= :dateEnd', { dateEnd })
+      .groupBy('historique.date')
+      .addGroupBy('historique.typeDeDechet')
+      .orderBy('historique.date')
+      .getRawMany();
+      
+      
+      
+      
+  }
+
   async findAllHistoriquesPagination(
     take: number,
     skip: number,
@@ -170,3 +192,7 @@ export class HistoriqueService {
     return this.historiqueRepository.delete(id);
   }
 }
+function moment(dateEnddd: Date) {
+  throw new Error('Function not implemented.');
+}
+
