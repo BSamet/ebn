@@ -115,7 +115,6 @@ const popUp = (props: any) => {
                 }
             })
             .then(res => {
-                console.log(res.data)
                 setModalVisible(!modalVisible);
                 setModalOff();
             })
@@ -149,7 +148,6 @@ const popUp = (props: any) => {
                 })
                 .catch(function (error) {
                     alert("le seau n'a pas été collecté");
-                    console.log(Assignation, "assignation")
                 });
         }
     };
