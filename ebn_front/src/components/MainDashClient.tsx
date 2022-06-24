@@ -77,7 +77,7 @@ const MainDashClient = ({
 
         case 'Demande de collecte':
             return (
-                <ClientAskCollect/>
+                <ClientAskCollect client={client} setClient={setClient}/>
             );
         case 'Abonnement':
             return (
@@ -131,7 +131,7 @@ const MainDashClient = ({
                                     <div key={index}>
                                         <p>
                                             Le{" "}
-                                            {moment(oneTime.refDate).format("DD.MM.YYYY à HH [h] mm")}{" "}
+                                            {moment(oneTime.refDate).locale('fr').format("DD.MMMM.YYYY à HH [h] mm")}{" "}
                                         </p>
                                     </div>
                                 ))

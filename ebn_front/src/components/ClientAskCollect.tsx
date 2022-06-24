@@ -5,6 +5,11 @@ import React from "react";
 import {useState} from "react";
 import {HOST_BACK} from "../environment/environment";
 
+interface oneTimeProps {
+    client: any;
+    setClient: any;
+}
+
 const hours = [
     {
         value: 'T08:00:00.000Z',
@@ -17,7 +22,8 @@ const hours = [
 
 ];
 
-export function ClientAskCollect() {
+
+export function ClientAskCollect({client, setClient}: oneTimeProps) {
     const [date, setDate] = useState('');
     const [dateSelected, setDateSelected] = useState(false);
     const [hour, setHour] = React.useState('');
@@ -65,6 +71,16 @@ export function ClientAskCollect() {
                 setOpen(true)
                 setSendMessage('La demande de collecte a été prise en compte')
                 setDateSelected(false)
+
+                let pushInState = {
+                    id: response.data.id,
+                    refDate: response.data.refDate,
+                    cronExpression: null
+                }
+
+                let newOneTime = {...client};
+                newOneTime.collect.push(pushInState)
+                setClient(newOneTime)
             })
             .catch(error => {
                 console.log(error)
