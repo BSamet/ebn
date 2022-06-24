@@ -177,8 +177,8 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id`, `role`, `password`, `nom`, `prenom`, `mail`, `telephone`) VALUES
 (1, 'Admin', '$2a$12$ztucK4c/A/.Vvrn9ricgau7i.7r/3pvsNYzWIM1Lo75tHmflq20Qu', 'Admin', 'Admin', 'admin@ebn.com', '0606060606'),
-(2, 'Client', '$2a$12$gRoU2aciDqFTdWyvKOybAux7tyG6juBRrO1HhbtvOSii/fSmEP8Ji', 'Durant', 'Maurice', 'durant@gmail.com', '070707070707'),
-(3, 'Collecteur', '$2a$12$zLcRaTUBsf8da/q1BOiWpuTM4OPvuCjOgo2TqNFzUxJnsxg2g7nJG', 'Dupont', 'Sébastien', 'dupont@gmail.com', '070707070707');
+(2, 'Collecteur', '$2a$12$zLcRaTUBsf8da/q1BOiWpuTM4OPvuCjOgo2TqNFzUxJnsxg2g7nJG', 'Dupont', 'Sébastien', 'dupont@gmail.com', '070707070707'),
+(3, 'Client', '$2a$12$gRoU2aciDqFTdWyvKOybAux7tyG6juBRrO1HhbtvOSii/fSmEP8Ji', 'Durant', 'Maurice', 'durant@gmail.com', '070707070707');
 
 --
 -- Indexes for dumped tables

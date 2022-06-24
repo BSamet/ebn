@@ -1,17 +1,9 @@
 import React, {useState} from 'react';
-import {
-    Alert,
-    Button, Checkbox,
-    FormControl,
-    FormControlLabel,
-    FormGroup,
-    Grid,
-    MenuItem,
-    Snackbar,
-    TextField
-} from "@mui/material";
+import {Alert, Button, Checkbox, FormControl, Grid, MenuItem, Snackbar, TextField} from "@mui/material";
 import moment from "moment";
 import 'moment/locale/fr';
+import axios from "axios";
+import {HOST_BACK} from "../../../environment/environment";
 
 const hours = [
     {
@@ -27,54 +19,21 @@ const hours = [
 
 
 const Subscribe = () => {
+    const clientId = sessionStorage.getItem("id");
     const [date, setDate] = useState('');
     const [hour, setHour] = React.useState('');
-    const [days, setDays] = React.useState({
-        lundi: false,
-        mardi: false,
-        mercredi: false,
-        jeudi: false,
-        vendredi: false,
-    });
-    const [selectedDays, setSelectedDays] = React.useState([
-        {
-            numberOfDay: 1,
-            day: 'lundi',
-            selected: false
-        },
-        {
-            numberOfDay: 1,
-            day: 'mardi',
-            selected: false
-        },
-        {
-            numberOfDay: 1,
-            day: 'mercredi',
-            selected: false
-        },        {
-            numberOfDay: 1,
-            day: 'jeudi',
-            selected: false
-        },        {
-            numberOfDay: 1,
-            day: 'vendredi',
-            selected: false
-        },
+    const [selectedDay, setSelectedDay] = useState([
+        {id: 1, day: 'Lundi', status: false},
+        {id: 2, day: 'Mardi', status: false},
+        {id: 3, day: 'Mercredi', status: false},
+        {id: 4, day: 'Jeudi', status: false},
+        {id: 5, day: 'Vendredi', status: false},
     ]);
-    let lundi = selectedDays[0].selected
-    let mardi = selectedDays[1].selected
-    let mercredi = selectedDays[2].selected
-    let jeudi = selectedDays[3].selected
-    let vendredi = selectedDays[4].selected
-    let selectedDay: string[] = [];
     const [open, setOpen] = React.useState(false);
     const [confirm, setConfirm] = useState(false);
     const [period, setPeriod] = React.useState('');
-
-
-    const changeDays = (index: number) => {
-        selectedDays[index].selected = !selectedDays[index].selected
-    };
+    const [errorSubscribe, setErrorSubscribe] = useState<string>();
+    const [sendMessage, setSendMessage] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setHour(event.target.value);
@@ -88,27 +47,85 @@ const Subscribe = () => {
 
     const setTimePeriod = () => {
         if (hour == "T08:00:00.000Z") {
-            setPeriod("matins");
+            setPeriod("matin");
         } else if (hour == "T12:00:00.000Z") {
-            setPeriod("après-midis");
+            setPeriod("après-midi");
         } else {
             setPeriod("Aucune tranche horaire sélectionnée")
         }
     }
 
+    const selectDayForChecked = (dayNumber: number) => {
+        const newCheckedDay = selectedDay.map(day => {
+            if (day.id === dayNumber) {
+                console.log({...day, status: !day.status})
+                return {...day, status: !day.status};
+            }
+            return day;
+        });
+
+        setSelectedDay(newCheckedDay);
+    }
+
+    const onClickOnCheckbox = (dayNumber: number) => {
+        selectDayForChecked(dayNumber);
+    }
+
     function ValidateCollect() {
-        setTimePeriod()
-        setConfirm(!confirm)
+        let dayToPost: number[] = []
+        selectedDay.map((e) => {
+            if (e.status) {
+                dayToPost.push(e.id);
+            }
+        })
+        if (date === '') {
+            setErrorSubscribe('Veuillez sélectionner une date !')
+        } else if (hour === '') {
+            setErrorSubscribe('Veuillez sélectionner une tranche horaire !')
+        } else if (dayToPost.length === 0) {
+            setErrorSubscribe('Veuillez sélectionner au moins un jour !')
+        } else {
+            setErrorSubscribe('')
+            if (!confirm) {
+                setTimePeriod()
+                setConfirm(!confirm)
+            } else {
+                setConfirm(!confirm)
+                postSubscribe(dayToPost)
+            }
+        }
     }
 
     function AnnulCollect() {
         setConfirm(false)
     }
 
+    const postSubscribe = (dayToPost: number[]) => {
+        const subscribeToPost = {
+            clientId: clientId,
+            refDate: date + hour,
+            days: dayToPost,
+            isSubscribe: true,
+        }
+        axios
+            .post(HOST_BACK + "/collect", subscribeToPost, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            })
+            .then(response => {
+                setOpen(true)
+                setSendMessage('L\'abonnement a été mise en place')
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }
+
     return (
         <div className="subscribeContainer">
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert severity="success"></Alert>
+                <Alert severity="success">{sendMessage}</Alert>
             </Snackbar>
             <h1>Souscrire a un abonnement</h1>
             <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -147,56 +164,40 @@ const Subscribe = () => {
                     </FormControl>
                 </Grid>
             </Grid>
-            <FormControl sx={{m: 3}} style={{display: 'flex', alignItems: "center"}} component="fieldset"
-                         variant="standard">
-                <h3 style={{textAlign: "center", marginBottom: 15}} component="legend">Selectionner les jours de la
-                    semaine</h3>
-                <FormGroup style={{display: 'flex', flexDirection: 'row'}}>
-                    <FormControlLabel
-                        control={
-                            <Checkbox checked={lundi} onChange={() => changeDays(0)} name="lundi"/>
-                        }
-                        label="Lundi"
-                        labelPlacement="top"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox checked={mardi} onChange={() => changeDays(1)} name="mardi"/>
-                        }
-                        label="Mardi"
-                        labelPlacement="top"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox checked={mercredi} onChange={() => changeDays(2)} name="mercredi"/>
-                        }
-                        label="Mercredi"
-                        labelPlacement="top"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox checked={jeudi} onChange={() => changeDays(3)} name="jeudi"/>
-                        }
-                        label="Jeudi"
-                        labelPlacement="top"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox checked={vendredi} onChange={() => changeDays(4)} name="vendredi"/>
-                        }
-                        label="Vendredi"
-                        labelPlacement="top"
-                    />
-                </FormGroup>
-            </FormControl>
+            <Grid container spacing={5} justifyContent="center" alignItems="center" marginY={1}>
+                {selectedDay.map((day, index) => (
+                    <Grid item key={index}
+                          className="subscribeContainer__selectDay"
+                          onClick={() => {
+                              onClickOnCheckbox(day.id)
+                          }}>
+                        <p style={day.status ? {color: "#2e8b57"} : {color: "black"}}>{day.day}</p>
+                        <Checkbox
+                            sx={{
+                                color: "black",
+                                '&.Mui-checked': {
+                                    color: "#2e8b57",
+                                },
+                            }}
+                            checked={day.status}
+                        />
+                    </Grid>
+                ))}
+            </Grid>
             {confirm &&
-                <Grid container justifyContent="center" alignItems="center" marginTop={2}>
-                    Vous allez souscrire à un abonnement qui va démarrer
-                    le {moment(date).format('DD MMMM YYYY')}, la collecte se fera le{" "}
-
-                    {period}. Etes-vous sûr ?
-                </Grid>
+            <Grid container justifyContent="center" alignItems="center" marginTop={2}>
+                Vous allez souscrire à un abonnement qui va démarrer
+                le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
+                {selectedDay.filter((checkDay) => checkDay.status).map(day =>
+                    ' le ' + day.day + ' ' + period
+                ).join(',')}
+                . Etes-vous sûr ?
+            </Grid>
             }
+            <Grid container justifyContent="center" alignItems="center" marginTop={2}
+                  className="subscribeContainer__error">
+                {errorSubscribe}
+            </Grid>
             <Grid container justifyContent="center" alignItems="center">
                 {!confirm ?
                     <Button

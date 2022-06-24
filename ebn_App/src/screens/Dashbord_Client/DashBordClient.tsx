@@ -152,10 +152,10 @@ const DashBordClient = () => {
             setErrorOneTimeCollect('Veuillez sélectionner une date !')
         } else if (timeSlot === '') {
             setErrorOneTimeCollect('Veuillez sélectionner une tranche horaire !')
-        } else if(wichModalCollect === 'subscribe' && dayToPost.length === 0) {
+        } else if (wichModalCollect === 'subscribe' && dayToPost.length === 0) {
             setErrorOneTimeCollect('Veuillez sélectionner au moins un jour !')
         } else {
-        updateAllCheckedDayToFalse();
+            updateAllCheckedDayToFalse();
             setErrorOneTimeCollect('')
             setTextDate('')
             setTimeSlot('')
@@ -347,20 +347,20 @@ const DashBordClient = () => {
                             </Pressable>
                             <View style={styles.timeSlotContainer}>
                                 {wichModalCollect === 'subscribe' &&
-                                    selectedDay.map((day, index) => (
-                                        <Pressable key={index}
-                                                   style={styles.timeSlot}
-                                                   onPress={() => {
-                                                       onPressOnCheckbox(day.id)
-                                                   }}>
-                                            <Text
-                                                style={[styles.timeSlotBaseButton, day.status ? styles.daySelected : '']}>{day.day}</Text>
-                                            <Checkbox
-                                                color={'#2196F3'} uncheckedColor={'lightgrey'}
-                                                status={selectedDay[index].status ? 'checked' : 'unchecked'}
-                                            />
-                                        </Pressable>
-                                    ))
+                                selectedDay.map((day, index) => (
+                                    <Pressable key={index}
+                                               style={styles.timeSlot}
+                                               onPress={() => {
+                                                   onPressOnCheckbox(day.id)
+                                               }}>
+                                        <Text
+                                            style={[styles.timeSlotBaseButton, day.status ? styles.daySelected : '']}>{day.day}</Text>
+                                        <Checkbox
+                                            color={'#2196F3'} uncheckedColor={'lightgrey'}
+                                            status={day.status ? 'checked' : 'unchecked'}
+                                        />
+                                    </Pressable>
+                                ))
                                 }
                             </View>
                             <View style={styles.timeSlotContainer}>
@@ -385,21 +385,21 @@ const DashBordClient = () => {
                                 Vous avez
                                 demander {wichModalCollect === "oneTime" ? 'une collecte' : wichModalCollect === 'subscribe' ? 'un abonnement' : ''} : {'\n'}
                                 {wichModalCollect === "oneTime" &&
-                                    <Text style={styles.date}>
-                                        {textDate != '' ? 'Le ' + textDate : ''}
-                                        {textDate != '' && timeSlot != '' ? ' entre ' : textDate === '' && timeSlot != '' ? ' Entre ' : ''}
-                                        {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
-                                    </Text>
+                                <Text style={styles.date}>
+                                    {textDate != '' ? 'Le ' + textDate : ''}
+                                    {textDate != '' && timeSlot != '' ? ' entre ' : textDate === '' && timeSlot != '' ? ' Entre ' : ''}
+                                    {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
+                                </Text>
                                 }
                                 {wichModalCollect === "subscribe" &&
-                                    <Text style={styles.date}>
-                                        {textDate != '' ? 'A partir du ' + textDate + ',\n' : ''}
-                                        {textDate != '' && timeSlot != '' ? 'entre ' : textDate === '' && timeSlot != '' ? 'Entre ' : ''}
-                                        {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
-                                        {selectedDay.filter((checkDay) => checkDay.status).map(day =>
-                                            ' le ' + day.day
-                                        ).join(',')}
-                                    </Text>
+                                <Text style={styles.date}>
+                                    {textDate != '' ? 'A partir du ' + textDate + ',\n' : ''}
+                                    {textDate != '' && timeSlot != '' ? 'entre ' : textDate === '' && timeSlot != '' ? 'Entre ' : ''}
+                                    {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
+                                    {selectedDay.filter((checkDay) => checkDay.status).map(day =>
+                                        ' le ' + day.day
+                                    ).join(',')}
+                                </Text>
                                 }
                             </Text>
                             {visible && (
@@ -455,33 +455,33 @@ const DashBordClient = () => {
                 />
 
                 {tourner != null &&
-                    <DataTable>
-                        <DataTable.Header>
-                            <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
-                            <DataTable.Title style={{flex: 1}}>Collecteur</DataTable.Title>
-                            <DataTable.Title>Numéro téléphone</DataTable.Title>
-                        </DataTable.Header>
+                <DataTable>
+                    <DataTable.Header>
+                        <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
+                        <DataTable.Title style={{flex: 1}}>Collecteur</DataTable.Title>
+                        <DataTable.Title>Numéro téléphone</DataTable.Title>
+                    </DataTable.Header>
 
-                        {tourner?.map((item, index) => (
-                            <DataTable.Header key={index}>
-                                <DataTable.Cell style={{flex: 1.5}}>
-                                    {moment(item.date).format('DD.MM.YYYY à HH[h] mm')}
-                                </DataTable.Cell>
-                                <DataTable.Cell style={{flex: 1}}>
-                                    {item.collecteur.utilisateur.nom}{' '}
-                                    {item.collecteur.utilisateur.prenom}
-                                </DataTable.Cell>
-                                <DataTable.Cell>
-                                    {item.collecteur.utilisateur.telephone}
-                                </DataTable.Cell>
-                            </DataTable.Header>
-                        ))}
-                    </DataTable>
+                    {tourner?.map((item, index) => (
+                        <DataTable.Header key={index}>
+                            <DataTable.Cell style={{flex: 1.5}}>
+                                {moment(item.date).format('DD.MM.YYYY à HH[h] mm')}
+                            </DataTable.Cell>
+                            <DataTable.Cell style={{flex: 1}}>
+                                {item.collecteur.utilisateur.nom}{' '}
+                                {item.collecteur.utilisateur.prenom}
+                            </DataTable.Cell>
+                            <DataTable.Cell>
+                                {item.collecteur.utilisateur.telephone}
+                            </DataTable.Cell>
+                        </DataTable.Header>
+                    ))}
+                </DataTable>
                 }
                 {tourner === null &&
-                    <View style={styles.loader}>
-                        <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
-                    </View>
+                <View style={styles.loader}>
+                    <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
+                </View>
                 }
             </View>
         </ScrollView>
