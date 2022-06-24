@@ -139,31 +139,6 @@ INSERT INTO `historique` (`id`, `typeAction`, `date`, `typeDeDechet`, `commentai
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ramassage_abonnement`
---
-
-CREATE TABLE `ramassage_abonnement` (
-  `id` int NOT NULL,
-  `dateReference` datetime NOT NULL,
-  `periodicite` int NOT NULL,
-  `clientId` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ramassage_ponctuel`
---
-
-CREATE TABLE `ramassage_ponctuel` (
-  `id` int NOT NULL,
-  `date` datetime NOT NULL,
-  `clientId` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `type_dechet`
 --
 
@@ -202,8 +177,8 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id`, `role`, `password`, `nom`, `prenom`, `mail`, `telephone`) VALUES
 (1, 'Admin', '$2a$12$ztucK4c/A/.Vvrn9ricgau7i.7r/3pvsNYzWIM1Lo75tHmflq20Qu', 'Admin', 'Admin', 'admin@ebn.com', '0606060606'),
-(2, 'Client', '$2a$12$gRoU2aciDqFTdWyvKOybAux7tyG6juBRrO1HhbtvOSii/fSmEP8Ji', 'Durant', 'Maurice', 'durant@gmail.com', '070707070707'),
-(3, 'Collecteur', '$2a$12$zLcRaTUBsf8da/q1BOiWpuTM4OPvuCjOgo2TqNFzUxJnsxg2g7nJG', 'Dupont', 'Sébastien', 'dupont@gmail.com', '070707070707');
+(2, 'Collecteur', '$2a$12$zLcRaTUBsf8da/q1BOiWpuTM4OPvuCjOgo2TqNFzUxJnsxg2g7nJG', 'Dupont', 'Sébastien', 'dupont@gmail.com', '070707070707'),
+(3, 'Client', '$2a$12$gRoU2aciDqFTdWyvKOybAux7tyG6juBRrO1HhbtvOSii/fSmEP8Ji', 'Durant', 'Maurice', 'durant@gmail.com', '070707070707');
 
 --
 -- Indexes for dumped tables
@@ -255,20 +230,6 @@ ALTER TABLE `historique`
   ADD KEY `FK_48ba178170f756eee7f1d3c607c` (`clientId`),
   ADD KEY `FK_ff12d0cf8dd1b5dfa287e460322` (`collecteurId`),
   ADD KEY `FK_28ced590bd2eeec2e5e55625bd5` (`conteneurId`);
-
---
--- Indexes for table `ramassage_abonnement`
---
-ALTER TABLE `ramassage_abonnement`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_3d2ff0c939fb14c6aab339b3926` (`clientId`);
-
---
--- Indexes for table `ramassage_ponctuel`
---
-ALTER TABLE `ramassage_ponctuel`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_9160c1593d2826e80af8c011bea` (`clientId`);
 
 --
 -- Indexes for table `type_dechet`
