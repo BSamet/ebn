@@ -18,7 +18,19 @@ const hours = [
 ];
 
 interface subscribeProps {
-    client: any;
+    client: {
+        conteneur: [
+            {
+                capaciteMax: number,
+                id: number,
+                isAvailable: boolean,
+                typeDechet: {
+                    id: number,
+                    typeDechets: string
+                }
+            }
+        ];
+    };
     setClient: any;
 }
 
@@ -119,7 +131,7 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
             .then(response => {
                 setOpen(true)
                 setSendMessage('L\'abonnement a été mise en place')
-                
+
                 let pushInState = {
                     id: response.data.id,
                     refDate: response.data.refDate,
@@ -135,118 +147,122 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
             });
     }
 
-    return (
-        <div className="subscribeContainer">
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert severity="success">{sendMessage}</Alert>
-            </Snackbar>
-            <h1>Souscrire a un abonnement</h1>
-            <Grid container spacing={5} justifyContent="center" alignItems="center">
-                <Grid item>
-                    <FormControl>
-                        <h3>Sélectionner une date:</h3>
-                        <TextField
-                            id="datetime-local"
-                            label="Date"
-                            type="date"
-                            defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
-                            sx={{width: 300, mt: 0.5}}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={(newDate) => {
-                                setDate(newDate.target.value);
-                            }}
-                        />
-                    </FormControl>
-                </Grid>
-                <Grid item>
-                    <FormControl>
-                        <h3>Sélectionner une tranche horaire:</h3>
-                        <TextField
-                            sx={{width: 300, mt: 0.5}}
-                            id="select"
-                            select
-                            label="Horaire"
-                            onChange={handleChange}
-                        >
-                            {hours.map((hour) => (
-                                <MenuItem key={hour.value} value={hour.value}>{hour.label}</MenuItem>
-                            ))}
-                        </TextField>
-                    </FormControl>
-                </Grid>
-            </Grid>
-            <Grid container spacing={5} justifyContent="center" alignItems="center" marginY={1}>
-                {selectedDay.map((day, index) => (
-                    <Grid item key={index}
-                          className="subscribeContainer__selectDay"
-                          onClick={() => {
-                              onClickOnCheckbox(day.id)
-                          }}>
-                        <p style={day.status ? {color: "#2e8b57"} : {color: "black"}}>{day.day}</p>
-                        <Checkbox
-                            sx={{
-                                color: "black",
-                                '&.Mui-checked': {
-                                    color: "#2e8b57",
-                                },
-                            }}
-                            checked={day.status}
-                        />
+    if (client.conteneur.length != 0) {
+        return (
+            <div className="subscribeContainer">
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert severity="success">{sendMessage}</Alert>
+                </Snackbar>
+                <h1>Souscrire a un abonnement</h1>
+                <Grid container spacing={5} justifyContent="center" alignItems="center">
+                    <Grid item>
+                        <FormControl>
+                            <h3>Sélectionner une date:</h3>
+                            <TextField
+                                id="datetime-local"
+                                label="Date"
+                                type="date"
+                                defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
+                                sx={{width: 300, mt: 0.5}}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                onChange={(newDate) => {
+                                    setDate(newDate.target.value);
+                                }}
+                            />
+                        </FormControl>
                     </Grid>
-                ))}
-            </Grid>
-            {confirm &&
-            <Grid container justifyContent="center" alignItems="center" marginTop={2}>
-                Vous allez souscrire à un abonnement qui va démarrer
-                le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
-                {selectedDay.filter((checkDay) => checkDay.status).map(day =>
-                    ' le ' + day.day.toLocaleLowerCase() + ' ' + period
-                ).join(',')}
-                . Êtes-vous sûr ?
-            </Grid>
-            }
-            <Grid container justifyContent="center" alignItems="center" marginTop={2}
-                  className="subscribeContainer__error">
-                {errorSubscribe}
-            </Grid>
-            <Grid container justifyContent="center" alignItems="center">
-                {!confirm ?
-                    <Button
-                        sx={{my: 0.5, mt: 2, ml: 0.5}}
-                        variant="outlined"
-                        size="medium"
-                        aria-label="move all left"
-                        onClick={ValidateCollect}
-                    >
-                        Valider
-                    </Button>
-                    :
-                    <>
+                    <Grid item>
+                        <FormControl>
+                            <h3>Sélectionner une tranche horaire:</h3>
+                            <TextField
+                                sx={{width: 300, mt: 0.5}}
+                                id="select"
+                                select
+                                label="Horaire"
+                                onChange={handleChange}
+                            >
+                                {hours.map((hour) => (
+                                    <MenuItem key={hour.value} value={hour.value}>{hour.label}</MenuItem>
+                                ))}
+                            </TextField>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={5} justifyContent="center" alignItems="center" marginY={1}>
+                    {selectedDay.map((day, index) => (
+                        <Grid item key={index}
+                              className="subscribeContainer__selectDay"
+                              onClick={() => {
+                                  onClickOnCheckbox(day.id)
+                              }}>
+                            <p style={day.status ? {color: "#2e8b57"} : {color: "black"}}>{day.day}</p>
+                            <Checkbox
+                                sx={{
+                                    color: "black",
+                                    '&.Mui-checked': {
+                                        color: "#2e8b57",
+                                    },
+                                }}
+                                checked={day.status}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+                {confirm &&
+                <Grid container justifyContent="center" alignItems="center" marginTop={2}>
+                    Vous allez souscrire à un abonnement qui va démarrer
+                    le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
+                    {selectedDay.filter((checkDay) => checkDay.status).map(day =>
+                        ' le ' + day.day.toLocaleLowerCase() + ' ' + period
+                    ).join(',')}
+                    . Êtes-vous sûr ?
+                </Grid>
+                }
+                <Grid container justifyContent="center" alignItems="center" marginTop={2}
+                      className="subscribeContainer__error">
+                    {errorSubscribe}
+                </Grid>
+                <Grid container justifyContent="center" alignItems="center">
+                    {!confirm ?
                         <Button
-                            sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
+                            sx={{my: 0.5, mt: 2, ml: 0.5}}
                             variant="outlined"
                             size="medium"
                             aria-label="move all left"
                             onClick={ValidateCollect}
                         >
-                            Confirmer
+                            Valider
                         </Button>
-                        <Button
-                            sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
-                            variant="outlined"
-                            size="medium"
-                            onClick={AnnulCollect}
-                            aria-label="move all left"
-                        >
-                            Annuler
-                        </Button>
-                    </>
-                }
-            </Grid>
-        </div>
-    );
+                        :
+                        <>
+                            <Button
+                                sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
+                                variant="outlined"
+                                size="medium"
+                                aria-label="move all left"
+                                onClick={ValidateCollect}
+                            >
+                                Confirmer
+                            </Button>
+                            <Button
+                                sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
+                                variant="outlined"
+                                size="medium"
+                                onClick={AnnulCollect}
+                                aria-label="move all left"
+                            >
+                                Annuler
+                            </Button>
+                        </>
+                    }
+                </Grid>
+            </div>
+        );
+    } else {
+        <div>Vous n'avez pas de conteneur</div>
+    }
 };
 
 export default Subscribe;
