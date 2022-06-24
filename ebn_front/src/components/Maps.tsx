@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import maplibregl, { Marker, Popup } from 'maplibre-gl'
 import axios from "axios";
+
 const Maps: React.VFC = ({collectorEtape}: any) => {
 
   const mapContainer = useRef();
@@ -26,36 +27,34 @@ const Maps: React.VFC = ({collectorEtape}: any) => {
 
   useEffect(() => {
       markers.map(marker => {
-          console.log(marker)
-          marker.remove()
-          console.log("remove marker")
-        
+          marker.remove()        
       })
       setMarkers([])
-    
-      console.log("collecBefore" + collectorEtape)
-        //On Parcours la liste d'etape du collecteur
-        collectorEtape.map((etape: any) => {
-          //On récupère l'adresse du client stockée en base de donnée que l'on stocke dans une variable
-          let adress = etape.Client.adresse;
-          //On formate l'adresse récupérée pour remplacer les espaces par des '+'
-          let adressFormat = adress.replaceAll(" ", "+")
-          //Requête vers l'API gouvernementale
-          axios.get("https://api-adresse.data.gouv.fr/search/?q=" + adressFormat)
-          .then(coords => {
-            let lng = coords.data.features[0].geometry.coordinates[0];
-            let lat = coords.data.features[0].geometry.coordinates[1];
-            
-            //On stock la longitude et la latitude dans une variable séparée
-            
-            //Création du Marker sur la carte
-            let marker = new Marker({color: "#FF0000"})
-              .setLngLat([lng, lat])
-              // .addTo(map)
-            setMarkers(markers => [...markers, marker])
-              
-          })       
-        })               
+      //On Parcours la liste d'etape du collecteur
+      collectorEtape.map((etape: any) => {
+        //On récupère l'adresse du client stockée en base de donnée que l'on stocke dans une variable
+        let adress = etape.Client.adresse;
+        //On formate l'adresse récupérée pour remplacer les espaces par des '+'
+        let adressFormat = adress.replaceAll(" ", "+")
+        //Requête vers l'API gouvernementale
+        axios.get("https://api-adresse.data.gouv.fr/search/?q=" + adressFormat)
+        .then(coords => {
+          //On stock la longitude et la latitude dans une variable séparée
+          let lng = coords.data.features[0].geometry.coordinates[0];
+          let lat = coords.data.features[0].geometry.coordinates[1];      
+          //Création du Marker sur la carte
+          const mkStyle = document.createElement('div');
+          mkStyle.className = "marker";
+          mkStyle.innerHTML =(collectorEtape.indexOf(etape) + 1);
+          mkStyle.style.color = "black";
+          mkStyle.style.fontSize = "3em";
+          mkStyle.style.textAlign = "center"
+
+          let marker = new Marker(mkStyle, {anchor: "bottom"})
+            .setLngLat([lng, lat])
+          setMarkers(markers => [...markers, marker])             
+        })       
+      })               
     }, [collectorEtape]
   )  
 

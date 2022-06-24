@@ -132,9 +132,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
       if(finalEtapeList![0] == undefined){
       }else{
           console.log('yo', finalEtapeList);
-          
-          setCollectorEtape(finalEtapeList);
-          
+          finalEtapeList.map(etape => {
+            setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
+            })          
           setFinalEtapeList([]);
         }
       };      
@@ -164,7 +164,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                         let checkedIndex = rightChecked.indexOf(rightChecked[i]);
                         setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                         newCollectorEtape?.splice(etapeIndex, 1); 
-                        setCollectorEtape(newCollectorEtape)  
+                        setCollectorEtape(newCollectorEtape);  
                         rightChecked.splice(checkedIndex, 1);   
                     }
             })
@@ -175,7 +175,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
         if(collectorEtape![0] == undefined){
 
         } else {
-            setFinalEtapeList(collectorEtape);
+            collectorEtape.map(etape => {
+                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
+            })
             setCollectorEtape([])
         }
     };
