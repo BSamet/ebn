@@ -68,6 +68,11 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
         }
     }, [collecteursList, fetchOnce]);
 
+    useEffect(() => {
+        setCollectorEtape(collectorEtape)
+        console.log(collectorEtape)
+    })
+
     function setEtapesArray() {
         setFinalEtapeList([])
         axios.get(HOST_BACK + '/collect/date?date=' + date, {
@@ -128,23 +133,22 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
       }else{
           console.log('yo', finalEtapeList);
           
-            setCollectorEtape(finalEtapeList);
+          setCollectorEtape(finalEtapeList);
           
           setFinalEtapeList([]);
         }
-      };
-
-      console.log(collectorEtape);
-      
+      };      
     
     const handleCheckedRight = () => {
         for(let i = 0; i <= leftChecked.length; i++){
             finalEtapeList?.map((etape) => {   
                         if(etape.id == leftChecked[i]){
-                            let etapeIndex = finalEtapeList.indexOf(etape);
+                            const newFinalEtapeList = Array.from(finalEtapeList)
+                            let etapeIndex = newFinalEtapeList.indexOf(etape);
                             let checkedIndex = leftChecked.indexOf(leftChecked[i]);
                             setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
-                            finalEtapeList?.splice(etapeIndex, 1);   
+                            newFinalEtapeList?.splice(etapeIndex, 1);  
+                            setFinalEtapeList(newFinalEtapeList)  
                             leftChecked.splice(checkedIndex, 1);
                         }
             })
@@ -155,10 +159,12 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
         for(let i = 0; i <= rightChecked.length; i++){
             collectorEtape?.map((etape: ramassageInterface) => {   
                     if(etape.id == rightChecked[i]){
-                        let etapeIndex = collectorEtape.indexOf(etape);
+                        const newCollectorEtape = Array.from(collectorEtape)
+                        let etapeIndex = newCollectorEtape.indexOf(etape);
                         let checkedIndex = rightChecked.indexOf(rightChecked[i]);
                         setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
-                        collectorEtape?.splice(etapeIndex, 1);   
+                        newCollectorEtape?.splice(etapeIndex, 1); 
+                        setCollectorEtape(newCollectorEtape)  
                         rightChecked.splice(checkedIndex, 1);   
                     }
             })
@@ -190,23 +196,21 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     };
 
     function moveEtapeUp(etape: any){
-        console.log('avant' + collectorEtape.indexOf(etape))
-
-        const fromIndex = collectorEtape.indexOf(etape);
+        const newCollectorEtape = Array.from(collectorEtape)
+        const fromIndex = newCollectorEtape.indexOf(etape);
         const toindex = fromIndex - 1;
-        const etapeSelect = collectorEtape.splice(fromIndex, 1)[0];
-        collectorEtape.splice(toindex, 0, etapeSelect);
-        setCollectorEtape(collectorEtape)
-        console.log('apres' + collectorEtape.indexOf(etape))
+        const etapeSelect = newCollectorEtape.splice(fromIndex, 1)[0];
+        newCollectorEtape.splice(toindex, 0, etapeSelect);
+        setCollectorEtape(newCollectorEtape)
     }
 
     function moveEtapeDown(etape: any){
-        const fromIndex = collectorEtape.indexOf(etape);
+        const newCollectorEtape = Array.from(collectorEtape)
+        const fromIndex = newCollectorEtape.indexOf(etape);
         const toindex = fromIndex + 1;
-        const etapeSelect = collectorEtape.splice(fromIndex, 1)[0];
-        collectorEtape.splice(toindex, 0, etapeSelect);
-        setCollectorEtape(collectorEtape)
-
+        const etapeSelect = newCollectorEtape.splice(fromIndex, 1)[0];
+        newCollectorEtape.splice(toindex, 0, etapeSelect);
+        setCollectorEtape(newCollectorEtape)
     }
 
     function sendCollectorEtape() {
