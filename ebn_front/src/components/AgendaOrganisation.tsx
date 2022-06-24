@@ -69,28 +69,19 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     }, [collecteursList, fetchOnce]);
 
     function setEtapesArray() {
+        setFinalEtapeList([])
         axios.get(HOST_BACK + '/collect/date?date=' + date, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             } 
         }).then(ramassage =>{
                 console.log(ramassage.data)
-                ramassage.data.map((etape: ramassageInterface) => {
-                    let isAlreadyFetch = false;
-                    finalEtapeList.map((finalEtape) => {
-                        if(etape.toString() == finalEtape.toString()){
-                            isAlreadyFetch = true;
-                        }
-                    })
-                    if(isAlreadyFetch == false){
-                        setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
-                    }
+                ramassage.data.map((etape: ramassageInterface) => {                    
+                    setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 })
         }).catch((err) => {
             console.log(err)
         })
-        console.log(finalEtapeList)
-
     };
     
     function fillSelectOptions(){
@@ -198,6 +189,25 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
         })
     };
 
+    function moveEtapeUp(etape: any){
+        console.log('avant' + collectorEtape.indexOf(etape))
+
+        const fromIndex = collectorEtape.indexOf(etape);
+        const toindex = fromIndex - 1;
+        const etapeSelect = collectorEtape.splice(fromIndex, 1)[0];
+        collectorEtape.splice(toindex, 0, etapeSelect);
+        setCollectorEtape(collectorEtape)
+        console.log('apres' + collectorEtape.indexOf(etape))
+    }
+
+    function moveEtapeDown(etape: any){
+        const fromIndex = collectorEtape.indexOf(etape);
+        const toindex = fromIndex + 1;
+        const etapeSelect = collectorEtape.splice(fromIndex, 1)[0];
+        collectorEtape.splice(toindex, 0, etapeSelect);
+        setCollectorEtape(collectorEtape)
+
+    }
 
     function sendCollectorEtape() {
         let numberOfEtape = 0;
@@ -420,24 +430,44 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                     const labelId = `transfer-list-item-${etape.id}-label`;
                                     const date = etape.refDate;
                                     return (
-                                        <ListItem
+                                        <><ListItem
                                             key={etape.id}
                                             role="listitem"
                                             button
                                             onClick={handleRightToggle(etape.id)}
-                                            >
+                                        >
                                             <ListItemIcon>
                                                 <Checkbox
-                                                checked={rightChecked.indexOf(etape.id) !== -1}
-                                                tabIndex={-1}
-                                                disableRipple
-                                                inputProps={{
-                                                    'aria-labelledby': labelId,
-                                                }}
-                                                />
+                                                    checked={rightChecked.indexOf(etape.id) !== -1}
+                                                    tabIndex={-1}
+                                                    disableRipple
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId,
+                                                    }} />
                                             </ListItemIcon>
                                             <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
                                         </ListItem>
+                                        <Grid container direction="row" alignItems="center" justifyContent="center">
+                                                <Button
+                                                    sx={{ height: 20, mx: 0.2 }}
+                                                    variant="outlined"
+                                                    onClick={() => {moveEtapeUp(etape)}}
+                                                    disabled={collectorEtape.indexOf(etape) === 0}
+
+                                                    aria-label="move one up"
+                                                >
+                                                    ↑
+                                                </Button><Button
+                                                    sx={{ height: 20, mx: 0.2 }}
+                                                    variant="outlined"
+                                                    onClick={() => {moveEtapeDown(etape)}}
+                                                    disabled={collectorEtape.indexOf(etape) === collectorEtape.length - 1}
+
+                                                    aria-label="move one down"
+                                                >
+                                                    ↓
+                                                </Button>
+                                            </Grid></>
                                     );
                                     })}
                                     <ListItem />
@@ -450,7 +480,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                 variant="outlined"
                                 size="medium"
                                 onClick={sendCollectorEtape}
-                                aria-label="move all left"
+                                aria-label="save all "
                             >
                                 Sauvegarder
                     </Button>
