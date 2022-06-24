@@ -1,23 +1,23 @@
-import { FormControl, Grid, TextField, Button, MenuItem, Modal, Alert, Snackbar } from "@mui/material";
+import {FormControl, Grid, TextField, Button, MenuItem, Modal, Alert, Snackbar} from "@mui/material";
 import axios from "axios";
 import moment from "moment";
 import React from "react";
-import { useState } from "react";
-import { HOST_BACK } from "../environment/environment";
+import {useState} from "react";
+import {HOST_BACK} from "../environment/environment";
 
 const hours = [
     {
-      value: 'T08:00:00.000Z',
-      label: 'Matin',
+        value: 'T08:00:00.000Z',
+        label: 'Matin',
     },
     {
-      value: 'T12:00:00.000Z',
-      label: 'Après-Midi',
+        value: 'T12:00:00.000Z',
+        label: 'Après-Midi',
     },
-    
-  ];
 
-export function ClientAskCollect(){
+];
+
+export function ClientAskCollect() {
     const [date, setDate] = useState('');
     const [dateSelected, setDateSelected] = useState(false);
     const [hour, setHour] = React.useState('');
@@ -27,61 +27,61 @@ export function ClientAskCollect(){
 
     const clientId = sessionStorage.getItem("id");
 
-    function ValidateCollect(){
+    function ValidateCollect() {
         setDateSelected(true)
         setTimePeriod()
     }
 
-    function AnnulCollect(){
+    function AnnulCollect() {
         setDateSelected(false)
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setHour(event.target.value);
     };
-    
-      function setTimePeriod(){
-          if(hour == "T08:00:00.000Z"){
+
+    function setTimePeriod() {
+        if (hour == "T08:00:00.000Z") {
             setPeriod("Matin");
-          } else if (hour == "T12:00:00.000Z"){
+        } else if (hour == "T12:00:00.000Z") {
             setPeriod("Après-Midi");
-          } else{
+        } else {
             setPeriod("Aucune tranche horaire sélectionnée")
-          }
-      }
+        }
+    }
 
-      function sendClientCollect() {
-            const collectToAdd = {
-                clientId: clientId,
-                refDate: date + hour,
-            }
-                axios
-                .post(HOST_BACK + "/collect", collectToAdd, {
-                    headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                    }
-                })
-                .then(response => { 
-                    setOpen(true)
-                    setSendMessage('La demande de collecte a été prise en compte')
-                    setDateSelected(false)
-                })
-                .catch(error => {
-                    console.log(error)
-                });
-            
-        
-      }
+    function sendClientCollect() {
+        const collectToAdd = {
+            clientId: clientId,
+            refDate: date + hour,
+        }
+        axios
+            .post(HOST_BACK + "/collect", collectToAdd, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            })
+            .then(response => {
+                setOpen(true)
+                setSendMessage('La demande de collecte a été prise en compte')
+                setDateSelected(false)
+            })
+            .catch(error => {
+                console.log(error)
+            });
 
-      const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+
+    }
+
+    const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
         setOpen(false);
     };
 
-    if(dateSelected == false){  
-        return(
+    if (!dateSelected) {
+        return (
             <div className="conteneur">
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                     <Alert severity="success">{sendMessage}</Alert>
@@ -96,21 +96,21 @@ export function ClientAskCollect(){
                                 label="Date"
                                 type="date"
                                 defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
-                                sx={{ width: 300, mt: 0.5 }}
+                                sx={{width: 300, mt: 0.5}}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                                 onChange={(newDate) => {
                                     setDate(newDate.target.value);
-                                } }
-                                onClick={AnnulCollect} />
+                                }}
+                                onClick={AnnulCollect}/>
                         </FormControl>
                     </Grid>
                     <Grid item>
                         <FormControl>
                             <h3>Sélectionner une tranche horaire:</h3>
                             <TextField
-                                sx={{ width: 300, mt: 0.5 }}
+                                sx={{width: 300, mt: 0.5}}
                                 id="select"
                                 select
                                 value={hour}
@@ -126,7 +126,7 @@ export function ClientAskCollect(){
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center">
                     <Button
-                        sx={{ my: 0.5, mt: 2, ml: 0.5 }}
+                        sx={{my: 0.5, mt: 2, ml: 0.5}}
                         variant="outlined"
                         size="medium"
                         onClick={ValidateCollect}
@@ -138,7 +138,7 @@ export function ClientAskCollect(){
             </div>
         );
     } else {
-        return(
+        return (
             <div className="conteneur">
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                     <Alert severity="success">{sendMessage}</Alert>
@@ -153,21 +153,21 @@ export function ClientAskCollect(){
                                 label="Date"
                                 type="date"
                                 defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
-                                sx={{ width: 300, mt: 0.5 }}
+                                sx={{width: 300, mt: 0.5}}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                                 onChange={(newDate) => {
                                     setDate(newDate.target.value);
-                                } }
-                                onClick={AnnulCollect} />
+                                }}
+                                onClick={AnnulCollect}/>
                         </FormControl>
                     </Grid>
                     <Grid item>
                         <FormControl>
                             <h3>Sélectionner une tranche horaire:</h3>
                             <TextField
-                                sx={{ width: 300, mt: 0.5 }}
+                                sx={{width: 300, mt: 0.5}}
                                 id="select"
                                 select
                                 value={hour}
@@ -183,7 +183,7 @@ export function ClientAskCollect(){
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center">
                     <Button
-                        sx={{ my: 0.5, mt: 2, ml: 0.5 }}
+                        sx={{my: 0.5, mt: 2, ml: 0.5}}
                         variant="outlined"
                         size="medium"
                         onClick={ValidateCollect}
@@ -193,20 +193,21 @@ export function ClientAskCollect(){
                     </Button>
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center" marginTop={2}>
-                    Vous voulez programmer une collecte pour le {moment(date).format('DD.MM.YYYY')}: {period}. Etes-vous sûr ?
+                    Vous voulez programmer une collecte pour le {moment(date).format('DD.MM.YYYY')}: {period}. Etes-vous
+                    sûr ?
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center" marginTop={2}>
                     <Button
-                        sx={{ my: 0.5, mt: 4, ml: 0.5, width: 100 }}
+                        sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
                         variant="outlined"
                         size="medium"
                         onClick={sendClientCollect}
                         aria-label="move all left"
                     >
-                            Confirmer
+                        Confirmer
                     </Button>
                     <Button
-                        sx={{ my: 0.5, mt: 4, ml: 0.5, width: 100 }}
+                        sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
                         variant="outlined"
                         size="medium"
                         onClick={AnnulCollect}

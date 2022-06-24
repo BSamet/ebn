@@ -6,6 +6,7 @@ import moment from "moment";
 import 'moment/locale/fr';
 import {ClientAskCollect} from "./ClientAskCollect";
 import Subscribe from "./customer/subscribe/subscribe";
+
 const cronstrue = require('cronstrue');
 const fr = require("cronstrue/locales/fr")
 
@@ -55,7 +56,6 @@ const MainDashClient = ({
                         }: ClientDashInterface) => {
     const {id} = useParams();
     const [client, setClient] = useState<clientInterface>();
-    const formatDate = moment().format("DD-MM-YYYY");
     const clientvalide = sessionStorage.getItem("clientvalide");
 
     useEffect(() => {
@@ -67,6 +67,7 @@ const MainDashClient = ({
             })
             .then((res) => {
                 setClient(res.data);
+                console.log(res.data)
             })
             .catch(function (error) {
                 console.log(error);
@@ -80,12 +81,11 @@ const MainDashClient = ({
             );
         case 'Abonnement':
             return (
-                <Subscribe />
+                <Subscribe client={client} setClient={setClient}/>
             );
         default:
             if (clientvalide == "true") {
                 return (
-
                     <div className="MainDashClient">
                         <h1>Tableau de bord</h1>
                         <div className="idClient">
@@ -95,22 +95,25 @@ const MainDashClient = ({
                             </p>
                             <p>{client?.nomCommercial}</p>
                             <p> Adresse: {client?.adresse}</p>
-                            <p> e-mail: {client?.utilisateur.mail}</p>
-                            <p> téléphone: {client?.utilisateur.telephone}</p>
+                            <p> E-mail: {client?.utilisateur.mail}</p>
+                            <p> Téléphone: {client?.utilisateur.telephone}</p>
                         </div>
                         <div className="abonnement">
                             <h3>Collecte</h3>
                             <h4>Abonnement</h4>
                             {client?.collect.filter((checkCollect) => checkCollect.cronExpression != null).length != 0
                                 ?
-                                client?.collect.filter((checkCollect) => checkCollect.cronExpression != null).map((subscribe) => (
-                                    <div>
+                                client?.collect.filter((checkCollect) => checkCollect.cronExpression != null).map((subscribe, index) => (
+                                    <div key={index}>
                                         <p>
-                                            Le{" "}
+                                            A partir du{" "}
                                             {moment(subscribe.refDate).locale('fr').format(
                                                 "DD MMMM YYYY"
                                             )}{" "}
-                                            {cronstrue.toString(subscribe.cronExpression, { locale: 'fr', use24HourTimeFormat : true }).toLowerCase()}.
+                                            {cronstrue.toString(subscribe.cronExpression, {
+                                                locale: 'fr',
+                                                use24HourTimeFormat: true
+                                            }).toLowerCase()}.
                                         </p>
                                     </div>
                                 ))
@@ -124,8 +127,8 @@ const MainDashClient = ({
                             <h4>Demande de collecte</h4>
                             {client?.collect.filter((checkCollect) => checkCollect.cronExpression === null).length != 0
                                 ?
-                                client?.collect.filter((checkCollect) => checkCollect.cronExpression === null).map((oneTime) => (
-                                    <div>
+                                client?.collect.filter((checkCollect) => checkCollect.cronExpression === null).map((oneTime, index) => (
+                                    <div key={index}>
                                         <p>
                                             Le{" "}
                                             {moment(oneTime.refDate).format("DD.MM.YYYY à HH [h] mm")}{" "}

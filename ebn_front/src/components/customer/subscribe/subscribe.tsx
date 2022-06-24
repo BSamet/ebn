@@ -17,8 +17,12 @@ const hours = [
 
 ];
 
+interface subscribeProps {
+    client: any;
+    setClient: any;
+}
 
-const Subscribe = () => {
+const Subscribe = ({client, setClient}: subscribeProps) => {
     const clientId = sessionStorage.getItem("id");
     const [date, setDate] = useState('');
     const [hour, setHour] = React.useState('');
@@ -58,7 +62,6 @@ const Subscribe = () => {
     const selectDayForChecked = (dayNumber: number) => {
         const newCheckedDay = selectedDay.map(day => {
             if (day.id === dayNumber) {
-                console.log({...day, status: !day.status})
                 return {...day, status: !day.status};
             }
             return day;
@@ -116,6 +119,16 @@ const Subscribe = () => {
             .then(response => {
                 setOpen(true)
                 setSendMessage('L\'abonnement a été mise en place')
+                
+                let pushInState = {
+                    id: response.data.id,
+                    refDate: response.data.refDate,
+                    cronExpression: response.data.cronExpression
+                }
+
+                let newSubscribe = {...client};
+                newSubscribe.collect.push(pushInState)
+                setClient(newSubscribe)
             })
             .catch(error => {
                 console.log(error)
@@ -189,9 +202,9 @@ const Subscribe = () => {
                 Vous allez souscrire à un abonnement qui va démarrer
                 le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
                 {selectedDay.filter((checkDay) => checkDay.status).map(day =>
-                    ' le ' + day.day + ' ' + period
+                    ' le ' + day.day.toLocaleLowerCase() + ' ' + period
                 ).join(',')}
-                . Etes-vous sûr ?
+                . Êtes-vous sûr ?
             </Grid>
             }
             <Grid container justifyContent="center" alignItems="center" marginTop={2}
