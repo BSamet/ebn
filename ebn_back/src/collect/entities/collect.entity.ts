@@ -1,5 +1,6 @@
-import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinTable, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Client} from "../../client/entities/client.entity";
+import {TypeDechet} from "../../type-dechets/entities/type-dechet.entity";
 
 @Entity()
 export class Collect {
@@ -15,4 +16,8 @@ export class Collect {
     @ManyToOne(() => Client, (client) => client.collect)
     @JoinTable()
     client: Client;
+
+    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.collect)
+    @JoinTable()
+    typeDechet: TypeDechet;
 }
