@@ -17,102 +17,99 @@ interface HistoriqueClient {
   }
 
 const StatCollectAdmin = () => {
-    //Date non formaté
-    let startDateNotFormated = new Date()
-    let before1 = new Date().setDate(startDateNotFormated.getDate()-1)
-    let before2  = new Date().setDate(startDateNotFormated.getDate()-2)
-    let before3 = new Date().setDate(startDateNotFormated.getDate()-3)
-    let before4  = new Date().setDate(startDateNotFormated.getDate()-4)
-    let endDateNotFormated = new Date().setDate(startDateNotFormated.getDate()-5)
-    //Date Formaté
-    let endDate = moment(startDateNotFormated).format("YYYY-MM-DD")
-    let endDateSend = moment(endDate).format("YYYY-MM-DD")+"T23:59:59"
-    let  dayBefore1F= moment(before1).format("YYYY-MM-DD")
-    let dayBefore2F = moment(before2).format("YYYY-MM-DD")
-    let dayBefore3F = moment(before3).format("YYYY-MM-DD")
-    let dayBefore4F = moment(before4).format("YYYY-MM-DD")
-    let startDate = moment(endDateNotFormated).format("YYYY-MM-DD")
-    //Tri
-    const [nbBioDechet6, setNbBioDechet6] = useState(Number);
-    const [nbMarcCafé6, setMarcCafé6] = useState(Number);
-    const [nbBioDechet5, setNbBioDechet5] = useState(Number);
-    const [nbMarcCafé5, setMarcCafé5] = useState(Number);
-    const [nbBioDechet4, setNbBioDechet4] = useState(Number);
-    const [nbMarcCafé4, setMarcCafé4] = useState(Number);
-    const [nbBioDechet3, setNbBioDechet3] = useState(Number);
-    const [nbMarcCafé3, setMarcCafé3] = useState(Number);
-    const [nbBioDechet2, setNbBioDechet2] = useState(Number);
-    const [nbMarcCafé2, setMarcCafé2] = useState(Number);
-    const [nbBioDechet1, setNbBioDechet1] = useState(Number);
-    const [nbMarcCafé1, setMarcCafé1] = useState(Number);
+    let todayDateNotFormated = new Date()
+    let todayDate = moment(todayDateNotFormated).format("YYYY-MM-DD")
+    let todayDateSend =moment(todayDateNotFormated).format("YYYY-MM-DD")+"T23:59:59"
+    let beforeDateNotFormated = new Date().setDate(todayDateNotFormated.getDate()-6)
+    let beforeDateSend =moment(beforeDateNotFormated).format("YYYY-MM-DD")+"T23:59:59"
+    let arrayDate :Array<any> = []
+    let arrayBio : Array <HistoriqueClient> =[]
+     const [finalArrayBio, setFinalArrayBio] = useState<number[]>([])
+     const [finalArrayCafé, setFinalArrayCafé] = useState<number[]>([])
+    let arrayCafé : Array <any> = [];
     
     
     useEffect(() => {
-        axios.get(HOST_BACK + '/historique/date/' + startDate +'/'+  endDateSend   , {
+        axios.get(HOST_BACK + '/historique/date/' +beforeDateSend +'/'+  todayDateSend   , {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
-                console.log(res.data);
+    
+                console.log("res",res.data);
                 
                 res.data.map((history : HistoriqueClient)=>{   
-                    switch(history.typeDeDechet){
-                        case "Biodéchets":{
-                            if(moment(history.date).format("YYYY-MM-DD") == endDate){
-                                setNbBioDechet6(history.poids) 
-                                
-                            }
-                            else if (moment(history.date).format("YYYY-MM-DD") == dayBefore1F){                                
-                                setNbBioDechet5(history.poids)                        
-                            }
-                            else if (moment(history.date).format("YYYY-MM-DD") == dayBefore2F){                              
-                                setNbBioDechet4(history.poids)                              
-                            }
-                            else if (moment(history.date).format("YYYY-MM-DD") == dayBefore3F){                             
-                                setNbBioDechet3(history.poids)                           
-                            }
-                            else if (moment(history.date).format("YYYY-MM-DD") == dayBefore4F){                               
-                                setNbBioDechet2(history.poids)      
-                            }
-                            else if (moment(history.date).format("YYYY-MM-DD") == startDate){
-                                setNbBioDechet1(history.poids) 
-                            }
-                        break    
-                        }
-                        case "Marc de café":{
-                            if(moment(history.date).format("YYYY-MM-DD") == endDate){                             
-                                setMarcCafé6(history.poids)
-                            }
-                            else if(moment(history.date).format("YYYY-MM-DD") == dayBefore1F){             
-                                setMarcCafé5(history.poids)
-                            }
-                            else if(moment(history.date).format("YYYY-MM-DD") == dayBefore2F){              
-                                setMarcCafé4(history.poids)
-                            }
-                            else if(moment(history.date).format("YYYY-MM-DD") == dayBefore3F){               
-                                setMarcCafé3(history.poids)
-                            }
-                            else if(moment(history.date).format("YYYY-MM-DD") == dayBefore4F){
-                                setMarcCafé2(history.poids)
-                            }
-                            else if(moment(history.date).format("YYYY-MM-DD") == startDate){  
-                                setMarcCafé1(history.poids)
-                            }
-                        break    
-                        }
+                
+                    if(history.typeDeDechet == "Biodéchets"){
+                        arrayBio.push(history)
                     }
-                     })
-                    })
-                }, [])
+                    else {
+                        arrayCafé.push(history)
+                    } 
+                })
                 
 
+                for(let xIndex =0, historyIndex = 0; xIndex<arrayDate.length; ){  
+                     
+                    if(arrayDate[xIndex]==moment(arrayBio[historyIndex].date).format("DD-MM")){
+                         setFinalArrayBio(finalArrayBio => [...finalArrayBio, arrayBio[historyIndex].poids])
+                       xIndex ++
+                       historyIndex =0;
+                    }
+                    else if(arrayDate[xIndex]!=moment(arrayBio[historyIndex].date).format("DD-MM") && historyIndex != arrayBio.length -1){
+                       historyIndex ++
+                   }
+                   else if (arrayDate[xIndex]!=moment(arrayBio[historyIndex].date).format("DD-MM") && historyIndex == arrayBio.length -1){
+                        setFinalArrayBio(finalArrayBio => [...finalArrayBio, 0])
+                       xIndex ++
+                       historyIndex = 0;
+                   }
+                  
+               
+                   
+               }
+               for(let xIndex =0, historyIndex = 0; xIndex<arrayDate.length; ){ 
+                 if(arrayDate[xIndex]==moment(arrayCafé[historyIndex].date).format("DD-MM")){
+                    setFinalArrayCafé(finalArrayCafé => [...finalArrayCafé, arrayCafé[historyIndex].poids])
+                    xIndex ++
+                    historyIndex =0;
+                 }
+                 else if(arrayDate[xIndex]!=moment(arrayCafé[historyIndex].date).format("DD-MM") && historyIndex != arrayCafé.length -1){
+                    historyIndex ++
+                }
+                else if (arrayDate[xIndex]!=moment(arrayCafé[historyIndex].date).format("DD-MM") && historyIndex == arrayCafé.length -1){
+               
+                    setFinalArrayCafé(finalArrayCafé => [...finalArrayCafé, 0])
+                    xIndex ++
+                    historyIndex = 0;
+                }
+
+               }
+
+            })
+        }, [])
+
+              
+                
+                for(let i =5;i>=0;i--){
+                    let previousDateNotFormated = new Date().setDate(todayDateNotFormated.getDate()-i)
+                    let  previousDate= moment(previousDateNotFormated).format("DD-MM")
+                    arrayDate.push(previousDate)
+                }           
+
+                // console.log(finalArrayBio);
+                // console.log(finalArrayCafé);
+                // console.log("b",arrayBio);
+                // console.log("c",arrayCafé);
+                
+                
     const state = {
 
         series: [{
             name: 'Bio-déchet',
-            data: [nbBioDechet1, nbBioDechet2, nbBioDechet3, nbBioDechet4, nbBioDechet5, nbBioDechet6]
+            data: finalArrayBio
         }, {
             name: 'Marc de café',
-            data: [nbMarcCafé1, nbMarcCafé2, nbMarcCafé3, nbMarcCafé4, nbMarcCafé5, nbMarcCafé6]
+            data: finalArrayCafé
         }
         ],
         options: {
@@ -142,9 +139,7 @@ const StatCollectAdmin = () => {
                 },
             },
             xaxis: {
-                categories: [startDate,dayBefore4F , dayBefore3F, dayBefore2F,
-                    dayBefore1F, endDate
-                ],
+                categories: arrayDate
             },
             fill: {
                 opacity: 1

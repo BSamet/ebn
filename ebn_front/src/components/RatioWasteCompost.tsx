@@ -109,7 +109,7 @@ const RatioWasteCompost = () => {
                     id="datetime-local"
                     label="Date de début"
                     type="datetime-local"
-                    defaultValue="2022-05-24T00:01"
+                    defaultValue="2022-05-27T00:01"
                     sx={{ width: 300}}
                     InputLabelProps={{
                     shrink: true,
@@ -120,7 +120,7 @@ const RatioWasteCompost = () => {
                     id="datetime-local"
                     label="Date de fin"
                     type="datetime-local"
-                    defaultValue="2022-05-24T23:59"
+                    defaultValue="2022-06-27T23:59"
                     sx={{ width: 300}}
                     InputLabelProps={{
                     shrink: true,
