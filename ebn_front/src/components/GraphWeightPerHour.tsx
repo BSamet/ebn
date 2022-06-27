@@ -33,12 +33,10 @@ const GraphWeightPerHour = () =>{
         headers: {
             "Authorization": `Bearer ${sessionStorage.getItem('token')}`
         }}).then(res => {      
+           console.log(res.data);
            
             
                 res.data.map((history : HistoriqueClient)=>{ 
-                    
-                 
-                  
                     
                         if(history.typeDeDechet == "Biodéchets"){
                                 arrayBio.push(history)
