@@ -196,31 +196,16 @@ export function AgendaOrganisation(){
 
     function sendCollectorEtape() {
         let numberOfEtape = 0;
-        //heure matin
-        let h1am = 0;
-        let h2am = 8;
-        let m1am = 0;
-        let m2am = 0;
-        //heure aprem
-        let h1pm = 1;
-        let h2pm = 2;
-        let m1pm = 0;
-        let m2pm = 0;
-        //set Date
-        let date: string;
 
-        collectorEtape?.map((etape) => {
-            if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
-                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z";
-            } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){
-                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1pm + h2pm + ":" + m1pm + m2pm + "" + ":00.000Z";
-            }  
+        collectorEtape?.map((etape) => { 
+            console.log(numberOfEtape)
+
             const etapeToAdd = {
                 clientId: etape.Client.id,
                 collecteurId: Collector,
                 isCollected: false,
                 commentaire: "",
-                date: date,
+                date: iterat(etape.refDate, numberOfEtape, 37),
             }
                 axios
                 .post(HOST_BACK + "/etape", etapeToAdd, {
@@ -229,9 +214,6 @@ export function AgendaOrganisation(){
                     }
                 })
                 .then(response => { 
-                    console.log(etape.refDate)    
-                    console.log("Format: " + moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z")                
-                    numberOfEtape ++;
                     if(numberOfEtape == collectorEtape?.length){
                         setCollectorEtape([]);
                         setOpen(true)
@@ -243,41 +225,22 @@ export function AgendaOrganisation(){
                 })
                 .catch(error => {
                     console.log(error)
-                });
-                if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
-                    m1am += 2;
-                    if(m1am == 6){
-                        m1am = 0;
-                        h2am += 1;
-                    }
-                    if(h2am == 10){
-                        h2am = 0;
-                        h1am += 1;
-                    }
-                    if(h1am == 2 && h2am == 4){
-                        h1am = 0;
-                        h2am = 0;
-                    }
-                } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){
-                    m1pm += 2;
-                    if(m1pm == 6){
-                        m1pm = 0;
-                        h2pm += 1;
-                    }
-                    if(h2pm == 10){
-                        h2pm = 0;
-                        h1pm += 1;
-                    }
-                    if(h1pm == 2 && h2pm == 4){
-                        h1pm = 0;
-                        h2pm = 0;
-                    }
-                }  
+                });  
                 
+                numberOfEtape ++;
+
             })
-        
       }
-        
+
+      function iterat(date: Date, etapeNumber: number, interval: number){
+        let timeInterval = interval * etapeNumber;         
+        // for(let i = 0; i < etapeNumber; i ++){
+            const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
+            console.log(travelTime)  
+            return travelTime
+        // }
+
+            }   
     return (
         <>
             <div className="conteneur">
@@ -408,6 +371,18 @@ export function AgendaOrganisation(){
                                         ))}
                                     </TextField>
                                 </FormControl>
+                                <FormControl>
+                                    <h3>Intervale:</h3>
+                            <TextField
+                                sx={{ width: 90, mt: 0.5, ml: 0.5}}
+                                id="outlined-number"
+                                label="Minute"
+                                type="number"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                                 </FormControl>
                             </Grid>
                             <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
                                 <List dense component="div" role="list">
@@ -449,6 +424,8 @@ export function AgendaOrganisation(){
                             >
                                 Sauvegarder
                     </Button>
+       
+       
                 </Grid>
             </div>
             
