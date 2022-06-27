@@ -87,11 +87,12 @@ export class ClientService {
   }
 
   async findByUserMail(mail: string) {
-    return await this.clientRepository
+    let client = await this.clientRepository
         .createQueryBuilder('client')
         .innerJoinAndSelect('client.utilisateur', 'utilisateur')
         .where('utilisateur.mail = :mail', { mail })
         .getOne();
+    return client
   }
 
   async update(id: number, updateClientDto: UpdateClientDto) {
@@ -101,8 +102,6 @@ export class ClientService {
       adresse: updateClientDto.adresse,
     };
     const updatedClient = await this.clientRepository.update(id, client);
-    
-    
 
     const newClient = await this.clientRepository.findOne({
       where: {
@@ -115,8 +114,6 @@ export class ClientService {
       prenom: updateClientDto.prenom,
       telephone: updateClientDto.telephone,
     };
-  
-    
 
     const updateUser = await this.utilisateursService.update(
         newClient.utilisateur.id,
@@ -130,9 +127,7 @@ export class ClientService {
     const client = {
       clientvalide : updateClientDto.clientvalide
     };
-    const updatedClient = await this.clientRepository.update(id, client);
-   
-    
+    return await this.clientRepository.update(id, client);
   }
 
   remove(id: number) {

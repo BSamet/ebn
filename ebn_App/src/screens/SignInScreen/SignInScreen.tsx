@@ -47,12 +47,11 @@ const SignInScreen = () => {
   const login = () => {
     axios
       .post(HOST_BACK + '/utilisateurs/login', {
-        mail: mail,
+        mail: mail.trim(),
         password: password,
       })
       .then(async (res: {data: {access_token: string}}) => {
         const decode: any = jwt_decode(res.data.access_token);
-
         await AsyncStorage.setItem('role', decode.utilisateur.role);
         await AsyncStorage.setItem('prenom', decode.utilisateur.prenom);
         await AsyncStorage.setItem('nom', decode.utilisateur.nom);

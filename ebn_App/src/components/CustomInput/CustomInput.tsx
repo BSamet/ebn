@@ -18,6 +18,7 @@ const CustomInput = ({
     <View style={styles.container}>
       <TextInput
         placeholder={placeholder}
+        placeholderTextColor={"lightgrey"}
         style={styles.input}
         value={value}
         onChangeText={setValue}

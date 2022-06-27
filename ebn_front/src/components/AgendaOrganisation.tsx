@@ -40,14 +40,13 @@ interface etapesInterface {
     collecteurId: number;
 }
 
-export function AgendaOrganisation(){
+export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
     const [open, setOpen] = React.useState(false);
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
-    const [collectorEtape, setCollectorEtape]= useState<ramassageInterface[]>([]);
-    let [Collector, setCollector] = useState(1);
+    const [Collector, setCollector] = useState(1);
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
@@ -69,29 +68,25 @@ export function AgendaOrganisation(){
         }
     }, [collecteursList, fetchOnce]);
 
+    useEffect(() => {
+        setCollectorEtape(collectorEtape)
+        console.log(collectorEtape)
+    })
+
     function setEtapesArray() {
+        setFinalEtapeList([])
         axios.get(HOST_BACK + '/collect/date?date=' + date, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             } 
         }).then(ramassage =>{
                 console.log(ramassage.data)
-                ramassage.data.map((etape: ramassageInterface) => {
-                    let isAlreadyFetch = false;
-                    finalEtapeList.map((finalEtape) => {
-                        if(etape.toString() == finalEtape.toString()){
-                            isAlreadyFetch = true;
-                        }
-                    })
-                    if(isAlreadyFetch == false){
-                        setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
-                    }
+                ramassage.data.map((etape: ramassageInterface) => {                    
+                    setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 })
         }).catch((err) => {
             console.log(err)
         })
-        console.log(finalEtapeList)
-
     };
     
     function fillSelectOptions(){
@@ -136,19 +131,24 @@ export function AgendaOrganisation(){
     const handleAllRight = () => {
       if(finalEtapeList![0] == undefined){
       }else{
-          setCollectorEtape(finalEtapeList);
+          console.log('yo', finalEtapeList);
+          finalEtapeList.map(etape => {
+            setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
+            })          
           setFinalEtapeList([]);
         }
-      };
+      };      
     
     const handleCheckedRight = () => {
         for(let i = 0; i <= leftChecked.length; i++){
             finalEtapeList?.map((etape) => {   
                         if(etape.id == leftChecked[i]){
-                            let etapeIndex = finalEtapeList.indexOf(etape);
+                            const newFinalEtapeList = Array.from(finalEtapeList)
+                            let etapeIndex = newFinalEtapeList.indexOf(etape);
                             let checkedIndex = leftChecked.indexOf(leftChecked[i]);
-                            setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
-                            finalEtapeList?.splice(etapeIndex, 1);   
+                            setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
+                            newFinalEtapeList?.splice(etapeIndex, 1);  
+                            setFinalEtapeList(newFinalEtapeList)  
                             leftChecked.splice(checkedIndex, 1);
                         }
             })
@@ -157,12 +157,14 @@ export function AgendaOrganisation(){
 
     const handleCheckedLeft = () => {
         for(let i = 0; i <= rightChecked.length; i++){
-            collectorEtape?.map((etape) => {   
+            collectorEtape?.map((etape: ramassageInterface) => {   
                     if(etape.id == rightChecked[i]){
-                        let etapeIndex = collectorEtape.indexOf(etape);
+                        const newCollectorEtape = Array.from(collectorEtape)
+                        let etapeIndex = newCollectorEtape.indexOf(etape);
                         let checkedIndex = rightChecked.indexOf(rightChecked[i]);
                         setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
-                        collectorEtape?.splice(etapeIndex, 1);   
+                        newCollectorEtape?.splice(etapeIndex, 1); 
+                        setCollectorEtape(newCollectorEtape);  
                         rightChecked.splice(checkedIndex, 1);   
                     }
             })
@@ -173,7 +175,9 @@ export function AgendaOrganisation(){
         if(collectorEtape![0] == undefined){
 
         } else {
-            setFinalEtapeList(collectorEtape);
+            collectorEtape.map(etape => {
+                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
+            })
             setCollectorEtape([])
         }
     };
@@ -193,6 +197,23 @@ export function AgendaOrganisation(){
         })
     };
 
+    function moveEtapeUp(etape: any){
+        const newCollectorEtape = Array.from(collectorEtape)
+        const fromIndex = newCollectorEtape.indexOf(etape);
+        const toindex = fromIndex - 1;
+        const etapeSelect = newCollectorEtape.splice(fromIndex, 1)[0];
+        newCollectorEtape.splice(toindex, 0, etapeSelect);
+        setCollectorEtape(newCollectorEtape)
+    }
+
+    function moveEtapeDown(etape: any){
+        const newCollectorEtape = Array.from(collectorEtape)
+        const fromIndex = newCollectorEtape.indexOf(etape);
+        const toindex = fromIndex + 1;
+        const etapeSelect = newCollectorEtape.splice(fromIndex, 1)[0];
+        newCollectorEtape.splice(toindex, 0, etapeSelect);
+        setCollectorEtape(newCollectorEtape)
+    }
 
     function sendCollectorEtape() {
         let numberOfEtape = 0;
@@ -209,7 +230,7 @@ export function AgendaOrganisation(){
         //set Date
         let date: string;
 
-        collectorEtape?.map((etape) => {
+        collectorEtape.map((etape: { refDate: moment.MomentInput; Client: { id: any; }; isSubscribe: boolean; id: number; }) => {
             if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
                 date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z";
             } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){
@@ -415,24 +436,44 @@ export function AgendaOrganisation(){
                                     const labelId = `transfer-list-item-${etape.id}-label`;
                                     const date = etape.refDate;
                                     return (
-                                        <ListItem
+                                        <><ListItem
                                             key={etape.id}
                                             role="listitem"
                                             button
                                             onClick={handleRightToggle(etape.id)}
-                                            >
+                                        >
                                             <ListItemIcon>
                                                 <Checkbox
-                                                checked={rightChecked.indexOf(etape.id) !== -1}
-                                                tabIndex={-1}
-                                                disableRipple
-                                                inputProps={{
-                                                    'aria-labelledby': labelId,
-                                                }}
-                                                />
+                                                    checked={rightChecked.indexOf(etape.id) !== -1}
+                                                    tabIndex={-1}
+                                                    disableRipple
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId,
+                                                    }} />
                                             </ListItemIcon>
                                             <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
                                         </ListItem>
+                                        <Grid container direction="row" alignItems="center" justifyContent="center">
+                                                <Button
+                                                    sx={{ height: 20, mx: 0.2 }}
+                                                    variant="outlined"
+                                                    onClick={() => {moveEtapeUp(etape)}}
+                                                    disabled={collectorEtape.indexOf(etape) === 0}
+
+                                                    aria-label="move one up"
+                                                >
+                                                    ↑
+                                                </Button><Button
+                                                    sx={{ height: 20, mx: 0.2 }}
+                                                    variant="outlined"
+                                                    onClick={() => {moveEtapeDown(etape)}}
+                                                    disabled={collectorEtape.indexOf(etape) === collectorEtape.length - 1}
+
+                                                    aria-label="move one down"
+                                                >
+                                                    ↓
+                                                </Button>
+                                            </Grid></>
                                     );
                                     })}
                                     <ListItem />
@@ -445,7 +486,7 @@ export function AgendaOrganisation(){
                                 variant="outlined"
                                 size="medium"
                                 onClick={sendCollectorEtape}
-                                aria-label="move all left"
+                                aria-label="save all "
                             >
                                 Sauvegarder
                     </Button>

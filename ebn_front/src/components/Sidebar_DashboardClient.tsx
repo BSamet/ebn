@@ -37,6 +37,7 @@ const SidebarDashboardClient = ({ setSelectNav, setSelectRight }: any) => {
     },
   };
 
+<<<<<<< HEAD
   if (clientvalide == "true"){
     return (
       <>
@@ -55,6 +56,24 @@ const SidebarDashboardClient = ({ setSelectNav, setSelectRight }: any) => {
           {/* logo */}
           <div className="logo">
             <img src={Logo} alt="logo" />
+=======
+        <div className="menu">
+          {SidebarClientData.map((item, index) => {
+            return (
+              <div
+                className={selected === index ? "menuItem active" : "menuItem"}
+                key={index}
+                onClick={() => onClickOnNav(index, item.heading)}
+              >
+                <item.icon />
+                <span>{item.heading}</span>
+              </div>
+            );
+          })}
+          <div className="menuItem" onClick={() => logOut()}>
+            <UilSignOutAlt />
+            <span>Déconnexion</span>
+>>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
           </div>
   
           <div className="menu">

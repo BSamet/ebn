@@ -7,7 +7,7 @@
     "jsx": "react-native",
     "lib": [
       "es2017",
-      "dom"
+      "dom",
     ],
     "moduleResolution": "node",
     "noEmit": true,
@@ -20,10 +20,4 @@
     "metro.config.js",
     "jest.config.js"
   ],
-  // "extends": "expo/tsconfig.base",
-  // "compilerOptions": {
-  //   "strict": true
-  // },
-  // "typeRoots": ["./types"]
-  // <------ you need to add this
 }

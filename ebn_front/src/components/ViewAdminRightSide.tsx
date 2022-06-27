@@ -5,9 +5,10 @@ import RightSideQrcode from './RightSideQrcode';
 interface ViewAdminRightSideInterface {
     selectRight: string;
     selectConteneurId : string;
+    collectorEtape: any;
 }
 
-const ViewAdminRightSide = ({selectRight, selectConteneurId}: ViewAdminRightSideInterface) => {
+const ViewAdminRightSide = ({selectRight, selectConteneurId, collectorEtape}: ViewAdminRightSideInterface) => {
     
     if (selectRight === 'Conteneurs'){
         return (
@@ -15,7 +16,7 @@ const ViewAdminRightSide = ({selectRight, selectConteneurId}: ViewAdminRightSide
         )
     } else {
         return(
-            <Maps />
+            <Maps collectorEtape={collectorEtape} />
         )
     }
 };

@@ -1,14 +1,28 @@
+<<<<<<< HEAD
 import { TextField } from '@mui/material';
 import axios from 'axios';
 import moment from 'moment';
+=======
+import axios from 'axios';
+>>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from "react-apexcharts";
 import { HOST_BACK } from '../environment/environment';
 
+<<<<<<< HEAD
  interface HistoriqueClient { 
     date: number;
     typeDeDechet: string;
     poids: string;
+=======
+ interface HistoriqueClient {
+    id: number;
+    typeAction: string;
+    date: number;
+    typeDeDechet: string;
+    commentaire: string;
+    poids: number;
+>>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
   }
 
 
@@ -17,6 +31,7 @@ const RatioWasteCompost = () => {
     let countBio : number = 0;
     const [nbMarcCafé, setMarcCafé] = useState(Number);
     let countCafé : number = 0;
+<<<<<<< HEAD
     let realHistoryPoids : number;
     let startDateNotFormated = new Date()
     let endDateNotFormated = new Date().setDate(startDateNotFormated.getDate()-31)
@@ -26,11 +41,17 @@ const RatioWasteCompost = () => {
     
     useEffect(() => {
         axios.get(HOST_BACK + '/historique/date/' + startDate +'/'+  endDateSend   , {
+=======
+    
+    useEffect(() => {
+        axios.get(HOST_BACK + '/historique/', {
+>>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
                 res.data.map((history : HistoriqueClient)=>{                  
                      if(history.typeDeDechet == "Biodéchets"){
+<<<<<<< HEAD
                         realHistoryPoids= parseInt(history.poids)
                         countBio+= realHistoryPoids
                       }
@@ -66,6 +87,15 @@ const RatioWasteCompost = () => {
                       else{
                         realHistoryPoids= parseInt(history.poids)
                         countCafé+= realHistoryPoids
+=======
+                        
+                        countBio+= history.poids 
+                        
+                      }
+                      else{
+                          countCafé += history.poids
+
+>>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
                       }   
                       setNbBioDechet(countBio) 
                       setMarcCafé(countCafé)
@@ -73,7 +103,11 @@ const RatioWasteCompost = () => {
                   })
     
         })
+<<<<<<< HEAD
     }
+=======
+    }, [])
+>>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
 
  
     const state = {
@@ -104,6 +138,7 @@ const RatioWasteCompost = () => {
     return (
         <div className="charts">
             <h4>Ratio Déchets/Composte</h4>
+<<<<<<< HEAD
                 <ReactApexChart options={state.options} series={state.series} type="donut" />
                 <TextField
                     id="datetime-local"
@@ -129,6 +164,9 @@ const RatioWasteCompost = () => {
                     />
 
                <button onClick={validateFilter}> Valider</button>
+=======
+            <ReactApexChart options={state.options} series={state.series} type="donut" />
+>>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
         </div>
     );
 };

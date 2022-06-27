@@ -6,6 +6,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  .emptyCollect {
+    color: red;
+    font-weight: bold;
+  }
 }
 
 .scroll {
@@ -34,11 +38,12 @@
     margin-top: 2rem;
   }
   p {
-    color: #788097;
+    color: #ffffff;
     font-size: 1rem;
     text-align: center;
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
+    font-weight: lighter;
   }
 }
 
@@ -62,11 +67,12 @@
   }
 
   p {
-    color: #788097;
+    color: #ffffff;
     font-size: 1rem;
     text-align: center;
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
+    font-weight: lighter;
   }
 }
 
@@ -98,7 +104,6 @@
   border-radius: 3rem;
   font-size: 20px;
   color: white;
-  font-weight: bold;
   text-align: center;
 
   h4 {
@@ -106,12 +111,10 @@
   }
 
   p {
-    color: #788097;
+    color: #ffffff;
     font-size: 1rem;
     text-align: center;
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
   }
-
-  
 }
