@@ -5,6 +5,20 @@ import ViewAdminRightSide from "../components/ViewAdminRightSide";
 import { useNavigate } from "react-router-dom";
 import { Button, Snackbar } from "@mui/material";
 
+interface ramassageInterface {
+  id: number;
+  refDate: Date;
+  Client: {
+      id: number;
+      adresse: string;
+      Utilisateur:{
+          nom: string;
+          prenom: string;
+      }
+  };
+  isSubscribe: boolean;
+}
+
 const DashboardAdmin = () => {
   const navigate = useNavigate();
 
@@ -18,6 +32,12 @@ const DashboardAdmin = () => {
   const [selectClientId, setSelectClientId] = useState("");
   //passage de l'ID Collecteur de la liste centrale vers les formulaires
   const [selectCollecteurId, setSelectCollecteurId] = useState("");
+
+  const [collectorEtape, setCollectorEtape]= useState([]);
+
+  console.log(collectorEtape);
+  
+
 
   useEffect(() => {
     const sessionExp: any = sessionStorage.getItem("token_exp");
@@ -56,10 +76,13 @@ const DashboardAdmin = () => {
           selectClientId={selectClientId}
           setSelectCollecteurId={setSelectCollecteurId}
           selectCollecteurId={selectCollecteurId}
+          setCollectorEtape={setCollectorEtape}
+          collectorEtape={collectorEtape}
         />
         <ViewAdminRightSide
           selectRight={selectRight}
           selectConteneurId={selectConteneurId}
+          collectorEtape={collectorEtape}
         />
   
       </div>

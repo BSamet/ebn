@@ -150,7 +150,7 @@ export class CollectService {
                 while (true) {
                     try {
                         let obj = intervalSubscribe.next();
-                        // Si le paramètre date existe on demande à nous retourner les dates qui sont égale au paramètre et uniquement ceux qui ne sont pas existant dans la table étape
+                        // Si le paramètre date existe on demande à nous retourner les dates qui sont égaux au paramètre et uniquement ceux qui ne sont pas existant dans la table étape
                         if (date) {
                             if (this.dateEquals(obj.value, date) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id)) {
                                 myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client))

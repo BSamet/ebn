@@ -4,7 +4,12 @@ import '../styles/component/_AgendaDash.scss';
 import AgendaOrganisation from "./AgendaOrganisation";
 import DashboardHistoryCollecteur from "./DashboardHistoryCollecteur";
 
-export function AgendaDash(){
+interface AgendaDashInterface{
+    setCollectorEtape: any,
+    collectorEtape: any,
+}
+
+export function AgendaDash({setCollectorEtape, collectorEtape}: AgendaDashInterface){
     const[actionSelected, setActionSelected] = useState('');
 
     function setOrganisation(){
@@ -18,7 +23,7 @@ export function AgendaDash(){
     switch(actionSelected){
         case 'Organiser':
             return(
-                <AgendaOrganisation />   
+                <AgendaOrganisation setCollectorEtape={setCollectorEtape} collectorEtape={collectorEtape} />   
             )
         case 'Consulter':
             return(

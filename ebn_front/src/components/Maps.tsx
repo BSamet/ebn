@@ -1,121 +1,75 @@
-// export default Maps;
-/*
- * Copyright 2021 Google LLC. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import * as React from "react";
-// import { createRoot } from "react-dom/client";
-import { Wrapper, Status } from "@googlemaps/react-wrapper";
-import Map from "./Map"
-import Marker from "./Marker"
+import { useEffect, useRef, useState } from "react";
+import maplibregl, { Marker, Popup } from 'maplibre-gl'
+import axios from "axios";
 
-const render = (status: Status) => {
-  return <h1>{status}</h1>;
-};
+const Maps: React.VFC = ({collectorEtape}: any) => {
 
-const Maps: React.VFC = () => {
-  const [clicks, setClicks] = React.useState<google.maps.LatLng[]>([]);
-  const [zoom, setZoom] = React.useState(15); // initial zoom
-  const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
-    lat: 47.74708633019698,
-    lng: 7.3388671875,
-  });
+  const mapContainer = useRef();
+  const [map, setMap] = useState<maplibregl.Map>();
+  const [lng] = useState(7.3388671875);
+  const [lat] = useState(47.74708633019698);
+  const [zoom] = useState(14);
+  const [API_KEY] = useState('z9i6eEaZSiiAANqyLUP4');
+  const [markers, setMarkers]= useState<Marker[]>([]);
+  const [fetchOnce, setFetchOnce] = useState(false);
 
-  const onClick = (e: google.maps.MapMouseEvent) => {
-    // avoid directly mutating state
-    setClicks([...clicks, e.latLng!]);
-  };
+  useEffect(() => {
+    if (map) return; //stops map from intializing more than once
+    const mapToAdd = new maplibregl.Map({
+      container: mapContainer.current,
+      style: `https://api.maptiler.com/maps/streets/style.json?key=${API_KEY}`,
+      center: [lng, lat],
+      zoom: zoom
+    });
+    setMap(mapToAdd)
+  }, [map]);
 
-  const onIdle = (m: google.maps.Map) => {
-    console.log("onIdle");
-    setZoom(m.getZoom()!);
-    setCenter(m.getCenter()!.toJSON());
-  };
+  useEffect(() => {
+      markers.map(marker => {
+          marker.remove()        
+      })
+      setMarkers([])
+      //On Parcours la liste d'etape du collecteur
+      collectorEtape.map((etape: any) => {
+        //On récupère l'adresse du client stockée en base de donnée que l'on stocke dans une variable
+        let adress = etape.Client.adresse;
+        //On formate l'adresse récupérée pour remplacer les espaces par des '+'
+        let adressFormat = adress.replaceAll(" ", "+")
+        //Requête vers l'API gouvernementale
+        axios.get("https://api-adresse.data.gouv.fr/search/?q=" + adressFormat)
+        .then(coords => {
+          //On stock la longitude et la latitude dans une variable séparée
+          let lng = coords.data.features[0].geometry.coordinates[0];
+          let lat = coords.data.features[0].geometry.coordinates[1];      
+          //Création du Marker sur la carte
+          const mkStyle = document.createElement('div');
+          mkStyle.className = "marker";
+          mkStyle.innerHTML =(collectorEtape.indexOf(etape) + 1);
+          mkStyle.style.color = "black";
+          mkStyle.style.fontSize = "3em";
+          mkStyle.style.textAlign = "center"
 
-  const form = (
-    <div
-      style={{
-        padding: "1rem",
-        flexBasis: "250px",
-        height: "100%",
-        overflow: "auto",
-      }}
-    >
-      <label htmlFor="zoom">Zoom</label>
-      <input
-        type="number"
-        id="zoom"
-        name="zoom"
-        value={zoom}
-        onChange={(event) => setZoom(Number(event.target.value))}
-      />
-      <br />
-      <label htmlFor="lat">Latitude</label>
-      <input
-        type="number"
-        id="lat"
-        name="lat"
-        value={center.lat}
-        onChange={(event) =>
-          setCenter({ ...center, lat: Number(event.target.value) })
-        }
-      />
-      <br />
-      <label htmlFor="lng">Longitude</label>
-      <input
-        type="number"
-        id="lng"
-        name="lng"
-        value={center.lng}
-        onChange={(event) =>
-          setCenter({ ...center, lng: Number(event.target.value) })
-        }
-      />
-      <h3>{clicks.length === 0 ? "Click on map to add markers" : "Clicks"}</h3>
-      {clicks.map((latLng, i) => (
-        <pre key={i}>{JSON.stringify(latLng.toJSON(), null, 2)}</pre>
-      ))}
-      <button onClick={() => setClicks([])}>Clear</button>
-    </div>
-  );
+          let marker = new Marker(mkStyle, {anchor: "bottom"})
+            .setLngLat([lng, lat])
+          setMarkers(markers => [...markers, marker])             
+        })       
+      })               
+    }, [collectorEtape]
+  )  
 
-  return (
-    <>
-    <div>
-      <h1>Carte</h1>
-    <div style={{ display: "flex", height: "83%", width: "100%" }}>
-      <Wrapper apiKey={"AIzaSyDaZBte_ogmCrXVJ4cAy5E1bN5lQu8wnIw"} render={render}>
-        <Map
-          center={center}
-          onClick={onClick}
-          onIdle={onIdle}
-          zoom={zoom}
-          style={{ flexGrow: "1", height: "100%", marginLeft: '-10px' }}
-        >
-          {clicks.map((latLng, i) => (
-            <Marker key={i} position={latLng} />
-          ))}
-        </Map>
-      </Wrapper>
-      {/* Basic form for controlling center and zoom of map. */}
-    </div><div>
-        {/* {form} */}
+  useEffect(() => {
+    markers.map(marker => {
+      marker.addTo(map)
+    })
+  }, [markers])
+  
+        
+    return(
+      <div className="map-wrap">
+        <div ref={mapContainer} className="map" />
       </div>
-      </div>
-    </>
-  );
+  )
 };
 
 export default Maps;

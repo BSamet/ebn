@@ -20,8 +20,7 @@ const DashboardClient = () => {
   useEffect(() => {
     const sessionExp: any = sessionStorage.getItem("token_exp");
     const role: any = sessionStorage.getItem("role");
-   
-    
+
       if (!sessionStorage.getItem("role")) {
         navigate("/");
       } else if (role !== "Client") {

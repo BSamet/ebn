@@ -68,7 +68,6 @@ const SidebarDashboardClient = ({ setSelectNav, setSelectRight }: any) => {
               </div>
             );
           })}
-          {/* signoutIcon */}
           <div className="menuItem" onClick={() => logOut()}>
             <UilSignOutAlt />
             <span>Déconnexion</span>

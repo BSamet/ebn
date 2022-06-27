@@ -17,7 +17,7 @@ import {Card, Divider} from 'react-native-elements';
 import {HOST_BACK} from '../../../environment/environment';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/images/logo.png';
-import {DataTable} from 'react-native-paper';
+import {ActivityIndicator, DataTable} from 'react-native-paper';
 import {RefreshControl} from 'react-native';
 
 const wait = timeout => {
@@ -35,11 +35,10 @@ export interface HistoriqueClient {
 
 const HistoriqueClient = () => {
   const [myHistorique, setMyHistorique] = useState<HistoriqueClient[]>();
-  const [fetchOnce, setFetchOnce] = useState(true);
-  const [clientToken, setClienToken] = useState<string | null>('');
-  const [myClientId, setClientId] = useState<string | null>('');
-  const [clientNom, setClientNom] = useState<string | null>('');
-  const [clientPrenom, setClientPrenom] = useState<string | null>('');
+  const [clientToken, setClienToken] = useState<string | null>();
+  const [myClientId, setClientId] = useState<string | null>();
+  const [clientLastname, setClientLastname] = useState<string | null>();
+  const [clientName, setClientName] = useState<string | null>();
   const [modalHistorique, setModalHistorique] = useState(false);
   const [infoHistorique, setInfoHistorique] = useState<HistoriqueClient>();
   //refresh pages
@@ -51,19 +50,6 @@ const HistoriqueClient = () => {
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
-  AsyncStorage.getItem('token').then(value => {
-    setClienToken(value);
-  });
-  AsyncStorage.getItem('id').then(value => {
-    setClientId(value);
-  });
-  AsyncStorage.getItem('nom').then(value => {
-    setClientNom(value);
-  });
-  AsyncStorage.getItem('prenom').then(value => {
-    setClientPrenom(value);
-  });
-
   const fetchHistorique = () => {
     axios
       .get(HOST_BACK + '/etape/client/' + myClientId, {
@@ -74,15 +60,29 @@ const HistoriqueClient = () => {
       .then(res => {
         // recupération historique
         setMyHistorique(res.data.historique);
-        setFetchOnce(false);
       });
   };
 
   useEffect(() => {
-    if (fetchOnce) {
+    AsyncStorage.getItem('token').then(tokenValue => {
+      setClienToken(tokenValue);
+      AsyncStorage.getItem('id').then(idValue => {
+        setClientId(idValue);
+        AsyncStorage.getItem('nom').then(lastnameValue => {
+          setClientLastname(lastnameValue);
+          AsyncStorage.getItem('prenom').then(nameValue => {
+            setClientName(nameValue);
+          });
+        });
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (clientToken != null && myClientId != null) {
       fetchHistorique();
     }
-  }, [myHistorique, fetchOnce, clientToken, myClientId]);
+  }, [clientToken, myClientId]);
 
   const {height} = useWindowDimensions();
 
@@ -115,7 +115,7 @@ const HistoriqueClient = () => {
               resizeMode="contain"
             />
             <Text style={styles.topText}>
-              Bonjour, {clientNom} {clientPrenom}
+              Bonjour, {clientLastname} {clientName}
             </Text>
           </LinearGradient>
         </View>
@@ -130,27 +130,34 @@ const HistoriqueClient = () => {
           orientation="horizontal"
         />
 
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
-            <DataTable.Title style={{flex: 1}}>Type de déchets</DataTable.Title>
-            <DataTable.Title>poids</DataTable.Title>
-          </DataTable.Header>
-
-          {myHistorique?.map((hist, index) => (
-            <Pressable onPress={() => openModalHistorique(hist)}>
+        {myHistorique != null &&
+            <DataTable>
               <DataTable.Header>
-                <DataTable.Cell style={{flex: 1.5}}>
-                  {moment(hist.date).format('DD.MM.YYYY à HH[h] mm')}
-                </DataTable.Cell>
-                <DataTable.Cell style={{flex: 1}}>
-                  {hist.typeDeDechet}
-                </DataTable.Cell>
-                <DataTable.Cell>{hist.poids} kg</DataTable.Cell>
+                <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
+                <DataTable.Title style={{flex: 1}}>Type de déchets</DataTable.Title>
+                <DataTable.Title>poids</DataTable.Title>
               </DataTable.Header>
-            </Pressable>
-          ))}
-        </DataTable>
+
+              {myHistorique?.map((hist, index) => (
+                  <Pressable onPress={() => openModalHistorique(hist)} key={index}>
+                    <DataTable.Header>
+                      <DataTable.Cell style={{flex: 1.5}}>
+                        {moment(hist.date).format('DD.MM.YYYY à HH[h] mm')}
+                      </DataTable.Cell>
+                      <DataTable.Cell style={{flex: 1}}>
+                        {hist.typeDeDechet}
+                      </DataTable.Cell>
+                      <DataTable.Cell>{hist.poids} kg</DataTable.Cell>
+                    </DataTable.Header>
+                  </Pressable>
+              ))}
+            </DataTable>
+        }
+        {myHistorique === null &&
+            <View style={styles.loader}>
+              <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
+            </View>
+        }
 
         <Modal
           animationType="slide"
@@ -189,6 +196,12 @@ const HistoriqueClient = () => {
   );
 };
 const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+    height: 250,
+  },
   historiqueTitleContainer: {
     backgroundColor: 'white',
     display: 'flex',
