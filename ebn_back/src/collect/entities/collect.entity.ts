@@ -17,7 +17,7 @@ export class Collect {
     @JoinTable()
     client: Client;
 
-    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.collect)
+    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.collect, {eager: true})
     @JoinTable()
     typeDechet: TypeDechet;
 }

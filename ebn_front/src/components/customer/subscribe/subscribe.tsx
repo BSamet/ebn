@@ -19,15 +19,21 @@ const hours = [
 
 interface subscribeProps {
     client: {
+        collect: [
+            {
+                refDate: string,
+                cronExpression: string
+                typeDechet: {
+                    id: number,
+                    typeDechets: string
+                }
+            }
+        ];
         conteneur: [
             {
                 capaciteMax: number,
                 id: number,
                 isAvailable: boolean,
-                typeDechet: {
-                    id: number,
-                    typeDechets: string
-                }
             }
         ];
     };
@@ -38,6 +44,7 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
     const clientId = sessionStorage.getItem("id");
     const [date, setDate] = useState('');
     const [hour, setHour] = React.useState('');
+    const [typeOfWaste, setTypeOfWaste] = React.useState('');
     const [selectedDay, setSelectedDay] = useState([
         {id: 1, day: 'Lundi', status: false},
         {id: 2, day: 'Mardi', status: false},
@@ -97,9 +104,16 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
             setErrorSubscribe('Veuillez sélectionner une date !')
         } else if (hour === '') {
             setErrorSubscribe('Veuillez sélectionner une tranche horaire !')
+        } else if (typeOfWaste === '') {
+            setErrorSubscribe('Veuillez sélectionner un type de déchet !')
         } else if (dayToPost.length === 0) {
             setErrorSubscribe('Veuillez sélectionner au moins un jour !')
         } else {
+            client.collect.map((collect, index) => {
+                if(collect.refDate === date + hour && collect.typeDechet.typeDechets === typeOfWaste) {
+                    setErrorSubscribe('Vous avez déjà un abonnement à cette date en cours !')
+                }
+            })
             setErrorSubscribe('')
             if (!confirm) {
                 setTimePeriod()
@@ -159,6 +173,7 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                         <FormControl>
                             <h3>Sélectionner une date:</h3>
                             <TextField
+                                disabled={confirm}
                                 id="datetime-local"
                                 label="Date"
                                 type="date"
@@ -177,6 +192,7 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                         <FormControl>
                             <h3>Sélectionner une tranche horaire:</h3>
                             <TextField
+                                disabled={confirm}
                                 sx={{width: 300, mt: 0.5}}
                                 id="select"
                                 select
@@ -185,6 +201,28 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                             >
                                 {hours.map((hour) => (
                                     <MenuItem key={hour.value} value={hour.value}>{hour.label}</MenuItem>
+                                ))}
+                            </TextField>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={5} justifyContent="center" alignItems="center">
+                    <Grid item>
+                        <FormControl>
+                            <h3>Sélectionner un type de déchets :</h3>
+                            <TextField
+                                disabled={confirm}
+                                sx={{width: 300, mt: 0.5}}
+                                id="select"
+                                select
+                                label="Type de déchet"
+                                onChange={(typeOfWaste) => {
+                                    setTypeOfWaste(typeOfWaste.target.value);
+                                }}
+                            >
+                                {client.conteneur.map((conteneur, index) => (
+                                    <MenuItem key={index}
+                                              value={conteneur.typeDechet.typeDechets}>{conteneur.typeDechet.typeDechets}</MenuItem>
                                 ))}
                             </TextField>
                         </FormControl>
@@ -199,6 +237,7 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                               }}>
                             <p style={day.status ? {color: "#2e8b57"} : {color: "black"}}>{day.day}</p>
                             <Checkbox
+                                disabled={confirm}
                                 sx={{
                                     color: "black",
                                     '&.Mui-checked': {
@@ -211,14 +250,14 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                     ))}
                 </Grid>
                 {confirm &&
-                <Grid container justifyContent="center" alignItems="center" marginTop={2}>
-                    Vous allez souscrire à un abonnement qui va démarrer
-                    le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
-                    {selectedDay.filter((checkDay) => checkDay.status).map(day =>
-                        ' le ' + day.day.toLocaleLowerCase() + ' ' + period
-                    ).join(',')}
-                    . Êtes-vous sûr ?
-                </Grid>
+                    <Grid container justifyContent="center" alignItems="center" marginTop={2}>
+                        Vous allez souscrire à un abonnement qui va démarrer
+                        le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
+                        {selectedDay.filter((checkDay) => checkDay.status).map(day =>
+                            ' le ' + day.day.toLocaleLowerCase() + ' ' + period
+                        ).join(',')}
+                        . Êtes-vous sûr ?
+                    </Grid>
                 }
                 <Grid container justifyContent="center" alignItems="center" marginTop={2}
                       className="subscribeContainer__error">
@@ -261,7 +300,16 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
             </div>
         );
     } else {
-        <div>Vous n'avez pas de conteneur</div>
+        return (
+            <div className="subscribeContainer">
+                <h1>Souscrire a un abonnement</h1>
+                <Grid container spacing={5} justifyContent="center" alignItems="center">
+                    <Grid item>
+                        <h3>Vous n'avez aucun seau de disponible, veuilez contacter le support.</h3>
+                    </Grid>
+                </Grid>
+            </div>
+        )
     }
 };
 

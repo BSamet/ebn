@@ -26,6 +26,10 @@ interface clientInterface {
             "id": number,
             "refDate": Date
             "cronExpression": string
+            typeDechet:
+                {
+                    typeDechets: string;
+                }
         }
     ];
     typeDechet: [
