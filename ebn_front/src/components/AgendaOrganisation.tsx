@@ -45,7 +45,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
     const [open, setOpen] = React.useState(false);
-    const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
+    const [finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
     const [Collector, setCollector] = useState(1);
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
@@ -70,7 +70,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
 
     useEffect(() => {
         setCollectorEtape(collectorEtape)
-        console.log(collectorEtape)
     })
 
     function setEtapesArray() {
@@ -131,7 +130,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const handleAllRight = () => {
       if(finalEtapeList![0] == undefined){
       }else{
-          console.log('yo', finalEtapeList);
           finalEtapeList.map(etape => {
             setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
             })          
@@ -140,40 +138,41 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
       };      
     
     const handleCheckedRight = () => {
-        for(let i = 0; i <= leftChecked.length; i++){
+        leftChecked.sort((a, b) => a - b )
+        let newFinalEtapeList = Array.from(finalEtapeList)
+        for(let i = 0; i < leftChecked.length; i++){
             finalEtapeList?.map((etape) => {   
-                        if(etape.id == leftChecked[i]){
-                            const newFinalEtapeList = Array.from(finalEtapeList)
-                            let etapeIndex = newFinalEtapeList.indexOf(etape);
-                            let checkedIndex = leftChecked.indexOf(leftChecked[i]);
-                            setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
-                            newFinalEtapeList?.splice(etapeIndex, 1);  
-                            setFinalEtapeList(newFinalEtapeList)  
-                            leftChecked.splice(checkedIndex, 1);
-                        }
+                if(etape.id == leftChecked[i]){
+                    let etapeIndex = newFinalEtapeList.indexOf(etape);
+                    let checkedIndex = leftChecked.indexOf(leftChecked[i]);
+                    newFinalEtapeList?.splice(etapeIndex, 1);
+                    leftChecked.splice(checkedIndex, 1);
+                    setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
+                }
             })
         }
+        setFinalEtapeList(newFinalEtapeList);
     };
 
     const handleCheckedLeft = () => {
-        for(let i = 0; i <= rightChecked.length; i++){
+        rightChecked.sort((a, b) => a - b )
+        let newCollectorEtape = Array.from(collectorEtape)
+        for(let i = 0; i < rightChecked.length; i++){
             collectorEtape?.map((etape: ramassageInterface) => {   
-                    if(etape.id == rightChecked[i]){
-                        const newCollectorEtape = Array.from(collectorEtape)
-                        let etapeIndex = newCollectorEtape.indexOf(etape);
-                        let checkedIndex = rightChecked.indexOf(rightChecked[i]);
-                        setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
-                        newCollectorEtape?.splice(etapeIndex, 1); 
-                        setCollectorEtape(newCollectorEtape);  
-                        rightChecked.splice(checkedIndex, 1);   
-                    }
+                if(etape.id == rightChecked[i]){
+                    let etapeIndex = newCollectorEtape.indexOf(etape);
+                    let checkedIndex = rightChecked.indexOf(rightChecked[i]);
+                    newCollectorEtape?.splice(etapeIndex, 1); 
+                    rightChecked.splice(checkedIndex, 1);   
+                    setFinalEtapeList((finalEtapeList: ramassageInterface[]) => [...finalEtapeList, etape]);
+                }
             })
         }
-      };
+        setCollectorEtape(newCollectorEtape);  
+    };
     
     const handleAllLeft = () => {
         if(collectorEtape![0] == undefined){
-
         } else {
             collectorEtape.map(etape => {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
@@ -345,7 +344,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                     return (
                                         
                                         <ListItem
-                                            key={etape.id}
+                                            // key={etape.id}
                                             role="listitem"
                                             button
                                             onClick={handleLeftToggle(etape.id)}
@@ -437,7 +436,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                     const date = etape.refDate;
                                     return (
                                         <><ListItem
-                                            key={etape.id}
+                                            // key={etape.id}
                                             role="listitem"
                                             button
                                             onClick={handleRightToggle(etape.id)}
