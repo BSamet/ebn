@@ -6,6 +6,7 @@ import {Repository} from "typeorm";
 import {Collect} from "./entities/collect.entity";
 import {Client} from "../client/entities/client.entity"
 import {Etape} from "../etape/entities/etape.entity";
+import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
 
 const parser = require('cron-parser');
 
@@ -32,6 +33,8 @@ export class CollectService {
         private readonly collectRepository: Repository<Collect>,
         @InjectRepository(Etape)
         private readonly etapeRepository: Repository<Etape>,
+        @InjectRepository(Client)
+        private readonly clientRepository: Repository<Client>,
     ) {
     }
 
@@ -51,7 +54,32 @@ export class CollectService {
         collect.client = Object.assign(new Client(), {
             id: createCollectDto.clientId,
         });
-        return this.collectRepository.save(collect);
+        collect.typeDechet = Object.assign(new TypeDechet(), {
+            id: createCollectDto.typeDechetId,
+        });
+        const created = await this.collectRepository.save(collect);
+
+        const checkClientType = await this.clientRepository
+            .createQueryBuilder('client')
+            .leftJoinAndSelect('client.typeDechet', 'typeDechet')
+            .where('typeDechet.id = :id', {id: createCollectDto.typeDechetId})
+            .getOne();
+
+        if (checkClientType === null){
+            await this.clientRepository
+                .createQueryBuilder()
+                .relation(Client, "typeDechet")
+                .of(Client)
+                .add(createCollectDto.typeDechetId);
+        }
+
+        const collectId = created.id;
+
+        return this.collectRepository
+            .createQueryBuilder('collect')
+            .leftJoinAndSelect('collect.typeDechet', 'typeDechet')
+            .where("collect.id = :id", {id: collectId})
+            .getOne();
     }
 
     findAll() {

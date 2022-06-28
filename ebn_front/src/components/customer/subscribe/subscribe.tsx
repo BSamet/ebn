@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, Button, Checkbox, FormControl, Grid, MenuItem, Snackbar, TextField} from "@mui/material";
+import {Alert, Button, Checkbox, FormControl, Grid, MenuItem, Snackbar, TextField, Menu} from "@mui/material";
 import moment from "moment";
 import 'moment/locale/fr';
 import axios from "axios";
@@ -36,132 +36,171 @@ interface subscribeProps {
                 isAvailable: boolean,
             }
         ];
+        typeDechet: [
+            {
+                id: number
+            }
+        ]
     };
     setClient: any;
+    allTypeOfWaste: [
+        {
+            id: number;
+            typeDechets: string;
+        }
+    ]
 }
 
-const Subscribe = ({client, setClient}: subscribeProps) => {
-    const clientId = sessionStorage.getItem("id");
-    const [date, setDate] = useState('');
-    const [hour, setHour] = React.useState('');
-    const [typeOfWaste, setTypeOfWaste] = React.useState('');
-    const [selectedDay, setSelectedDay] = useState([
-        {id: 1, day: 'Lundi', status: false},
-        {id: 2, day: 'Mardi', status: false},
-        {id: 3, day: 'Mercredi', status: false},
-        {id: 4, day: 'Jeudi', status: false},
-        {id: 5, day: 'Vendredi', status: false},
-    ]);
-    const [open, setOpen] = React.useState(false);
-    const [confirm, setConfirm] = useState(false);
-    const [period, setPeriod] = React.useState('');
-    const [errorSubscribe, setErrorSubscribe] = useState<string>();
-    const [sendMessage, setSendMessage] = useState('');
+const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
+        const clientId = sessionStorage.getItem("id");
+        const [date, setDate] = useState('');
+        const [hour, setHour] = React.useState('');
+        const [typeOfWaste, setTypeOfWaste] = React.useState<number>();
+        const [selectedDay, setSelectedDay] = useState([
+            {id: 1, day: 'Lundi', status: false},
+            {id: 2, day: 'Mardi', status: false},
+            {id: 3, day: 'Mercredi', status: false},
+            {id: 4, day: 'Jeudi', status: false},
+            {id: 5, day: 'Vendredi', status: false},
+        ]);
+        const [open, setOpen] = React.useState(false);
+        const [confirm, setConfirm] = useState(false);
+        const [period, setPeriod] = React.useState('');
+        const [errorSubscribe, setErrorSubscribe] = useState<string>();
+        const [sendMessage, setSendMessage] = useState('');
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setHour(event.target.value);
-    };
-    const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
-
-    const setTimePeriod = () => {
-        if (hour == "T08:00:00.000Z") {
-            setPeriod("matin");
-        } else if (hour == "T12:00:00.000Z") {
-            setPeriod("après-midi");
-        } else {
-            setPeriod("Aucune tranche horaire sélectionnée")
-        }
-    }
-
-    const selectDayForChecked = (dayNumber: number) => {
-        const newCheckedDay = selectedDay.map(day => {
-            if (day.id === dayNumber) {
-                return {...day, status: !day.status};
+        const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            setHour(event.target.value);
+        };
+        const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+            if (reason === 'clickaway') {
+                return;
             }
-            return day;
-        });
+            setOpen(false);
+        };
 
-        setSelectedDay(newCheckedDay);
-    }
+        const selectTypeOfWaste = (event: React.ChangeEvent<HTMLInputElement>) => {
+            setTypeOfWaste(parseInt(event.target.value))
+        };
 
-    const onClickOnCheckbox = (dayNumber: number) => {
-        selectDayForChecked(dayNumber);
-    }
-
-    function ValidateCollect() {
-        let dayToPost: number[] = []
-        selectedDay.map((e) => {
-            if (e.status) {
-                dayToPost.push(e.id);
-            }
-        })
-        if (date === '') {
-            setErrorSubscribe('Veuillez sélectionner une date !')
-        } else if (hour === '') {
-            setErrorSubscribe('Veuillez sélectionner une tranche horaire !')
-        } else if (typeOfWaste === '') {
-            setErrorSubscribe('Veuillez sélectionner un type de déchet !')
-        } else if (dayToPost.length === 0) {
-            setErrorSubscribe('Veuillez sélectionner au moins un jour !')
-        } else {
-            client.collect.map((collect, index) => {
-                if(collect.refDate === date + hour && collect.typeDechet.typeDechets === typeOfWaste) {
-                    setErrorSubscribe('Vous avez déjà un abonnement à cette date en cours !')
-                }
-            })
-            setErrorSubscribe('')
-            if (!confirm) {
-                setTimePeriod()
-                setConfirm(!confirm)
+        const setTimePeriod = () => {
+            if (hour === "T08:00:00.000Z") {
+                setPeriod("matin");
+            } else if (hour === "T12:00:00.000Z") {
+                setPeriod("après-midi");
             } else {
-                setConfirm(!confirm)
-                postSubscribe(dayToPost)
+                setPeriod("Aucune tranche horaire sélectionnée")
             }
         }
-    }
 
-    function AnnulCollect() {
-        setConfirm(false)
-    }
-
-    const postSubscribe = (dayToPost: number[]) => {
-        const subscribeToPost = {
-            clientId: clientId,
-            refDate: date + hour,
-            days: dayToPost,
-            isSubscribe: true,
-        }
-        axios
-            .post(HOST_BACK + "/collect", subscribeToPost, {
-                headers: {
-                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        const selectDayForChecked = (dayNumber: number) => {
+            const newCheckedDay = selectedDay.map(day => {
+                if (day.id === dayNumber) {
+                    return {...day, status: !day.status};
                 }
-            })
-            .then(response => {
-                setOpen(true)
-                setSendMessage('L\'abonnement a été mise en place')
-
-                let pushInState = {
-                    id: response.data.id,
-                    refDate: response.data.refDate,
-                    cronExpression: response.data.cronExpression
-                }
-
-                let newSubscribe = {...client};
-                newSubscribe.collect.push(pushInState)
-                setClient(newSubscribe)
-            })
-            .catch(error => {
-                console.log(error)
+                return day;
             });
-    }
 
-    if (client.conteneur.length != 0) {
+            setSelectedDay(newCheckedDay);
+        }
+
+        const onClickOnCheckbox = (dayNumber: number) => {
+            selectDayForChecked(dayNumber);
+        }
+
+        function ValidateCollect() {
+            let dayToPost: number[] = []
+            selectedDay.map((e) => {
+                if (e.status) {
+                    dayToPost.push(e.id);
+                }
+            })
+            if (date === '') {
+                setErrorSubscribe('Veuillez sélectionner une date !')
+            } else if (hour === '') {
+                setErrorSubscribe('Veuillez sélectionner une tranche horaire !')
+            } else if (typeOfWaste === undefined) {
+                setErrorSubscribe('Veuillez sélectionner un type de déchet !')
+            } else if (dayToPost.length === 0) {
+                setErrorSubscribe('Veuillez sélectionner au moins un jour !')
+            } else {
+                let findSubscribe = false;
+                client.collect.map((collect) => {
+                    allTypeOfWaste.map((waste) => {
+                        if (collect.refDate === date + hour && waste.id === typeOfWaste) {
+                            findSubscribe = true;
+                        }
+                    })
+                })
+                if (findSubscribe) {
+                    setErrorSubscribe('Vous avez déjà un abonnement à cette date en cours !')
+                } else {
+                    setErrorSubscribe('')
+                    if (!confirm) {
+                        setTimePeriod()
+                        setConfirm(!confirm)
+                    } else {
+                        setConfirm(!confirm)
+                        postSubscribe(dayToPost)
+                    }
+                }
+            }
+        }
+
+        function AnnulCollect() {
+            setConfirm(false)
+        }
+
+        const postSubscribe = (dayToPost: number[]) => {
+            const subscribeToPost = {
+                clientId: clientId,
+                refDate: date + hour,
+                days: dayToPost,
+                isSubscribe: true,
+                typeDechetId: typeOfWaste,
+            }
+            axios
+                .post(HOST_BACK + "/collect", subscribeToPost, {
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                    }
+                })
+                .then(response => {
+                    console.log(response.data)
+                    setOpen(true)
+                    setSendMessage('L\'abonnement a été mise en place')
+
+                    let newSubscribe = {...client};
+                    newSubscribe.collect.push(response.data)
+                    setClient(newSubscribe)
+
+                    updateTypeOfWasteOfUserFront(response.data)
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        }
+
+        const updateTypeOfWasteOfUserFront = (response: any) => {
+            if (!client.typeDechet.length) {
+                let newSubscribe = {...client};
+                newSubscribe.typeDechet.push(response.typeDechet)
+                setClient(newSubscribe)
+            } else {
+                let checkArray = false;
+                client.typeDechet.map((waste) => {
+                    if (waste.id === response.typeDechet.id) {
+                        checkArray = true;
+                    }
+                })
+                if (!checkArray) {
+                    let newSubscribe = {...client};
+                    newSubscribe.typeDechet.push(response.typeDechet)
+                    setClient(newSubscribe)
+                }
+            }
+        }
+
         return (
             <div className="subscribeContainer">
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -216,13 +255,12 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                                 id="select"
                                 select
                                 label="Type de déchet"
-                                onChange={(typeOfWaste) => {
-                                    setTypeOfWaste(typeOfWaste.target.value);
-                                }}
+                                onChange={selectTypeOfWaste}
                             >
-                                {client.conteneur.map((conteneur, index) => (
-                                    <MenuItem key={index}
-                                              value={conteneur.typeDechet.typeDechets}>{conteneur.typeDechet.typeDechets}</MenuItem>
+                                {allTypeOfWaste.map((typeOfWasteToSelect, index) => (
+                                    <MenuItem key={index} value={typeOfWasteToSelect.id}>
+                                        {typeOfWasteToSelect.typeDechets}
+                                    </MenuItem>
                                 ))}
                             </TextField>
                         </FormControl>
@@ -237,7 +275,6 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                               }}>
                             <p style={day.status ? {color: "#2e8b57"} : {color: "black"}}>{day.day}</p>
                             <Checkbox
-                                disabled={confirm}
                                 sx={{
                                     color: "black",
                                     '&.Mui-checked': {
@@ -299,18 +336,7 @@ const Subscribe = ({client, setClient}: subscribeProps) => {
                 </Grid>
             </div>
         );
-    } else {
-        return (
-            <div className="subscribeContainer">
-                <h1>Souscrire a un abonnement</h1>
-                <Grid container spacing={5} justifyContent="center" alignItems="center">
-                    <Grid item>
-                        <h3>Vous n'avez aucun seau de disponible, veuilez contacter le support.</h3>
-                    </Grid>
-                </Grid>
-            </div>
-        )
     }
-};
+;
 
 export default Subscribe;

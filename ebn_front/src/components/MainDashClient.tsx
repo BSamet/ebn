@@ -39,6 +39,11 @@ interface clientInterface {
     ];
 }
 
+interface typeOfWaste {
+    id: number;
+    typeDechets: string;
+}
+
 interface ClientDashInterface {
     selectNav: string;
     setSelectConteneurId: any;
@@ -60,9 +65,10 @@ const MainDashClient = ({
                         }: ClientDashInterface) => {
     const {id} = useParams();
     const [client, setClient] = useState<clientInterface>();
+    const [allTypeOfWaste, setAllTypeOfWaste] = useState<typeOfWaste>()
     const clientvalide = sessionStorage.getItem("clientvalide");
 
-    useEffect(() => {
+    const getClient = () => {
         axios
             .get(HOST_BACK + "/client/" + sessionStorage.getItem("id"), {
                 headers: {
@@ -71,21 +77,42 @@ const MainDashClient = ({
             })
             .then((res) => {
                 setClient(res.data);
-                console.log(res.data)
+                console.log('main', res.data)
             })
             .catch(function (error) {
                 console.log(error);
             });
-    }, []);
-    switch (selectNav) {
+    }
 
+    const getAllTypeOfWaste = () => {
+        axios
+            .get(HOST_BACK + "/type-dechets/", {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                },
+            })
+            .then((res) => {
+                setAllTypeOfWaste(res.data);
+                console.log("main", res.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    useEffect(() => {
+        getClient();
+        getAllTypeOfWaste();
+    }, []);
+
+    switch (selectNav) {
         case 'Demande de collecte':
             return (
                 <ClientAskCollect client={client} setClient={setClient}/>
             );
         case 'Abonnement':
             return (
-                <Subscribe client={client} setClient={setClient}/>
+                <Subscribe client={client} setClient={setClient} allTypeOfWaste={allTypeOfWaste}/>
             );
         default:
             if (clientvalide == "true") {

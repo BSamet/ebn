@@ -83,9 +83,6 @@ export class ClientController {
   updateStatus(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientService.updateStatus(+id, updateClientDto);
   }
-  
-  
-  
 
   @hasRoles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
