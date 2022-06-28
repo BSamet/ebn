@@ -31,15 +31,6 @@ interface ramassageInterface {
     isSubscribe: boolean;
 }
 
-interface etapesInterface {
-    id: number;
-    date: Date;
-    isCollected: boolean;
-    clientId: number;
-    commentaire: string;
-    collecteurId: number;
-}
-
 export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
@@ -51,8 +42,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
 
-
-    
     // let collectorList
     useEffect(() => {
         if (fetchOnce) {
@@ -67,7 +56,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
             });
         }
     }, [collecteursList, fetchOnce]);
-
     useEffect(() => {
         setCollectorEtape(collectorEtape)
     })
@@ -79,7 +67,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             } 
         }).then(ramassage =>{
-                console.log(ramassage.data)
                 ramassage.data.map((etape: ramassageInterface) => {                    
                     setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 })

@@ -48,8 +48,7 @@ const Maps: React.VFC = ({collectorEtape}: any) => {
           mkStyle.innerHTML =(collectorEtape.indexOf(etape) + 1);
           mkStyle.style.color = "black";
           mkStyle.style.fontSize = "3em";
-          mkStyle.style.textAlign = "center"
-
+          mkStyle.style.textAlign = "center";
           let marker = new Marker(mkStyle, {anchor: "bottom"})
             .setLngLat([lng, lat])
           setMarkers(markers => [...markers, marker])             
