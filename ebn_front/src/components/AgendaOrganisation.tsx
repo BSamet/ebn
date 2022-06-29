@@ -47,7 +47,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
     const [sendErrorMessage, setSendErrorMessage] = useState('');
-    const [etapeNotSend, setEtapeNotSend] = useState<ramassageInterface[]>([]);
     const [open, setOpen] = React.useState(false);
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
     const [Collector, setCollector] = useState(1);
@@ -75,7 +74,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
 
     useEffect(() => {
         setCollectorEtape(collectorEtape)
-        console.log(collectorEtape)
     })
 
     function setEtapesArray() {
@@ -222,9 +220,8 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
 
     function sendCollectorEtape() {
         let numberOfEtape = 0;
+        let etapeNotSend = 0;
         collectorEtape?.map((etape) => { 
-            console.log(numberOfEtape)
-
             const etapeToAdd = {
                 clientId: etape.Client.id,
                 collecteurId: Collector,
@@ -243,7 +240,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                     if(numberOfEtape == collectorEtape?.length){
                         setCollectorEtape([]);
                         setOpen(true)
-                        setSendMessage('Les étapes ont été assignées au collecteur')
                     }
                     if(etape.isSubscribe == false){
                         deleteCollect(etape.id);
@@ -254,26 +250,31 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                 });
             } else {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape])
+                etapeNotSend ++
             }  
                 
                 numberOfEtape ++;
 
             })
+            if(etapeNotSend > 0){
+                setSendMessage(etapeNotSend + " étapes sur " + numberOfEtape + " n'ont pas été assignées")
+            } else {
+                setSendMessage('Toutes les étapes ont été assignées au collecteur')
+            }
+
+            
+            console.log(etapeNotSend)
       }
 
       function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface){
         let timeInterval = interval * etapeNumber;
-        console.log("etape" + etape)
+        // console.log("etape" + etape)
             const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");   
-            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T08:00:00.000Z" && new Date(travelTime).getHours() >= 12){
-                setEtapeNotSend(etapeNotSend => [...etapeNotSend, etape])
-                setSendErrorMessage(etapeNotSend.length + "etapes n'ont pas été assignées")
-                console.log("tableau" + etapeNotSend.length)
-
+            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T08:00:00.000Z" && new Date(travelTime).getHours() >= 12 || new Date(date).getDate() != new Date(travelTime).getDate()){
                 return
             }
             return travelTime
-             }
+            }
              
             
     return (
@@ -282,7 +283,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                 <h1>Organiser l'agenda</h1>
                     
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                       <Alert severity="success">{sendErrorMessage}</Alert>
+                       <Alert severity="success">{sendMessage}</Alert>
                     </Snackbar>
                     
                 <Grid container justifyContent="center" alignItems="center">
