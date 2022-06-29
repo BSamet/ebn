@@ -5,13 +5,8 @@ import {HOST_BACK} from "../environment/environment";
 import { Box, Button, Divider, Grid, List, ListItem, ListItemText, MenuItem, Pagination, Stack, TextField } from "@mui/material";
 import {FormControl, InputLabel, Select} from "@mui/material";
 import '../styles/component/_DashboardHistoryCollecteur.scss';
-import { listenerCount } from "process";
 import moment from "moment";
-
-
-
-
-
+import 'moment/locale/fr.js'
 
 interface Collecteur {
         id: number;
@@ -60,13 +55,17 @@ export function DashboardHistoryCollecteur () {
     const [fetchOnce, setFetchOnce] = useState(true);
     const [fetchCollectorOnce, setFetchCollectorOnce] = useState(true);
     const [collecteurid, setCollecteurId] = useState('null');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
     const [hour, setHour] = React.useState('');
     const [limit, setLimit] = React.useState('');
     const [page, setPage] = React.useState(1);
-    const [totalPages, setTotalPages] = React.useState('')
+    const [totalPages, setTotalPages] = React.useState('');
 
 
+    useEffect(() => {
+        moment.locale('fr')
+        console.log(date)
+    })
 
     useEffect(() => {
         if(fetchCollectorOnce){
@@ -111,6 +110,7 @@ export function DashboardHistoryCollecteur () {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
+                console.log(res.data.etapes);
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
             }).catch((err) =>
@@ -184,7 +184,7 @@ export function DashboardHistoryCollecteur () {
                     id="datetime-local"
                     label="Date"
                     type="date"
-                    defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
+                    defaultValue= {date}
                     sx={{ width: 250, mt: 0.5}}
                     InputLabelProps={{
                         shrink: true,
