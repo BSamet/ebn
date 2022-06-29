@@ -35,10 +35,6 @@ const DashboardAdmin = () => {
 
   const [collectorEtape, setCollectorEtape]= useState([]);
 
-  console.log(collectorEtape);
-  
-
-
   useEffect(() => {
     const sessionExp: any = sessionStorage.getItem("token_exp");
     const role: any = sessionStorage.getItem("role");
