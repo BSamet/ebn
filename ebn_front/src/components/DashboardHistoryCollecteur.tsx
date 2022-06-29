@@ -49,7 +49,7 @@ const hours = [
     
   ];
 
-export function DashboardHistoryCollecteur () {
+export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCollectorEtape, setActionSelected}: any) {
     const [Collecteur, setCollecteur] = useState<Collecteur[]>();
     const [InformationEtape, setInformationEtape] = useState<InformationEtape[]>();
     const [fetchOnce, setFetchOnce] = useState(true);
@@ -61,18 +61,11 @@ export function DashboardHistoryCollecteur () {
     const [page, setPage] = React.useState(1);
     const [totalPages, setTotalPages] = React.useState('');
 
-
-    useEffect(() => {
-        moment.locale('fr')
-        console.log(date)
-    })
-
     useEffect(() => {
         if(fetchCollectorOnce){
         axios.get(HOST_BACK + '/collecteur',{
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            
             }}).then(res => {
                 setCollecteur(res.data)
                 setFetchCollectorOnce(false)
@@ -82,27 +75,37 @@ export function DashboardHistoryCollecteur () {
 
     useEffect(() => {
         if(fetchOnce){
-            console.log(collecteurid)
             setPage(1)
             axios.get(HOST_BACK + '/etape/day/' + page +'/?take=5', {
                 headers: {
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
+                setConsultCollectorEtape([])
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
+                res.data.etapes.map(etape => {
+                    setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                })
+                console.log(consultCollectorEtape);
                 setFetchOnce(false)
+
             })
         }
     }, [fetchOnce, InformationEtape])
 
     function getEtapeByCollecteur(){
         setPage(1);
+        setConsultCollectorEtape([])
         if(date == undefined || date == '' || hour == undefined || hour == ''){
             axios.get(HOST_BACK + '/etape/collecteur/' + collecteurid, {
                 headers: {
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                 }}).then(res => {
                     setInformationEtape(res.data)
+                    res.data.etapes.map(etape => {
+                        console.log(etape)
+                        setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                    })
                 }).catch((err) =>
                 console.log(err.response))
         } else {
@@ -110,9 +113,14 @@ export function DashboardHistoryCollecteur () {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
-                console.log(res.data.etapes);
+                console.log(res.data);
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
+                res.data.etapes.map(etape => {
+                    console.log(etape)
+                    setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                })
+                console.log(consultCollectorEtape);
             }).catch((err) =>
             console.log(err.response))
         }
@@ -140,6 +148,10 @@ export function DashboardHistoryCollecteur () {
             }}).then(res => {
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
+                res.data.etapes.map(etape => {
+                    console.log(etape)
+                    setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                })
                 setFetchOnce(false)
             })
         } else {
@@ -149,7 +161,10 @@ export function DashboardHistoryCollecteur () {
                 }}).then(res => {
                     setInformationEtape(res.data.etapes)
                     setTotalPages(res.data.totalPages)
-
+                    res.data.etapes.map(etape => {
+                        console.log(etape)
+                        setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                    })
                 }).catch((err) =>
                     console.log(err.response)
                 )
@@ -158,6 +173,15 @@ export function DashboardHistoryCollecteur () {
 
     return(
     <div className="conteneurs">
+        <Button
+            className="backButton"
+            variant="outlined"
+            size="medium"
+            onClick={() => {setActionSelected('')}}
+            aria-label="move all left"
+        >
+                    Retour
+                </Button>
         <h1>Consulter l'agenda</h1>
         <Grid container justifyContent="space-around" alignItems="center" marginTop={-4}>
             <FormControl>
@@ -167,7 +191,7 @@ export function DashboardHistoryCollecteur () {
                     select
                     value={collecteurid}
                     label="Collecteur"
-                    sx={{ width: 250, mt: 0.5}}
+                    sx={{ width: 250, mt: 0.5 }}
                     InputLabelProps={{
                         shrink: true,
                     }}

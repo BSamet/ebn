@@ -6,9 +6,11 @@ interface ViewAdminRightSideInterface {
     selectRight: string;
     selectConteneurId : string;
     collectorEtape: any;
+    consultCollectorEtape: any;
+    actionSelected: any;
 }
 
-const ViewAdminRightSide = ({selectRight, selectConteneurId, collectorEtape}: ViewAdminRightSideInterface) => {
+const ViewAdminRightSide = ({selectRight, selectConteneurId, collectorEtape, consultCollectorEtape, actionSelected}: ViewAdminRightSideInterface) => {
     
     if (selectRight === 'Conteneurs'){
         return (
@@ -16,7 +18,7 @@ const ViewAdminRightSide = ({selectRight, selectConteneurId, collectorEtape}: Vi
         )
     } else {
         return(
-            <Maps collectorEtape={collectorEtape} />
+            <Maps collectorEtape={collectorEtape} consultCollectorEtape={consultCollectorEtape} actionSelected={actionSelected} />
         )
     }
 };

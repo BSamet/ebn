@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl, { Marker, Popup } from 'maplibre-gl'
 import axios from "axios";
 
-const Maps: React.VFC = ({collectorEtape}: any) => {
+const Maps: React.VFC = ({collectorEtape, consultCollectorEtape, actionSelected}: any) => {
 
   const mapContainer = useRef();
   const [map, setMap] = useState<maplibregl.Map>();
@@ -13,6 +13,17 @@ const Maps: React.VFC = ({collectorEtape}: any) => {
   const [API_KEY] = useState('z9i6eEaZSiiAANqyLUP4');
   const [markers, setMarkers]= useState<Marker[]>([]);
   const [fetchOnce, setFetchOnce] = useState(false);
+  const [etapes, setEtapes] = useState([]);
+
+  useEffect(() => {
+    if(actionSelected == 'Organiser'){
+      setEtapes(collectorEtape)
+      console.log("collecok")
+    } else if(actionSelected == 'Consulter'){
+      setEtapes(consultCollectorEtape)
+      console.log("consultok")
+    }
+  }, [etapes][actionSelected])
 
   useEffect(() => {
     if (map) return; //stops map from intializing more than once
@@ -26,14 +37,20 @@ const Maps: React.VFC = ({collectorEtape}: any) => {
   }, [map]);
 
   useEffect(() => {
+      
       markers.map(marker => {
           marker.remove()        
       })
       setMarkers([])
       //On Parcours la liste d'etape du collecteur
-      collectorEtape.map((etape: any) => {
+      etapes.map((etape: any) => {
         //On récupère l'adresse du client stockée en base de donnée que l'on stocke dans une variable
-        let adress = etape.Client.adresse;
+        let  adress
+        if(actionSelected == 'Organiser'){
+          adress = etape.Client.adresse;
+        } else if(actionSelected == 'Consulter'){
+          adress = etape.client.adresse
+        }
         //On formate l'adresse récupérée pour remplacer les espaces par des '+'
         let adressFormat = adress.replaceAll(" ", "+")
         //Requête vers l'API gouvernementale
@@ -45,7 +62,7 @@ const Maps: React.VFC = ({collectorEtape}: any) => {
           //Création du Marker sur la carte
           const mkStyle = document.createElement('div');
           mkStyle.className = "marker";
-          mkStyle.innerHTML =(collectorEtape.indexOf(etape) + 1);
+          mkStyle.innerHTML =(etapes.indexOf(etape) + 1).toString();
           mkStyle.style.color = "black";
           mkStyle.style.fontSize = "3em";
           mkStyle.style.textAlign = "center";
@@ -54,7 +71,7 @@ const Maps: React.VFC = ({collectorEtape}: any) => {
           setMarkers(markers => [...markers, marker])             
         })       
       })               
-    }, [collectorEtape]
+    }, [etapes]
   )  
 
   useEffect(() => {
