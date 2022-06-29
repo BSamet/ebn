@@ -1,13 +1,42 @@
-import {FormControl, Grid, TextField, Button, MenuItem, Modal, Alert, Snackbar} from "@mui/material";
+import {FormControl, Grid, TextField, Button, MenuItem, Alert, Snackbar} from "@mui/material";
 import axios from "axios";
 import moment from "moment";
 import React from "react";
 import {useState} from "react";
 import {HOST_BACK} from "../environment/environment";
 
-interface oneTimeProps {
-    client: any;
+interface collectProps {
+    client: {
+        collect: [
+            {
+                refDate: string,
+                cronExpression: string
+                typeDechet: {
+                    id: number,
+                    typeDechets: string
+                }
+            }
+        ];
+        conteneur: [
+            {
+                capaciteMax: number,
+                id: number,
+                isAvailable: boolean,
+            }
+        ];
+        typeDechet: [
+            {
+                id: number
+            }
+        ]
+    };
     setClient: any;
+    allTypeOfWaste: [
+        {
+            id: number;
+            typeDechets: string;
+        }
+    ]
 }
 
 const hours = [
@@ -23,23 +52,51 @@ const hours = [
 ];
 
 
-export function ClientAskCollect({client, setClient}: oneTimeProps) {
+export function ClientAskCollect({client, setClient, allTypeOfWaste}: collectProps) {
     const [date, setDate] = useState('');
-    const [dateSelected, setDateSelected] = useState(false);
     const [hour, setHour] = React.useState('');
     const [period, setPeriod] = React.useState('');
+    const [typeOfWaste, setTypeOfWaste] = React.useState<number>();
+    const [confirm, setConfirm] = useState(false);
     const [sendMessage, setSendMessage] = useState('');
     const [open, setOpen] = React.useState(false);
-
     const clientId = sessionStorage.getItem("id");
+    const [errorSubscribe, setErrorSubscribe] = useState<string>();
 
     function ValidateCollect() {
-        setDateSelected(true)
-        setTimePeriod()
+        if (date === '') {
+            setErrorSubscribe('Veuillez sélectionner une date !')
+        } else if (hour === '') {
+            setErrorSubscribe('Veuillez sélectionner une tranche horaire !')
+        } else if (typeOfWaste === undefined) {
+            setErrorSubscribe('Veuillez sélectionner un type de déchet !')
+        } else {
+            let findCollect = false;
+            client.collect.map((collect) => {
+                if (collect.cronExpression === null) {
+                    if (collect.refDate === date + hour && collect.typeDechet.id === typeOfWaste) {
+                        console.log("hey")
+                        findCollect = true;
+                    }
+                }
+            })
+            if (findCollect) {
+                setErrorSubscribe('Vous avez déjà une demande collecte à cette date !')
+            } else {
+                setErrorSubscribe('')
+                if (!confirm) {
+                    setTimePeriod()
+                    setConfirm(!confirm)
+                } else {
+                    setConfirm(!confirm)
+                    sendClientCollect()
+                }
+            }
+        }
     }
 
     function AnnulCollect() {
-        setDateSelected(false)
+        setConfirm(!confirm)
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,10 +113,16 @@ export function ClientAskCollect({client, setClient}: oneTimeProps) {
         }
     }
 
+    const selectTypeOfWaste = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTypeOfWaste(parseInt(event.target.value))
+    };
+
     function sendClientCollect() {
         const collectToAdd = {
             clientId: clientId,
             refDate: date + hour,
+            isSubscribe: false,
+            typeDechetId: typeOfWaste,
         }
         axios
             .post(HOST_BACK + "/collect", collectToAdd, {
@@ -70,23 +133,36 @@ export function ClientAskCollect({client, setClient}: oneTimeProps) {
             .then(response => {
                 setOpen(true)
                 setSendMessage('La demande de collecte a été prise en compte')
-                setDateSelected(false)
-
-                let pushInState = {
-                    id: response.data.id,
-                    refDate: response.data.refDate,
-                    cronExpression: null
-                }
 
                 let newOneTime = {...client};
-                newOneTime.collect.push(pushInState)
+                newOneTime.collect.push(response.data)
                 setClient(newOneTime)
+
+                updateTypeOfWasteOfUserFront(response.data)
             })
             .catch(error => {
                 console.log(error)
             });
+    }
 
-
+    const updateTypeOfWasteOfUserFront = (response: any) => {
+        if (!client.typeDechet.length) {
+            let newCollect = {...client};
+            newCollect.typeDechet.push(response.typeDechet)
+            setClient(newCollect)
+        } else {
+            let checkArray = false;
+            client.typeDechet.map((waste) => {
+                if (waste.id === response.typeDechet.id) {
+                    checkArray = true;
+                }
+            })
+            if (!checkArray) {
+                let newCollect = {...client};
+                newCollect.typeDechet.push(response.typeDechet)
+                setClient(newCollect)
+            }
+        }
     }
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
@@ -96,7 +172,6 @@ export function ClientAskCollect({client, setClient}: oneTimeProps) {
         setOpen(false);
     };
 
-    if (!dateSelected) {
         return (
             <div className="conteneur">
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -108,6 +183,7 @@ export function ClientAskCollect({client, setClient}: oneTimeProps) {
                         <FormControl>
                             <h3>Sélectionner une date:</h3>
                             <TextField
+                                disabled={confirm}
                                 id="datetime-local"
                                 label="Date"
                                 type="date"
@@ -119,13 +195,14 @@ export function ClientAskCollect({client, setClient}: oneTimeProps) {
                                 onChange={(newDate) => {
                                     setDate(newDate.target.value);
                                 }}
-                                onClick={AnnulCollect}/>
+                                />
                         </FormControl>
                     </Grid>
                     <Grid item>
                         <FormControl>
                             <h3>Sélectionner une tranche horaire:</h3>
                             <TextField
+                                disabled={confirm}
                                 sx={{width: 300, mt: 0.5}}
                                 id="select"
                                 select
@@ -140,99 +217,72 @@ export function ClientAskCollect({client, setClient}: oneTimeProps) {
                         </FormControl>
                     </Grid>
                 </Grid>
-                <Grid container justifyContent="center" alignItems="center">
-                    <Button
-                        sx={{my: 0.5, mt: 2, ml: 0.5}}
-                        variant="outlined"
-                        size="medium"
-                        onClick={ValidateCollect}
-                        aria-label="move all left"
-                    >
-                        Valider
-                    </Button>
-                </Grid>
-            </div>
-        );
-    } else {
-        return (
-            <div className="conteneur">
-                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert severity="success">{sendMessage}</Alert>
-                </Snackbar>
-                <h1>Demande de collecte</h1>
                 <Grid container spacing={5} justifyContent="center" alignItems="center">
                     <Grid item>
                         <FormControl>
-                            <h3>Sélectionner une date:</h3>
+                            <h3>Sélectionner un type de déchets :</h3>
                             <TextField
-                                id="datetime-local"
-                                label="Date"
-                                type="date"
-                                defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
-                                sx={{width: 300, mt: 0.5}}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={(newDate) => {
-                                    setDate(newDate.target.value);
-                                }}
-                                onClick={AnnulCollect}/>
-                        </FormControl>
-                    </Grid>
-                    <Grid item>
-                        <FormControl>
-                            <h3>Sélectionner une tranche horaire:</h3>
-                            <TextField
+                                disabled={confirm}
                                 sx={{width: 300, mt: 0.5}}
                                 id="select"
                                 select
-                                value={hour}
-                                label="Horaire"
-                                onChange={handleChange}
+                                label="Type de déchet"
+                                onChange={selectTypeOfWaste}
                             >
-                                {hours.map((hour) => (
-                                    <MenuItem key={hour.value} value={hour.value}>{hour.label}</MenuItem>
+                                {allTypeOfWaste.map((typeOfWasteToSelect, index) => (
+                                    <MenuItem key={index} value={typeOfWasteToSelect.id}>
+                                        {typeOfWasteToSelect.typeDechets}
+                                    </MenuItem>
                                 ))}
                             </TextField>
                         </FormControl>
                     </Grid>
                 </Grid>
+                {confirm &&
+                    <Grid container justifyContent="center" alignItems="center" textAlign="center" marginTop={2}>
+                        Vous allez demander une collecte pour
+                        le {moment(date).format('DD MMMM.YYYY')} {period.toLowerCase()}. <br/> Êtes-vous
+                        sûr ?
+                    </Grid>
+                }
+                <Grid container justifyContent="center" alignItems="center" marginTop={2}
+                      className="subscribeContainer__error">
+                    {errorSubscribe}
+                </Grid>
                 <Grid container justifyContent="center" alignItems="center">
-                    <Button
-                        sx={{my: 0.5, mt: 2, ml: 0.5}}
-                        variant="outlined"
-                        size="medium"
-                        onClick={ValidateCollect}
-                        aria-label="move all left"
-                    >
-                        Valider
-                    </Button>
-                </Grid>
-                <Grid container justifyContent="center" alignItems="center" marginTop={2}>
-                    Vous voulez programmer une collecte pour le {moment(date).format('DD.MM.YYYY')}: {period}. Etes-vous
-                    sûr ?
-                </Grid>
-                <Grid container justifyContent="center" alignItems="center" marginTop={2}>
-                    <Button
-                        sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
-                        variant="outlined"
-                        size="medium"
-                        onClick={sendClientCollect}
-                        aria-label="move all left"
-                    >
-                        Confirmer
-                    </Button>
-                    <Button
-                        sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
-                        variant="outlined"
-                        size="medium"
-                        onClick={AnnulCollect}
-                        aria-label="move all left"
-                    >
-                        Annuler
-                    </Button>
+                    {!confirm ?
+                        <Button
+                            sx={{my: 0.5, mt: 2, ml: 0.5}}
+                            variant="outlined"
+                            size="medium"
+                            aria-label="move all left"
+                            onClick={ValidateCollect}
+                        >
+                            Valider
+                        </Button>
+                        :
+                        <>
+                            <Button
+                                sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
+                                variant="outlined"
+                                size="medium"
+                                aria-label="move all left"
+                                onClick={ValidateCollect}
+                            >
+                                Confirmer
+                            </Button>
+                            <Button
+                                sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
+                                variant="outlined"
+                                size="medium"
+                                onClick={AnnulCollect}
+                                aria-label="move all left"
+                            >
+                                Annuler
+                            </Button>
+                        </>
+                    }
                 </Grid>
             </div>
         );
-    }
 }

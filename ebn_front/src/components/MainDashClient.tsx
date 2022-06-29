@@ -108,7 +108,7 @@ const MainDashClient = ({
     switch (selectNav) {
         case 'Demande de collecte':
             return (
-                <ClientAskCollect client={client} setClient={setClient}/>
+                <ClientAskCollect client={client} setClient={setClient} allTypeOfWaste={allTypeOfWaste}/>
             );
         case 'Abonnement':
             return (
@@ -138,7 +138,7 @@ const MainDashClient = ({
                                     <div key={index}>
                                         <p>
                                             A partir du{" "}
-                                            {moment(subscribe.refDate).locale('fr').format(
+                                            {moment(subscribe.refDate).zone("+00:00").locale('fr').format(
                                                 "DD MMMM YYYY"
                                             )}{" "}
                                             {cronstrue.toString(subscribe.cronExpression, {
@@ -162,7 +162,7 @@ const MainDashClient = ({
                                     <div key={index}>
                                         <p>
                                             Le{" "}
-                                            {moment(oneTime.refDate).locale('fr').format("DD.MMMM.YYYY à HH [h] mm")}{" "}
+                                            {moment(oneTime.refDate).zone("+00:00").locale('fr').format("DD.MMMM.YYYY à HH [h] mm")}{" "}
                                         </p>
                                     </div>
                                 ))

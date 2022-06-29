@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {CreateCollectDto} from './dto/create-collect.dto';
 import {UpdateCollectDto} from './dto/update-collect.dto';
 import {InjectRepository} from "@nestjs/typeorm";
@@ -7,17 +7,18 @@ import {Collect} from "./entities/collect.entity";
 import {Client} from "../client/entities/client.entity"
 import {Etape} from "../etape/entities/etape.entity";
 import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
+import {ClientService} from "../client/client.service";
 
 const parser = require('cron-parser');
 
 export interface collectInterface {
     id: number | null;
     refDate: Date,
-    Client: {
+    client: {
         id: number,
         nomCommercial: string,
         adresse: string,
-        Utilisateur: {
+        utilisateur: {
             nom: string,
             prenom: string
         },
@@ -35,6 +36,7 @@ export class CollectService {
         private readonly etapeRepository: Repository<Etape>,
         @InjectRepository(Client)
         private readonly clientRepository: Repository<Client>,
+        private readonly clientService: ClientService,
     ) {
     }
 
@@ -66,11 +68,7 @@ export class CollectService {
             .getOne();
 
         if (checkClientType === null){
-            await this.clientRepository
-                .createQueryBuilder()
-                .relation(Client, "typeDechet")
-                .of(Client)
-                .add(createCollectDto.typeDechetId);
+            await this.clientService.addTypeOfWaste(createCollectDto.clientId, {typeDechetsId: createCollectDto.typeDechetId})
         }
 
         const collectId = created.id;
@@ -132,9 +130,7 @@ export class CollectService {
             .getMany();
 
         // Et c'est également ici que la magie va opéré pour renvoyer une liste des prochaines collecte ponctuelle
-        const notSubscribeArray = this.checkOneTimeCollect(date, allCollectNotSubscribe, allStepObjectForCheck, subscribeArray)
-
-        return notSubscribeArray;
+        return this.checkOneTimeCollect(date, allCollectNotSubscribe, allStepObjectForCheck, subscribeArray)
     }
 
     update(id: number, updateCollectDto: UpdateCollectDto) {
@@ -224,11 +220,11 @@ export class CollectService {
         return {
             id: null,
             refDate: new Date(date),
-            Client: {
+            client: {
                 id: client.id,
                 nomCommercial: client.nomCommercial,
                 adresse: client.adresse,
-                Utilisateur: {
+                utilisateur: {
                     nom: client.utilisateur.nom,
                     prenom: client.utilisateur.prenom
                 },
@@ -241,11 +237,11 @@ export class CollectService {
         return {
             id: collect.id,
             refDate: collect.refDate,
-            Client: {
+            client: {
                 id: collect.client.id,
                 nomCommercial: collect.client.nomCommercial,
                 adresse: collect.client.adresse,
-                Utilisateur: {
+                utilisateur: {
                     nom: collect.client.utilisateur.nom,
                     prenom: collect.client.utilisateur.prenom
                 },

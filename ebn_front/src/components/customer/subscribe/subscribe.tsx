@@ -126,11 +126,16 @@ const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
             } else {
                 let findSubscribe = false;
                 client.collect.map((collect) => {
-                    allTypeOfWaste.map((waste) => {
-                        if (collect.refDate === date + hour && waste.id === typeOfWaste) {
-                            findSubscribe = true;
+                    if (collect.cronExpression != null) {
+                        if (collect.refDate === date + hour && collect.typeDechet.id === typeOfWaste) {
+                            let splitCronExpression = collect.cronExpression.split(' ');
+                            let takeSplitCronExpressionDays = splitCronExpression[splitCronExpression.length -1];
+                            let allDaysInCronExpressionToArray = takeSplitCronExpressionDays.split(',');
+                            if(allDaysInCronExpressionToArray.some(day => dayToPost.includes(parseInt(day)))) {
+                                findSubscribe = true;
+                            }
                         }
-                    })
+                    }
                 })
                 if (findSubscribe) {
                     setErrorSubscribe('Vous avez déjà un abonnement à cette date en cours !')
@@ -269,17 +274,18 @@ const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
                 <Grid container spacing={5} justifyContent="center" alignItems="center" marginY={1}>
                     {selectedDay.map((day, index) => (
                         <Grid item key={index}
-                              className="subscribeContainer__selectDay"
-                              onClick={() => {
-                                  onClickOnCheckbox(day.id)
-                              }}>
-                            <p style={day.status ? {color: "#2e8b57"} : {color: "black"}}>{day.day}</p>
+                              className="subscribeContainer__selectDay">
+                            <p style={day.status ? {color: "#2e8b57"} : confirm ? {color: "#2e8b57"} : {color: "black"}}>{day.day}</p>
                             <Checkbox
+                                disabled={confirm}
                                 sx={{
                                     color: "black",
                                     '&.Mui-checked': {
                                         color: "#2e8b57",
                                     },
+                                }}
+                                onClick={() => {
+                                    onClickOnCheckbox(day.id)
                                 }}
                                 checked={day.status}
                             />
@@ -287,13 +293,13 @@ const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
                     ))}
                 </Grid>
                 {confirm &&
-                    <Grid container justifyContent="center" alignItems="center" marginTop={2}>
+                    <Grid container justifyContent="center" alignItems="center" textAlign="center" marginTop={2}>
                         Vous allez souscrire à un abonnement qui va démarrer
                         le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
                         {selectedDay.filter((checkDay) => checkDay.status).map(day =>
                             ' le ' + day.day.toLocaleLowerCase() + ' ' + period
                         ).join(',')}
-                        . Êtes-vous sûr ?
+                        . <br /> Êtes-vous sûr ?
                     </Grid>
                 }
                 <Grid container justifyContent="center" alignItems="center" marginTop={2}
