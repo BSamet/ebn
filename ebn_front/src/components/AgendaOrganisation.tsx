@@ -263,12 +263,12 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
 
       function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface){
         let timeInterval = interval * etapeNumber;
-        console.log("etape" + etape)
             const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");   
             if(date.toString() == moment(date).format("YYYY-MM-DD") + "T08:00:00.000Z" && new Date(travelTime).getHours() >= 12){
-                setEtapeNotSend(etapeNotSend => [...etapeNotSend, etape])
-                setSendErrorMessage(etapeNotSend.length + "etapes n'ont pas été assignées")
-                console.log("tableau" + etapeNotSend.length)
+                setEtapeNotSend(etapeNotSend  => [...etapeNotSend, etape])
+                
+                setSendErrorMessage(finalEtapeList.length + "etapes n'ont pas été assignées")
+                console.log("tableau" + finalEtapeList.length)
 
                 return
             }
