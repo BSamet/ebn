@@ -31,7 +31,7 @@ interface ramassageInterface {
     isSubscribe: boolean;
 }
 
-export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
+export function AgendaOrganisation({setCollectorEtape, collectorEtape, setActionSelected}: any){
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
@@ -288,12 +288,22 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     return (
         <>
             <div className="conteneur">
-                <h1>Organiser l'agenda</h1>
-                    
-                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert severity="success">{sendMessage}</Alert>
-                    </Snackbar>
+                <Button
+                    className="backButton"
+                    variant="outlined"
+                    size="medium"
+                    onClick={() => {setActionSelected('')}}
+                    aria-label="move all left"
+                >
+                    Retour
+                </Button>
+                <h1>Organiser l'agenda</h1>      
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert severity="success">{sendMessage}</Alert>
+                </Snackbar>
+                
                 <Grid container justifyContent="center" alignItems="center">
+                
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
                         <Grid item >
                             <Grid marginBottom={1}>
