@@ -4,8 +4,10 @@ import { Alert, Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemTe
 import { useEffect, useState } from "react";
 import { HOST_BACK } from "../environment/environment"
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import moment from "moment";
 import '../styles/component/_AgendaOrganisation.scss';
+import moment from 'moment'
+import 'moment/locale/fr' 
+moment.locale('fr')
 
 
 interface collecteursInterface {
@@ -44,12 +46,15 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
+    const [sendErrorMessage, setSendErrorMessage] = useState('');
+    const [etapeNotSend, setEtapeNotSend] = useState<ramassageInterface[]>([]);
     const [open, setOpen] = React.useState(false);
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
     const [Collector, setCollector] = useState(1);
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
+    const [interval, setInterval] = useState(''); 
 
 
     
@@ -217,7 +222,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
 
     function sendCollectorEtape() {
         let numberOfEtape = 0;
-
         collectorEtape?.map((etape) => { 
             console.log(numberOfEtape)
 
@@ -226,8 +230,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                 collecteurId: Collector,
                 isCollected: false,
                 commentaire: "",
-                date: iterat(etape.refDate, numberOfEtape, 37),
+                date: incrementDateTime(etape.refDate, numberOfEtape, parseInt(interval), etape),
             }
+            if(etapeToAdd.date != null){
                 axios
                 .post(HOST_BACK + "/etape", etapeToAdd, {
                     headers: {
@@ -246,30 +251,40 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                 })
                 .catch(error => {
                     console.log(error)
-                });  
+                });
+            } else {
+                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape])
+            }  
                 
                 numberOfEtape ++;
 
             })
       }
 
-      function iterat(date: Date, etapeNumber: number, interval: number){
-        let timeInterval = interval * etapeNumber;         
-        // for(let i = 0; i < etapeNumber; i ++){
-            const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
-            console.log(travelTime)  
-            return travelTime
-        // }
+      function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface){
+        let timeInterval = interval * etapeNumber;
+        console.log("etape" + etape)
+            const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");   
+            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T08:00:00.000Z" && new Date(travelTime).getHours() >= 12){
+                setEtapeNotSend(etapeNotSend => [...etapeNotSend, etape])
+                setSendErrorMessage(etapeNotSend.length + "etapes n'ont pas été assignées")
+                console.log("tableau" + etapeNotSend.length)
 
-            }   
+                return
+            }
+            return travelTime
+             }
+             
+            
     return (
         <>
             <div className="conteneur">
                 <h1>Organiser l'agenda</h1>
                     
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert severity="success">{sendMessage}</Alert>
+                       <Alert severity="success">{sendErrorMessage}</Alert>
                     </Snackbar>
+                    
                 <Grid container justifyContent="center" alignItems="center">
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
                         <Grid item >
@@ -288,6 +303,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                         onChange={(newDate) => {
                                             setDate(newDate.target.value);
                                         }}
+                                        
                                     />       
                                 </FormControl>
                                 <Button
@@ -401,6 +417,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                 type="number"
                                 InputLabelProps={{
                                     shrink: true,
+                                }}
+                                onChange={(newInterval) => {
+                                    setInterval(newInterval.target.value);
                                 }}
                             />
                                  </FormControl>
