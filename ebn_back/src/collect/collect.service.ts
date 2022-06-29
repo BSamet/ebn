@@ -12,11 +12,11 @@ const parser = require('cron-parser');
 export interface collectInterface {
     id: number | null;
     refDate: Date,
-    Client: {
+    client: {
         id: number,
         nomCommercial: string,
         adresse: string,
-        Utilisateur: {
+        utilisateur: {
             nom: string,
             prenom: string
         },
@@ -196,11 +196,11 @@ export class CollectService {
         return {
             id: null,
             refDate: new Date(date),
-            Client: {
+            client: {
                 id: client.id,
                 nomCommercial: client.nomCommercial,
                 adresse: client.adresse,
-                Utilisateur: {
+                utilisateur: {
                     nom: client.utilisateur.nom,
                     prenom: client.utilisateur.prenom
                 },
@@ -213,11 +213,11 @@ export class CollectService {
         return {
             id: collect.id,
             refDate: collect.refDate,
-            Client: {
+            client: {
                 id: collect.client.id,
                 nomCommercial: collect.client.nomCommercial,
                 adresse: collect.client.adresse,
-                Utilisateur: {
+                utilisateur: {
                     nom: collect.client.utilisateur.nom,
                     prenom: collect.client.utilisateur.prenom
                 },

@@ -22,15 +22,17 @@ interface collecteursInterface {
 interface ramassageInterface {
     id: number;
     refDate: Date;
-    Client: {
+    date: Date;
+    client: {
         id: number;
         adresse: string;
-        Utilisateur:{
+        utilisateur:{
             nom: string;
             prenom: string;
         }
     };
     isSubscribe: boolean;
+    isAssigned: boolean;
 }
 
 interface etapesInterface {
@@ -46,16 +48,13 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
-    const [sendErrorMessage, setSendErrorMessage] = useState('');
     const [open, setOpen] = React.useState(false);
     const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
-    const [Collector, setCollector] = useState(1);
+    const [Collector, setCollector] = useState<number>();
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
     const [interval, setInterval] = useState(''); 
-
-
     
     // let collectorList
     useEffect(() => {
@@ -76,6 +75,23 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
         setCollectorEtape(collectorEtape)
     })
 
+
+    function getEtapeAlreadyAssigned() {
+        axios.get(HOST_BACK + '/etape/collecteur/' + Collector + '/' + date, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(etapesAssigned => {
+            setCollectorEtape([])
+            etapesAssigned.data.map((etapeAss: ramassageInterface) => {
+                etapeAss.isAssigned = true;
+                setCollectorEtape((collectorEtape: any) => [...collectorEtape, etapeAss])
+            })
+        })
+        console.log(collectorEtape);
+    }
+
+
     function setEtapesArray() {
         setFinalEtapeList([])
         axios.get(HOST_BACK + '/collect/date?date=' + date, {
@@ -84,12 +100,14 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
             } 
         }).then(ramassage =>{
                 console.log(ramassage.data)
-                ramassage.data.map((etape: ramassageInterface) => {                    
+                ramassage.data.map((etape: ramassageInterface) => {
+                    etape.isAssigned = false;                    
                     setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 })
         }).catch((err) => {
             console.log(err)
         })
+        getEtapeAlreadyAssigned()
     };
     
     function fillSelectOptions(){
@@ -340,7 +358,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                                 }}
                                                 />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
+                                            <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`} />
                                         </ListItem>
                                     );
                                     })}
@@ -411,18 +429,18 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                 </FormControl>
                                 <FormControl>
                                     <h3>Intervale:</h3>
-                            <TextField
-                                sx={{ width: 90, mt: 0.5, ml: 0.5}}
-                                id="outlined-number"
-                                label="Minute"
-                                type="number"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={(newInterval) => {
-                                    setInterval(newInterval.target.value);
-                                }}
-                            />
+                                        <TextField
+                                            sx={{ width: 90, mt: 0.5, ml: 0.5}}
+                                            id="outlined-number"
+                                            label="Minute"
+                                            type="number"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            onChange={(newInterval) => {
+                                                setInterval(newInterval.target.value);
+                                            }}
+                                        />
                                  </FormControl>
                             </Grid>
                             <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
@@ -446,7 +464,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                                         'aria-labelledby': labelId,
                                                     }} />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
+                                            <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(etape.date).format('DD.MM.YYYY')} | ${etape.client.adresse}`} />
                                         </ListItem>
                                         <Grid container direction="row" alignItems="center" justifyContent="center">
                                                 <Button

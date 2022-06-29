@@ -119,6 +119,23 @@ export class EtapeService {
             .getMany();
     }
 
+    findByCollecteurDate(id: number, date: string) {
+        const today = date + 'T00:00:00.000';
+        const tomorrow = date + 'T23:59:59.000';
+
+        return this.etapeRepository
+            .createQueryBuilder('etape')
+            .innerJoinAndSelect('etape.client', 'c')
+            .innerJoinAndSelect('c.utilisateur', 'u')
+            .innerJoinAndSelect('etape.collecteur', 'col')
+            .innerJoinAndSelect('col.utilisateur', 'uCol')
+            .where('etape.collecteur.id = :id', {id})
+            .andWhere('etape.date >= :today', {today})
+            .andWhere('etape.date <= :tomorrow', {tomorrow})
+            .orderBy('etape.date', "ASC")
+            .getMany();
+    }
+
 
     async findByCollecteurAndDate(
         take: number,

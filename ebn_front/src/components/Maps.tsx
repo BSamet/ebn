@@ -33,7 +33,7 @@ const Maps: React.VFC = ({collectorEtape}: any) => {
       //On Parcours la liste d'etape du collecteur
       collectorEtape.map((etape: any) => {
         //On récupère l'adresse du client stockée en base de donnée que l'on stocke dans une variable
-        let adress = etape.Client.adresse;
+        let adress = etape.client.adresse;
         //On formate l'adresse récupérée pour remplacer les espaces par des '+'
         let adressFormat = adress.replaceAll(" ", "+")
         //Requête vers l'API gouvernementale
