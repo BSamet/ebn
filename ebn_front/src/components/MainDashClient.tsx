@@ -137,7 +137,7 @@ const MainDashClient = ({
                                 client?.collect.filter((checkCollect) => checkCollect.cronExpression != null).map((subscribe, index) => (
                                     <div key={index}>
                                         <p>
-                                            A partir du{" "}
+                                            Les {subscribe.typeDechet.typeDechets.toLowerCase()}, à partir du{" "}
                                             {moment(subscribe.refDate).zone("+00:00").locale('fr').format(
                                                 "DD MMMM YYYY"
                                             )}{" "}
@@ -161,7 +161,7 @@ const MainDashClient = ({
                                 client?.collect.filter((checkCollect) => checkCollect.cronExpression === null).map((oneTime, index) => (
                                     <div key={index}>
                                         <p>
-                                            Le{" "}
+                                            Les {oneTime.typeDechet.typeDechets.toLowerCase()}, Le{" "}
                                             {moment(oneTime.refDate).zone("+00:00").locale('fr').format("DD.MMMM.YYYY à HH [h] mm")}{" "}
                                         </p>
                                     </div>
