@@ -4,8 +4,11 @@ import { Alert, Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemTe
 import { useEffect, useState } from "react";
 import { HOST_BACK } from "../environment/environment"
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import moment from "moment";
 import '../styles/component/_AgendaOrganisation.scss';
+import moment from 'moment'
+import 'moment/locale/fr' 
+moment.locale('fr')
+
 
 
 interface collecteursInterface {
@@ -35,12 +38,15 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
+    const [sendErrorMessage, setSendErrorMessage] = useState('');
     const [open, setOpen] = React.useState(false);
     const [finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
     const [Collector, setCollector] = useState(1);
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
+    const [interval, setInterval] = useState(''); 
+ 
 
     // let collectorList
     useEffect(() => {
@@ -203,32 +209,16 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
 
     function sendCollectorEtape() {
         let numberOfEtape = 0;
-        //heure matin
-        let h1am = 0;
-        let h2am = 8;
-        let m1am = 0;
-        let m2am = 0;
-        //heure aprem
-        let h1pm = 1;
-        let h2pm = 2;
-        let m1pm = 0;
-        let m2pm = 0;
-        //set Date
-        let date: string;
-
-        collectorEtape.map((etape: { refDate: moment.MomentInput; Client: { id: any; }; isSubscribe: boolean; id: number; }) => {
-            if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
-                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z";
-            } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){
-                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1pm + h2pm + ":" + m1pm + m2pm + "" + ":00.000Z";
-            }  
+        let etapeNotSend = 0;
+        collectorEtape?.map((etape) => { 
             const etapeToAdd = {
                 clientId: etape.Client.id,
                 collecteurId: Collector,
                 isCollected: false,
                 commentaire: "",
-                date: date,
+                date: incrementDateTime(etape.refDate, numberOfEtape, parseInt(interval), etape),
             }
+            if(etapeToAdd.date != null){
                 axios
                 .post(HOST_BACK + "/etape", etapeToAdd, {
                     headers: {
@@ -236,13 +226,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     }
                 })
                 .then(response => { 
-                    console.log(etape.refDate)    
-                    console.log("Format: " + moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00.000Z")                
-                    numberOfEtape ++;
                     if(numberOfEtape == collectorEtape?.length){
                         setCollectorEtape([]);
                         setOpen(true)
-                        setSendMessage('Les étapes ont été assignées au collecteur')
                     }
                     if(etape.isSubscribe == false){
                         deleteCollect(etape.id);
@@ -251,40 +237,45 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 .catch(error => {
                     console.log(error)
                 });
-                if(etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z"){
-                    m1am += 2;
-                    if(m1am == 6){
-                        m1am = 0;
-                        h2am += 1;
-                    }
-                    if(h2am == 10){
-                        h2am = 0;
-                        h1am += 1;
-                    }
-                    if(h1am == 2 && h2am == 4){
-                        h1am = 0;
-                        h2am = 0;
-                    }
-                } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z"){
-                    m1pm += 2;
-                    if(m1pm == 6){
-                        m1pm = 0;
-                        h2pm += 1;
-                    }
-                    if(h2pm == 10){
-                        h2pm = 0;
-                        h1pm += 1;
-                    }
-                    if(h1pm == 2 && h2pm == 4){
-                        h1pm = 0;
-                        h2pm = 0;
-                    }
-                }  
+            } else {
+                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape])
+                etapeNotSend ++
+            }  
                 
+                numberOfEtape ++;
+
             })
-        
+            if(etapeNotSend > 0){
+                setSendMessage(etapeNotSend + " étapes sur " + numberOfEtape + " n'ont pas été assignées")
+            } else {
+                setSendMessage('Toutes les étapes ont été assignées au collecteur')
+            }
+
+            
+            
       }
-        
+
+      function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface){
+        let timeInterval = interval * etapeNumber;
+        console.log('salut'+date);
+
+        // console.log("etape" + etape)
+            const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");   
+            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12){
+                return
+                
+            }
+            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19){
+                return
+            }
+            if(new Date(date).getDate() != new Date(travelTime).getDate()){ 
+                return 
+            }
+
+            return travelTime
+            }
+             
+            
     return (
         <>
             <div className="conteneur">
@@ -321,6 +312,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                         onChange={(newDate) => {
                                             setDate(newDate.target.value);
                                         }}
+                                        
                                     />       
                                 </FormControl>
                                 <Button
@@ -425,6 +417,21 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                         ))}
                                     </TextField>
                                 </FormControl>
+                                <FormControl>
+                                    <h3>Intervale:</h3>
+                            <TextField
+                                sx={{ width: 90, mt: 0.5, ml: 0.5}}
+                                id="outlined-number"
+                                label="Minute"
+                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                onChange={(newInterval) => {
+                                    setInterval(newInterval.target.value);
+                                }}
+                            />
+                                 </FormControl>
                             </Grid>
                             <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
                                 <List dense component="div" role="list">
@@ -486,6 +493,8 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                             >
                                 Sauvegarder
                     </Button>
+       
+       
                 </Grid>
             </div>
             

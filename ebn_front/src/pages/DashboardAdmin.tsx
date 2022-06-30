@@ -35,11 +35,14 @@ const DashboardAdmin = () => {
 
   const [collectorEtape, setCollectorEtape]= useState([]);
 
+<<<<<<< HEAD
+=======
   const [consultCollectorEtape, setconsultCollectorEtape] = useState([]);
 
   const[actionSelected, setActionSelected] = useState('');
 
 
+>>>>>>> 0ee098dc4854497ba792ac62456a3cb06fbb3e44
   useEffect(() => {
     console.log("action" + actionSelected)
     const sessionExp: any = sessionStorage.getItem("token_exp");
