@@ -263,19 +263,26 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
             }
 
             
-            console.log(etapeNotSend)
+            
       }
 
       function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface){
         let timeInterval = interval * etapeNumber;
+        console.log('salut'+date);
+
         // console.log("etape" + etape)
             const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");   
-            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T08:00:00.000Z" && new Date(travelTime).getHours() >= 12 || new Date(date).getDate() != new Date(travelTime).getDate()){
+            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12){
+                return
+                
+            }
+            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19){
                 return
             }
-            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T12:00:00.000Z" && new Date(travelTime).getHours() >= 20 || new Date(date).getDate() != new Date(travelTime).getDate()){
-                return
+            if(new Date(date).getDate() != new Date(travelTime).getDate()){ 
+                return 
             }
+
             return travelTime
             }
              
