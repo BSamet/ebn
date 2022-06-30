@@ -34,22 +34,13 @@ interface ramassageInterface {
     isSubscribe: boolean;
 }
 
-interface etapesInterface {
-    id: number;
-    date: Date;
-    isCollected: boolean;
-    clientId: number;
-    commentaire: string;
-    collecteurId: number;
-}
-
-export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
+export function AgendaOrganisation({setCollectorEtape, collectorEtape, setActionSelected}: any){
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
     const [sendErrorMessage, setSendErrorMessage] = useState('');
     const [open, setOpen] = React.useState(false);
-    const[finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
+    const [finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
     const [Collector, setCollector] = useState(1);
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
@@ -57,8 +48,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [interval, setInterval] = useState(''); 
  
 
-
-    
     // let collectorList
     useEffect(() => {
         if (fetchOnce) {
@@ -73,7 +62,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
             });
         }
     }, [collecteursList, fetchOnce]);
-
     useEffect(() => {
         setCollectorEtape(collectorEtape)
     })
@@ -85,7 +73,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             } 
         }).then(ramassage =>{
-                console.log(ramassage.data)
                 ramassage.data.map((etape: ramassageInterface) => {                    
                     setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 })
@@ -136,7 +123,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const handleAllRight = () => {
       if(finalEtapeList![0] == undefined){
       }else{
-          console.log('yo', finalEtapeList);
           finalEtapeList.map(etape => {
             setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
             })          
@@ -145,40 +131,41 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
       };      
     
     const handleCheckedRight = () => {
-        for(let i = 0; i <= leftChecked.length; i++){
+        leftChecked.sort((a, b) => a - b )
+        let newFinalEtapeList = Array.from(finalEtapeList)
+        for(let i = 0; i < leftChecked.length; i++){
             finalEtapeList?.map((etape) => {   
-                        if(etape.id == leftChecked[i]){
-                            const newFinalEtapeList = Array.from(finalEtapeList)
-                            let etapeIndex = newFinalEtapeList.indexOf(etape);
-                            let checkedIndex = leftChecked.indexOf(leftChecked[i]);
-                            setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
-                            newFinalEtapeList?.splice(etapeIndex, 1);  
-                            setFinalEtapeList(newFinalEtapeList)  
-                            leftChecked.splice(checkedIndex, 1);
-                        }
+                if(etape.id == leftChecked[i]){
+                    let etapeIndex = newFinalEtapeList.indexOf(etape);
+                    let checkedIndex = leftChecked.indexOf(leftChecked[i]);
+                    newFinalEtapeList?.splice(etapeIndex, 1);
+                    leftChecked.splice(checkedIndex, 1);
+                    setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
+                }
             })
         }
+        setFinalEtapeList(newFinalEtapeList);
     };
 
     const handleCheckedLeft = () => {
-        for(let i = 0; i <= rightChecked.length; i++){
+        rightChecked.sort((a, b) => a - b )
+        let newCollectorEtape = Array.from(collectorEtape)
+        for(let i = 0; i < rightChecked.length; i++){
             collectorEtape?.map((etape: ramassageInterface) => {   
-                    if(etape.id == rightChecked[i]){
-                        const newCollectorEtape = Array.from(collectorEtape)
-                        let etapeIndex = newCollectorEtape.indexOf(etape);
-                        let checkedIndex = rightChecked.indexOf(rightChecked[i]);
-                        setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
-                        newCollectorEtape?.splice(etapeIndex, 1); 
-                        setCollectorEtape(newCollectorEtape);  
-                        rightChecked.splice(checkedIndex, 1);   
-                    }
+                if(etape.id == rightChecked[i]){
+                    let etapeIndex = newCollectorEtape.indexOf(etape);
+                    let checkedIndex = rightChecked.indexOf(rightChecked[i]);
+                    newCollectorEtape?.splice(etapeIndex, 1); 
+                    rightChecked.splice(checkedIndex, 1);   
+                    setFinalEtapeList((finalEtapeList: ramassageInterface[]) => [...finalEtapeList, etape]);
+                }
             })
         }
-      };
+        setCollectorEtape(newCollectorEtape);  
+    };
     
     const handleAllLeft = () => {
         if(collectorEtape![0] == undefined){
-
         } else {
             collectorEtape.map(etape => {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
@@ -292,13 +279,31 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     return (
         <>
             <div className="conteneur">
+<<<<<<< HEAD
                 <h1>Organiser l'agenda</h1>
                     
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                        <Alert severity="success">{sendMessage}</Alert>
                     </Snackbar>
                     
+=======
+                <Button
+                    className="backButton"
+                    variant="outlined"
+                    size="medium"
+                    onClick={() => {setActionSelected('')}}
+                    aria-label="move all left"
+                >
+                    Retour
+                </Button>
+                <h1>Organiser l'agenda</h1>      
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert severity="success">{sendMessage}</Alert>
+                </Snackbar>
+                
+>>>>>>> 0ee098dc4854497ba792ac62456a3cb06fbb3e44
                 <Grid container justifyContent="center" alignItems="center">
+                
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
                         <Grid item >
                             <Grid marginBottom={1}>
@@ -337,7 +342,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                     return (
                                         
                                         <ListItem
-                                            key={etape.id}
+                                            // key={etape.id}
                                             role="listitem"
                                             button
                                             onClick={handleLeftToggle(etape.id)}
@@ -444,7 +449,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                     const date = etape.refDate;
                                     return (
                                         <><ListItem
-                                            key={etape.id}
+                                            // key={etape.id}
                                             role="listitem"
                                             button
                                             onClick={handleRightToggle(etape.id)}
