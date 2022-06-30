@@ -279,14 +279,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     return (
         <>
             <div className="conteneur">
-<<<<<<< HEAD
-                <h1>Organiser l'agenda</h1>
-                    
-                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                       <Alert severity="success">{sendMessage}</Alert>
-                    </Snackbar>
-                    
-=======
                 <Button
                     className="backButton"
                     variant="outlined"
@@ -301,7 +293,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     <Alert severity="success">{sendMessage}</Alert>
                 </Snackbar>
                 
->>>>>>> 0ee098dc4854497ba792ac62456a3cb06fbb3e44
                 <Grid container justifyContent="center" alignItems="center">
                 
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
