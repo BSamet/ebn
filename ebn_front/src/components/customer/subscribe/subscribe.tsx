@@ -127,7 +127,13 @@ const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
                 let findSubscribe = false;
                 client.collect.map((collect) => {
                     if (collect.cronExpression != null) {
-                        if (collect.refDate === date + hour && collect.typeDechet.id === typeOfWaste) {
+                        // Récupérer les heures dans la demande abonnement et les abonnements en cours
+                        let refDateToDate = new Date(collect.refDate);
+                        let getHourInCollectDate = refDateToDate.getHours();
+                        let subscribeRequestDateToDate = new Date(date+hour);
+                        let getHourInCollectRequestDate = subscribeRequestDateToDate.getHours()
+
+                        if (getHourInCollectDate.toString() === getHourInCollectRequestDate.toString() && collect.typeDechet.id === typeOfWaste) {
                             let splitCronExpression = collect.cronExpression.split(' ');
                             let takeSplitCronExpressionDays = splitCronExpression[splitCronExpression.length -1];
                             let allDaysInCronExpressionToArray = takeSplitCronExpressionDays.split(',');
