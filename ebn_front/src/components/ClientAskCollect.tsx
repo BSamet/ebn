@@ -41,11 +41,11 @@ interface collectProps {
 
 const hours = [
     {
-        value: 'T08:00:00.000Z',
+        value: 'T08:00:00',
         label: 'Matin',
     },
     {
-        value: 'T12:00:00.000Z',
+        value: 'T12:00:00',
         label: 'Après-Midi',
     },
 
@@ -100,13 +100,14 @@ export function ClientAskCollect({client, setClient, allTypeOfWaste}: collectPro
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.value)
         setHour(event.target.value);
     };
 
     function setTimePeriod() {
-        if (hour == "T08:00:00.000Z") {
+        if (hour == "T08:00:00") {
             setPeriod("Matin");
-        } else if (hour == "T12:00:00.000Z") {
+        } else if (hour == "T12:00:00") {
             setPeriod("Après-Midi");
         } else {
             setPeriod("Aucune tranche horaire sélectionnée")

@@ -46,23 +46,9 @@ interface typeOfWaste {
 
 interface ClientDashInterface {
     selectNav: string;
-    setSelectConteneurId: any;
-    selectConteneurId: string;
-    setSelectClientId: any;
-    selectClientId: string
-    setSelectCollecteurId: any;
-    selectCollecteurId: string
 }
 
-const MainDashClient = ({
-                            selectNav,
-                            setSelectConteneurId,
-                            selectConteneurId,
-                            setSelectClientId,
-                            selectClientId,
-                            setSelectCollecteurId,
-                            selectCollecteurId
-                        }: ClientDashInterface) => {
+const MainDashClient = ({selectNav}: ClientDashInterface) => {
     const {id} = useParams();
     const [client, setClient] = useState<clientInterface>();
     const [allTypeOfWaste, setAllTypeOfWaste] = useState<typeOfWaste>()
@@ -77,7 +63,6 @@ const MainDashClient = ({
             })
             .then((res) => {
                 setClient(res.data);
-                console.log('main', res.data)
             })
             .catch(function (error) {
                 console.log(error);
@@ -93,7 +78,6 @@ const MainDashClient = ({
             })
             .then((res) => {
                 setAllTypeOfWaste(res.data);
-                console.log("main", res.data)
             })
             .catch(function (error) {
                 console.log(error);
@@ -104,6 +88,22 @@ const MainDashClient = ({
         getClient();
         getAllTypeOfWaste();
     }, []);
+
+    const formatCronToStringDate = (cron: string) => {
+        let cronToString = cronstrue.toString(cron, {
+            locale: 'fr',
+            use24HourTimeFormat: true
+        }).split(", ")
+        let getDateInSplittedCron = cronToString[0].split(" ")
+        let timeToPeriod = "";
+        if (getDateInSplittedCron[1] === "08:00") {
+            timeToPeriod = "les matins"
+        } else {
+            timeToPeriod = "les après-midi"
+        }
+
+        return timeToPeriod + ", "+cronToString[1]
+    }
 
     switch (selectNav) {
         case 'Demande de collecte':
@@ -138,13 +138,10 @@ const MainDashClient = ({
                                     <div key={index}>
                                         <p>
                                             Les {subscribe.typeDechet.typeDechets.toLowerCase()}, à partir du{" "}
-                                            {moment(subscribe.refDate).zone("+00:00").locale('fr').format(
+                                            {moment(subscribe.refDate).locale('fr').format(
                                                 "DD MMMM YYYY"
-                                            )}{" "}
-                                            {cronstrue.toString(subscribe.cronExpression, {
-                                                locale: 'fr',
-                                                use24HourTimeFormat: true
-                                            }).toLowerCase()}.
+                                            )}{", "}
+                                            {formatCronToStringDate(subscribe.cronExpression)}.
                                         </p>
                                     </div>
                                 ))
@@ -161,8 +158,8 @@ const MainDashClient = ({
                                 client?.collect.filter((checkCollect) => checkCollect.cronExpression === null).map((oneTime, index) => (
                                     <div key={index}>
                                         <p>
-                                            Les {oneTime.typeDechet.typeDechets.toLowerCase()}, Le{" "}
-                                            {moment(oneTime.refDate).zone("+00:00").locale('fr').format("DD.MMMM.YYYY à HH [h] mm")}{" "}
+                                            Les {oneTime.typeDechet.typeDechets.toLowerCase()}, le{" "}
+                                            {moment(oneTime.refDate).locale('fr').format("DD MMMM YYYY")}{" "} {new Date(oneTime.refDate).getHours() === 8 ? "matin" : "après-midi"}
                                         </p>
                                     </div>
                                 ))

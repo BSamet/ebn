@@ -7,11 +7,11 @@ import {HOST_BACK} from "../../../environment/environment";
 
 const hours = [
     {
-        value: 'T08:00:00.000Z',
+        value: 'T08:00:00',
         label: 'Matin',
     },
     {
-        value: 'T12:00:00.000Z',
+        value: 'T12:00:00',
         label: 'Après-Midi',
     },
 
@@ -84,9 +84,9 @@ const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
         };
 
         const setTimePeriod = () => {
-            if (hour === "T08:00:00.000Z") {
+            if (hour === "T08:00:00") {
                 setPeriod("matin");
-            } else if (hour === "T12:00:00.000Z") {
+            } else if (hour === "T12:00:00") {
                 setPeriod("après-midi");
             } else {
                 setPeriod("Aucune tranche horaire sélectionnée")

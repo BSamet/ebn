@@ -8,8 +8,8 @@ services:
       - SYS_NICE
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    build:
-      context: ebn_back/database
+#    build:
+#      context: ebn_back/database
     env_file:
       - ebn_back/.env.docker
     volumes:
