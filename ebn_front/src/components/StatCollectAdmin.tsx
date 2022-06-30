@@ -27,15 +27,16 @@ const StatCollectAdmin = () => {
      const [finalArrayBio, setFinalArrayBio] = useState<number[]>([])
      const [finalArrayCafé, setFinalArrayCafé] = useState<number[]>([])
     let arrayCafé : Array <any> = [];
+    const [loaded, setLoaded] = useState(false)
     
     
     useEffect(() => {
-        axios.get(HOST_BACK + '/historique/date/' +beforeDateSend +'/'+  todayDateSend   , {
+        if(loaded === false){
+        axios.get(HOST_BACK + '/historique/date/'+beforeDateSend +'/'+  todayDateSend   , {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
     
-                console.log("res",res.data);
                 
                 res.data.map((history : HistoriqueClient)=>{   
                 
@@ -47,46 +48,43 @@ const StatCollectAdmin = () => {
                     } 
                 })
                 
+console.log(arrayBio);
 
-                for(let xIndex =0, historyIndex = 0; xIndex<arrayDate.length; ){  
-                     
-                    if(arrayDate[xIndex]==moment(arrayBio[historyIndex].date).format("DD-MM")){
-                         setFinalArrayBio(finalArrayBio => [...finalArrayBio, arrayBio[historyIndex].poids])
-                       xIndex ++
-                       historyIndex =0;
-                    }
-                    else if(arrayDate[xIndex]!=moment(arrayBio[historyIndex].date).format("DD-MM") && historyIndex != arrayBio.length -1){
-                       historyIndex ++
-                   }
-                   else if (arrayDate[xIndex]!=moment(arrayBio[historyIndex].date).format("DD-MM") && historyIndex == arrayBio.length -1){
-                        setFinalArrayBio(finalArrayBio => [...finalArrayBio, 0])
-                       xIndex ++
-                       historyIndex = 0;
-                   }
-                  
-               
-                   
-               }
-               for(let xIndex =0, historyIndex = 0; xIndex<arrayDate.length; ){ 
-                 if(arrayDate[xIndex]==moment(arrayCafé[historyIndex].date).format("DD-MM")){
-                    setFinalArrayCafé(finalArrayCafé => [...finalArrayCafé, arrayCafé[historyIndex].poids])
-                    xIndex ++
-                    historyIndex =0;
-                 }
-                 else if(arrayDate[xIndex]!=moment(arrayCafé[historyIndex].date).format("DD-MM") && historyIndex != arrayCafé.length -1){
-                    historyIndex ++
+                
+        for (let dateIndex = 0, historyBioIndex = 0, historyCaféIndex = 0; dateIndex < arrayDate.length; dateIndex++) {
+            console.log(dateIndex);
+            
+            if (arrayDate[dateIndex] == moment(arrayBio[historyBioIndex].date).format("DD-MM")) {
+                finalArrayBio.push(arrayBio[historyBioIndex].poids)
+                historyBioIndex++
+                
+                
+            }
+            else {
+                finalArrayBio.push(0)
+            }
+            if (arrayDate[dateIndex] == moment(arrayCafé[historyCaféIndex].date).format("DD-MM")) {
+                finalArrayCafé.push(arrayCafé[historyCaféIndex].poids)
+                if(historyCaféIndex == arrayBio.length -1){
+                   historyCaféIndex --
                 }
-                else if (arrayDate[xIndex]!=moment(arrayCafé[historyIndex].date).format("DD-MM") && historyIndex == arrayCafé.length -1){
-               
-                    setFinalArrayCafé(finalArrayCafé => [...finalArrayCafé, 0])
-                    xIndex ++
-                    historyIndex = 0;
+                else{
+                    historyCaféIndex++
                 }
-
-               }
+                
+            }
+            else {
+                finalArrayCafé.push(0)
+            }            
+            
+        }
 
             })
-        }, [])
+            .finally(()=>{
+                setLoaded(true)
+            })
+        }
+        }, [loaded])
 
               
                 
@@ -95,12 +93,12 @@ const StatCollectAdmin = () => {
                     let  previousDate= moment(previousDateNotFormated).format("DD-MM")
                     arrayDate.push(previousDate)
                 }           
+console.log(arrayDate);
+console.log("bio",finalArrayBio);
+console.log("café",finalArrayCafé);
 
-                // console.log(finalArrayBio);
-                // console.log(finalArrayCafé);
-                // console.log("b",arrayBio);
-                // console.log("c",arrayCafé);
-                
+
+
                 
     const state = {
 
@@ -139,7 +137,8 @@ const StatCollectAdmin = () => {
                 },
             },
             xaxis: {
-                categories: arrayDate
+                categories: arrayDate.map((date : any)=>{
+                    return date})
             },
             fill: {
                 opacity: 1
@@ -153,8 +152,10 @@ const StatCollectAdmin = () => {
 
         <div className="chart">
             <h4>Statistique de collecte</h4>
+            {loaded &&
             <ReactApexChart options={state.options} series={state.series} type="bar" height={350} />
-        </div>
+            }   
+            </div>
         
     );
 };

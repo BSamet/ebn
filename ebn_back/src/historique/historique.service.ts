@@ -54,7 +54,6 @@ export class HistoriqueService {
       .getMany();
   }
 
-<<<<<<< HEAD
   findByDate(dateStart: Date, dateEnd:Date) {
     console.log(dateStart);
     console.log(dateEnd);
@@ -71,19 +70,6 @@ export class HistoriqueService {
       .addGroupBy('historique.typeDeDechet')
       .orderBy('historique.date')
       .getRawMany();  
-=======
-  findByDate(dateStart: Date, dateEnd : Date) {
-    console.log(dateStart);
-    return this.historiqueRepository
-      .createQueryBuilder('historique')
-      .where('historique.date >= :dateStart' , {
-        dateStart,
-      })
-      .andWhere(dateEnd ? 'historique.date <= :dateEnd' : '1=1', { dateEnd })
-      .getMany();
-      
-      
->>>>>>> d4178f0a1670307e16a38ceb39829092bb718202
   }
 
   async findAllHistoriquesPagination(

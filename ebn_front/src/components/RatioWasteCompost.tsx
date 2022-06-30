@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from "react-apexcharts";
+import { render } from 'react-dom';
 import { HOST_BACK } from '../environment/environment';
 
  interface HistoriqueClient { 
@@ -24,7 +25,7 @@ const RatioWasteCompost = () => {
     const [startDate, setstartDate] = useState(moment(endDateNotFormated).format("YYYY-MM-DD"));
     const [endDateSend,setEndDateSent] = useState(moment(endDate).format("YYYY-MM-DD")+"T23:59:59")
     
-    useEffect(() => {
+    
         axios.get(HOST_BACK + '/historique/date/' + startDate +'/'+  endDateSend   , {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
@@ -38,15 +39,13 @@ const RatioWasteCompost = () => {
                         realHistoryPoids= parseInt(history.poids)
                         countCafé+= realHistoryPoids
                       }   
-                      setNbBioDechet(countBio) 
-                      setMarcCafé(countCafé)
+                      
                       
                   })
-            
-                
-    
+                  setNbBioDechet(countBio) 
+                setMarcCafé(countCafé)
         })
-    }, [])
+   
      
     function validateFilter(){
         axios.get(HOST_BACK + '/historique/date/' + startDate +'/'+  endDateSend   , {
@@ -61,14 +60,16 @@ const RatioWasteCompost = () => {
                      if(history.typeDeDechet == "Biodéchets"){
                         realHistoryPoids= parseInt(history.poids)
                         countBio+= realHistoryPoids
+                        setNbBioDechet(countBio) 
                         
                       }
                       else{
                         realHistoryPoids= parseInt(history.poids)
                         countCafé+= realHistoryPoids
+                        setMarcCafé(countCafé)
                       }   
-                      setNbBioDechet(countBio) 
-                      setMarcCafé(countCafé)
+                    
+                      
                       
                   })
     
@@ -86,21 +87,15 @@ const RatioWasteCompost = () => {
             colors:['green','orange'],
             chart: {
             },
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
+       
         },
 
 
     };
+    
+    
+
+   
     return (
         <div className="charts">
             <h4>Ratio Déchets/Composte</h4>
@@ -109,7 +104,7 @@ const RatioWasteCompost = () => {
                     id="datetime-local"
                     label="Date de début"
                     type="datetime-local"
-                    defaultValue="2022-05-27T00:01"
+                    defaultValue="2022-05-24T00:01"
                     sx={{ width: 300}}
                     InputLabelProps={{
                     shrink: true,
@@ -120,7 +115,7 @@ const RatioWasteCompost = () => {
                     id="datetime-local"
                     label="Date de fin"
                     type="datetime-local"
-                    defaultValue="2022-06-27T23:59"
+                    defaultValue="2022-05-24T23:59"
                     sx={{ width: 300}}
                     InputLabelProps={{
                     shrink: true,
@@ -132,5 +127,6 @@ const RatioWasteCompost = () => {
         </div>
     );
 };
+
 
 export default RatioWasteCompost;
