@@ -10,6 +10,7 @@ import 'moment/locale/fr'
 moment.locale('fr')
 
 
+
 interface collecteursInterface {
     id: number;
     numeroVelo: number;
@@ -54,6 +55,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
     const [interval, setInterval] = useState(''); 
+ 
 
 
     
@@ -425,7 +427,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any){
                                 sx={{ width: 90, mt: 0.5, ml: 0.5}}
                                 id="outlined-number"
                                 label="Minute"
-                                type="number"
+                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
