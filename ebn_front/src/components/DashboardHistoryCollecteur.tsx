@@ -5,13 +5,8 @@ import {HOST_BACK} from "../environment/environment";
 import { Box, Button, Divider, Grid, List, ListItem, ListItemText, MenuItem, Pagination, Stack, TextField } from "@mui/material";
 import {FormControl, InputLabel, Select} from "@mui/material";
 import '../styles/component/_DashboardHistoryCollecteur.scss';
-import { listenerCount } from "process";
 import moment from "moment";
-
-
-
-
-
+import 'moment/locale/fr.js'
 
 interface Collecteur {
         id: number;
@@ -54,26 +49,23 @@ const hours = [
     
   ];
 
-export function DashboardHistoryCollecteur () {
+export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCollectorEtape, setActionSelected}: any) {
     const [Collecteur, setCollecteur] = useState<Collecteur[]>();
     const [InformationEtape, setInformationEtape] = useState<InformationEtape[]>();
     const [fetchOnce, setFetchOnce] = useState(true);
     const [fetchCollectorOnce, setFetchCollectorOnce] = useState(true);
     const [collecteurid, setCollecteurId] = useState('null');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
     const [hour, setHour] = React.useState('');
     const [limit, setLimit] = React.useState('');
     const [page, setPage] = React.useState(1);
-    const [totalPages, setTotalPages] = React.useState('')
-
-
+    const [totalPages, setTotalPages] = React.useState('');
 
     useEffect(() => {
         if(fetchCollectorOnce){
         axios.get(HOST_BACK + '/collecteur',{
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            
             }}).then(res => {
                 setCollecteur(res.data)
                 setFetchCollectorOnce(false)
@@ -83,27 +75,37 @@ export function DashboardHistoryCollecteur () {
 
     useEffect(() => {
         if(fetchOnce){
-            console.log(collecteurid)
             setPage(1)
             axios.get(HOST_BACK + '/etape/day/' + page +'/?take=5', {
                 headers: {
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
+                setConsultCollectorEtape([])
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
+                res.data.etapes.map(etape => {
+                    setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                })
+                console.log(consultCollectorEtape);
                 setFetchOnce(false)
+
             })
         }
     }, [fetchOnce, InformationEtape])
 
     function getEtapeByCollecteur(){
         setPage(1);
+        setConsultCollectorEtape([])
         if(date == undefined || date == '' || hour == undefined || hour == ''){
             axios.get(HOST_BACK + '/etape/collecteur/' + collecteurid, {
                 headers: {
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                 }}).then(res => {
                     setInformationEtape(res.data)
+                    res.data.etapes.map(etape => {
+                        console.log(etape)
+                        setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                    })
                 }).catch((err) =>
                 console.log(err.response))
         } else {
@@ -111,8 +113,14 @@ export function DashboardHistoryCollecteur () {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
+                console.log(res.data);
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
+                res.data.etapes.map(etape => {
+                    console.log(etape)
+                    setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                })
+                console.log(consultCollectorEtape);
             }).catch((err) =>
             console.log(err.response))
         }
@@ -140,6 +148,10 @@ export function DashboardHistoryCollecteur () {
             }}).then(res => {
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
+                res.data.etapes.map(etape => {
+                    console.log(etape)
+                    setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                })
                 setFetchOnce(false)
             })
         } else {
@@ -149,7 +161,10 @@ export function DashboardHistoryCollecteur () {
                 }}).then(res => {
                     setInformationEtape(res.data.etapes)
                     setTotalPages(res.data.totalPages)
-
+                    res.data.etapes.map(etape => {
+                        console.log(etape)
+                        setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
+                    })
                 }).catch((err) =>
                     console.log(err.response)
                 )
@@ -158,6 +173,15 @@ export function DashboardHistoryCollecteur () {
 
     return(
     <div className="conteneurs">
+        <Button
+            className="backButton"
+            variant="outlined"
+            size="medium"
+            onClick={() => {setActionSelected('')}}
+            aria-label="move all left"
+        >
+                    Retour
+                </Button>
         <h1>Consulter l'agenda</h1>
         <Grid container justifyContent="space-around" alignItems="center" marginTop={-4}>
             <FormControl>
@@ -167,7 +191,7 @@ export function DashboardHistoryCollecteur () {
                     select
                     value={collecteurid}
                     label="Collecteur"
-                    sx={{ width: 250, mt: 0.5}}
+                    sx={{ width: 250, mt: 0.5 }}
                     InputLabelProps={{
                         shrink: true,
                     }}
@@ -184,7 +208,7 @@ export function DashboardHistoryCollecteur () {
                     id="datetime-local"
                     label="Date"
                     type="date"
-                    defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
+                    defaultValue= {date}
                     sx={{ width: 250, mt: 0.5}}
                     InputLabelProps={{
                         shrink: true,

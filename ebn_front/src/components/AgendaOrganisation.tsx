@@ -1,12 +1,12 @@
 import axios from "axios"
 import React from "react";
+
 import {
     Alert,
     Button,
     Checkbox,
     Grid,
-    List,
-    ListItem,
+    List, ListItem,
     ListItemIcon,
     ListItemText,
     Paper,
@@ -50,6 +50,7 @@ interface ramassageInterface {
     isSubscribe: boolean;
 }
 
+
 export function AgendaOrganisation({setCollectorEtape, collectorEtape, setActionSelected}: any) {
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
@@ -62,7 +63,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
     const [interval, setInterval] = useState('');
-
 
     // let collectorList
     useEffect(() => {
@@ -289,7 +289,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         return travelTime
     }
 
-
     return (
         <>
             <div className="conteneur">
@@ -310,7 +309,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 </Snackbar>
 
                 <Grid container justifyContent="center" alignItems="center">
-
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
                         <Grid item>
                             <Grid marginBottom={1}>
@@ -328,7 +326,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                         onChange={(newDate) => {
                                             setDate(newDate.target.value);
                                         }}
-
                                     />
                                 </FormControl>
                                 <Button
@@ -454,7 +451,8 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                             <Paper sx={{width: 400, height: 530, overflow: 'auto'}}>
                                 <List dense component="div" role="list">
                                     {collectorEtape?.map((etape: any) => {
-                                        const labelId = `transfer-list-item-${etape.id}-label`;
+                                        const labelId = `
+                                    transfer - list - item -${etape.id} -label`;
                                         const date = etape.refDate;
                                         return (
                                             <><ListItem
@@ -484,7 +482,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                                             moveEtapeUp(etape)
                                                         }}
                                                         disabled={collectorEtape.indexOf(etape) === 0}
-
                                                         aria-label="move one up"
                                                     >
                                                         ↑
@@ -517,8 +514,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     >
                         Sauvegarder
                     </Button>
-
-
                 </Grid>
             </div>
 
