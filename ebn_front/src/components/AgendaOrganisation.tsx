@@ -274,7 +274,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface) {
         let timeInterval = interval * etapeNumber;
 
-        const travelTime = moment(date).zone("+00:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
+        const travelTime = moment(date).zone("+02:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
         if (date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12) {
             return
 
