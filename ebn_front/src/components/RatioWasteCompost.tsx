@@ -100,6 +100,7 @@ const RatioWasteCompost = () => {
         <div className="charts">
             <h4>Ratio Déchets/Composte</h4>
                 <ReactApexChart options={state.options} series={state.series} type="donut" />
+                <div className = "filtre">
                 <TextField
                 className = "filtre"
                     id="datetime-local"
@@ -112,8 +113,12 @@ const RatioWasteCompost = () => {
                     }}               
                     onChange={(e) =>  setstartDate(e.target.value)}
                 />
+                 </div>
+                 <div className = "filtre">
                 <TextField
-                 className = "filtre"
+
+               
+                
                     id="datetime-local"
                     label="Date de fin"
                     type="datetime-local"
@@ -124,7 +129,7 @@ const RatioWasteCompost = () => {
                     }}
                     onChange={(e) =>  setEndDateSent(e.target.value)}
                     />
-
+ </div>
                <button onClick={validateFilter}> Valider</button>
         </div>
     );
