@@ -12,7 +12,7 @@ start-dev:
 	@docker-compose -f docker-compose-dev.yml up
 
 stop-dev:
-	@docker-compose -f docker-compose-dev.yml stop
+	@docker-compose -f docker-compose-dev.yml down
 
 clean-dev:
 	@docker-compose -f docker-compose-dev.yml down
@@ -33,7 +33,7 @@ start-prod:
 	@docker-compose -f docker-compose-prod.yml up
 
 stop-prod:
-	@docker-compose -f docker-compose-prod.yml stop
+	@docker-compose -f docker-compose-prod.yml down
 
 clean-prod:
 	@docker-compose -f docker-compose-prod.yml down

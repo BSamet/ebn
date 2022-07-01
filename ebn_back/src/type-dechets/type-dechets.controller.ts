@@ -27,7 +27,7 @@ export class TypeDechetsController {
     return this.typeDechetsService.create(createTypeDechetDto);
   }
 
-  @hasRoles(UserRole.ADMIN)
+  @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll() {

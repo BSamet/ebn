@@ -12,4 +12,7 @@ export class CreateCollectDto {
 
     @ApiProperty()
     public clientId: number;
+
+    @ApiProperty()
+    public typeDechetId: number;
 }

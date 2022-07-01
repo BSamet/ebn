@@ -1,14 +1,26 @@
 import axios from "axios"
 import React from "react";
-import { Alert, Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Paper, Snackbar, TextField } from '@mui/material';
-import { useEffect, useState } from "react";
-import { HOST_BACK } from "../environment/environment"
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+
+import {
+    Alert,
+    Button,
+    Checkbox,
+    Grid,
+    List, ListItem,
+    ListItemIcon,
+    ListItemText,
+    Paper,
+    Snackbar,
+    TextField
+} from '@mui/material';
+import {useEffect, useState} from "react";
+import {HOST_BACK} from "../environment/environment"
+import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import '../styles/component/_AgendaOrganisation.scss';
 import moment from 'moment'
-import 'moment/locale/fr' 
-moment.locale('fr')
+import 'moment/locale/fr'
 
+moment.locale('fr')
 
 
 interface collecteursInterface {
@@ -23,18 +35,23 @@ interface collecteursInterface {
 interface ramassageInterface {
     id: number;
     refDate: Date;
-    Client: {
+    client: {
         id: number;
         adresse: string;
-        Utilisateur:{
+        utilisateur: {
             nom: string;
             prenom: string;
         }
     };
+    typeDechet: {
+        id: number;
+        typeDechet: string;
+    }
     isSubscribe: boolean;
 }
 
-export function AgendaOrganisation({setCollectorEtape, collectorEtape, setActionSelected}: any){
+
+export function AgendaOrganisation({setCollectorEtape, collectorEtape, setActionSelected}: any) {
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
@@ -45,8 +62,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
-    const [interval, setInterval] = useState(''); 
- 
+    const [interval, setInterval] = useState('');
 
     // let collectorList
     useEffect(() => {
@@ -71,21 +87,21 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         axios.get(HOST_BACK + '/collect/date?date=' + date, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            } 
-        }).then(ramassage =>{
-                ramassage.data.map((etape: ramassageInterface) => {                    
-                    setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
-                })
+            }
+        }).then(ramassage => {
+            ramassage.data.map((etape: ramassageInterface) => {
+                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
+            })
         }).catch((err) => {
             console.log(err)
         })
     };
-    
-    function fillSelectOptions(){
+
+    function fillSelectOptions() {
         const options = collecteursList?.map((list) => {
             return (
                 [
-                    { value: list.id, label: list.utilisateur.nom },
+                    {value: list.id, label: list.utilisateur.nom},
                 ]);
         })
         return options;
@@ -94,11 +110,11 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const handleLeftToggle = (value: number) => () => {
         const currentIndex = leftChecked.indexOf(value);
         const newChecked = [...leftChecked];
-    
+
         if (currentIndex === -1) {
-          newChecked.push(value);
+            newChecked.push(value);
         } else {
-          newChecked.splice(currentIndex, 1);
+            newChecked.splice(currentIndex, 1);
         }
         setLeftChecked(newChecked);
     };
@@ -106,11 +122,11 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const handleRightToggle = (value: number) => () => {
         const currentIndex = rightChecked.indexOf(value);
         const newChecked = [...rightChecked];
-    
+
         if (currentIndex === -1) {
-          newChecked.push(value);
+            newChecked.push(value);
         } else {
-          newChecked.splice(currentIndex, 1);
+            newChecked.splice(currentIndex, 1);
         }
         setRightChecked(newChecked);
     };
@@ -121,21 +137,21 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     }
 
     const handleAllRight = () => {
-      if(finalEtapeList![0] == undefined){
-      }else{
-          finalEtapeList.map(etape => {
-            setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
-            })          
-          setFinalEtapeList([]);
+        if (finalEtapeList![0] == undefined) {
+        } else {
+            finalEtapeList.map(etape => {
+                setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
+            })
+            setFinalEtapeList([]);
         }
-      };      
-    
+    };
+
     const handleCheckedRight = () => {
-        leftChecked.sort((a, b) => a - b )
+        leftChecked.sort((a, b) => a - b)
         let newFinalEtapeList = Array.from(finalEtapeList)
-        for(let i = 0; i < leftChecked.length; i++){
-            finalEtapeList?.map((etape) => {   
-                if(etape.id == leftChecked[i]){
+        for (let i = 0; i < leftChecked.length; i++) {
+            finalEtapeList?.map((etape) => {
+                if (etape.id == leftChecked[i]) {
                     let etapeIndex = newFinalEtapeList.indexOf(etape);
                     let checkedIndex = leftChecked.indexOf(leftChecked[i]);
                     newFinalEtapeList?.splice(etapeIndex, 1);
@@ -148,24 +164,24 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     };
 
     const handleCheckedLeft = () => {
-        rightChecked.sort((a, b) => a - b )
+        rightChecked.sort((a, b) => a - b)
         let newCollectorEtape = Array.from(collectorEtape)
-        for(let i = 0; i < rightChecked.length; i++){
-            collectorEtape?.map((etape: ramassageInterface) => {   
-                if(etape.id == rightChecked[i]){
+        for (let i = 0; i < rightChecked.length; i++) {
+            collectorEtape?.map((etape: ramassageInterface) => {
+                if (etape.id == rightChecked[i]) {
                     let etapeIndex = newCollectorEtape.indexOf(etape);
                     let checkedIndex = rightChecked.indexOf(rightChecked[i]);
-                    newCollectorEtape?.splice(etapeIndex, 1); 
-                    rightChecked.splice(checkedIndex, 1);   
+                    newCollectorEtape?.splice(etapeIndex, 1);
+                    rightChecked.splice(checkedIndex, 1);
                     setFinalEtapeList((finalEtapeList: ramassageInterface[]) => [...finalEtapeList, etape]);
                 }
             })
         }
-        setCollectorEtape(newCollectorEtape);  
+        setCollectorEtape(newCollectorEtape);
     };
-    
+
     const handleAllLeft = () => {
-        if(collectorEtape![0] == undefined){
+        if (collectorEtape![0] == undefined) {
         } else {
             collectorEtape.map(etape => {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
@@ -176,12 +192,12 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
         setOpen(false);
     };
 
-    function deleteCollect(id: number){
+    function deleteCollect(id: number) {
         axios.delete(HOST_BACK + "/collect/" + id, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
@@ -189,7 +205,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         })
     };
 
-    function moveEtapeUp(etape: any){
+    function moveEtapeUp(etape: any) {
         const newCollectorEtape = Array.from(collectorEtape)
         const fromIndex = newCollectorEtape.indexOf(etape);
         const toindex = fromIndex - 1;
@@ -198,7 +214,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         setCollectorEtape(newCollectorEtape)
     }
 
-    function moveEtapeDown(etape: any){
+    function moveEtapeDown(etape: any) {
         const newCollectorEtape = Array.from(collectorEtape)
         const fromIndex = newCollectorEtape.indexOf(etape);
         const toindex = fromIndex + 1;
@@ -210,72 +226,69 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     function sendCollectorEtape() {
         let numberOfEtape = 0;
         let etapeNotSend = 0;
-        collectorEtape?.map((etape) => { 
+        collectorEtape?.map((etape) => {
             const etapeToAdd = {
-                clientId: etape.Client.id,
+                clientId: etape.client.id,
                 collecteurId: Collector,
                 isCollected: false,
                 commentaire: "",
                 date: incrementDateTime(etape.refDate, numberOfEtape, parseInt(interval), etape),
+                typeDechetId: etape.typeDechet.id
             }
-            if(etapeToAdd.date != null){
+            if (etapeToAdd.date != null) {
                 axios
-                .post(HOST_BACK + "/etape", etapeToAdd, {
-                    headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                    }
-                })
-                .then(response => { 
-                    if(numberOfEtape == collectorEtape?.length){
-                        setCollectorEtape([]);
-                        setOpen(true)
-                    }
-                    if(etape.isSubscribe == false){
-                        deleteCollect(etape.id);
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-                });
+                    .post(HOST_BACK + "/etape", etapeToAdd, {
+                        headers: {
+                            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        if (numberOfEtape == collectorEtape?.length) {
+                            setCollectorEtape([]);
+                            setOpen(true)
+                        }
+                        if (etape.isSubscribe == false) {
+                            deleteCollect(etape.id);
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
             } else {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape])
-                etapeNotSend ++
-            }  
-                
-                numberOfEtape ++;
-
-            })
-            if(etapeNotSend > 0){
-                setSendMessage(etapeNotSend + " étapes sur " + numberOfEtape + " n'ont pas été assignées")
-            } else {
-                setSendMessage('Toutes les étapes ont été assignées au collecteur')
+                etapeNotSend++
             }
 
-            
-            
-      }
+            numberOfEtape++;
 
-      function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface){
+        })
+        if (etapeNotSend > 0) {
+            setSendMessage(etapeNotSend + " étapes sur " + numberOfEtape + " n'ont pas été assignées")
+        } else {
+            setSendMessage('Toutes les étapes ont été assignées au collecteur')
+        }
+
+
+    }
+
+    function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface) {
         let timeInterval = interval * etapeNumber;
-        console.log('salut'+date);
 
-        // console.log("etape" + etape)
-            const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");   
-            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12){
-                return
-                
-            }
-            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19){
-                return
-            }
-            if(new Date(date).getDate() != new Date(travelTime).getDate()){ 
-                return 
-            }
+        const travelTime = moment(date).zone("+00:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
+        if (date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12) {
+            return
 
-            return travelTime
-            }
-             
-            
+        }
+        if (date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19) {
+            return
+        }
+        if (new Date(date).getDate() != new Date(travelTime).getDate()) {
+            return
+        }
+
+        return travelTime
+    }
+
     return (
         <>
             <div className="conteneur">
@@ -283,40 +296,40 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     className="backButton"
                     variant="outlined"
                     size="medium"
-                    onClick={() => {setActionSelected('')}}
+                    onClick={() => {
+                        setActionSelected('')
+                    }}
                     aria-label="move all left"
                 >
                     Retour
                 </Button>
-                <h1>Organiser l'agenda</h1>      
+                <h1>Organiser l'agenda</h1>
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                     <Alert severity="success">{sendMessage}</Alert>
                 </Snackbar>
-                
+
                 <Grid container justifyContent="center" alignItems="center">
-                
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
-                        <Grid item >
+                        <Grid item>
                             <Grid marginBottom={1}>
                                 <FormControl>
-                                    <h3>Sélectionner une date:</h3>  
+                                    <h3>Sélectionner une date:</h3>
                                     <TextField
                                         id="datetime-local"
                                         label="Date"
                                         type="date"
                                         defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
-                                        sx={{ width: 300, mt: 0.5}}
+                                        sx={{width: 300, mt: 0.5}}
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
                                         onChange={(newDate) => {
                                             setDate(newDate.target.value);
                                         }}
-                                        
-                                    />       
+                                    />
                                 </FormControl>
                                 <Button
-                                    sx={{ my: 0.5, mt: 8.2, ml: 0.5}}
+                                    sx={{my: 0.5, mt: 8.2, ml: 0.5}}
                                     variant="outlined"
                                     size="medium"
                                     onClick={setEtapesArray}
@@ -325,185 +338,188 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                     Valider
                                 </Button>
                             </Grid>
-                            <Paper sx={{ width: 400, height: 530, overflow: 'auto', fontSize: 10 }}>
+                            <Paper sx={{width: 400, height: 530, overflow: 'auto', fontSize: 10}}>
                                 <List dense component="div" role="list">
                                     {finalEtapeList?.map((etape: any) => {
-                                    const labelId = `transfer-list-item-${etape.id}-label`;
-                                    const date = etape.refDate;
-                                    return (
-                                        
-                                        <ListItem
-                                            // key={etape.id}
-                                            role="listitem"
-                                            button
-                                            onClick={handleLeftToggle(etape.id)}
+                                        const labelId = `transfer-list-item-${etape.id}-label`;
+                                        const date = etape.refDate;
+                                        return (
+
+                                            <ListItem
+                                                // key={etape.id}
+                                                role="listitem"
+                                                button
+                                                onClick={handleLeftToggle(etape.id)}
                                             >
-                                            <ListItemIcon>
-                                                <Checkbox
-                                                checked={leftChecked.indexOf(etape.id) !== -1}
-                                                tabIndex={-1}
-                                                disableRipple
-                                                inputProps={{
-                                                    'aria-labelledby': labelId,
-                                                }}
-                                                />
-                                            </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
-                                        </ListItem>
-                                    );
+                                                <ListItemIcon>
+                                                    <Checkbox
+                                                        checked={leftChecked.indexOf(etape.id) !== -1}
+                                                        tabIndex={-1}
+                                                        disableRipple
+                                                        inputProps={{
+                                                            'aria-labelledby': labelId,
+                                                        }}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText id={labelId}
+                                                              primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`}/>
+                                            </ListItem>
+                                        );
                                     })}
-                                    <ListItem />
+                                    <ListItem/>
                                 </List>
                             </Paper>
                         </Grid>
                         <Grid item>
                             <Grid container direction="column" alignItems="center">
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleAllRight}
-                                disabled={finalEtapeList?.length === 0}
-                                aria-label="move all right"
-                            >
-                                ≫
-                            </Button>
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleCheckedRight}
-                                disabled={finalEtapeList?.length === 0}
-                                aria-label="move selected right"
-                            >
-                                &gt;
-                            </Button>
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleCheckedLeft}
-                                disabled={collectorEtape?.length === 0}
-                                aria-label="move selected left"
-                            >
-                                &lt;
-                            </Button>
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleAllLeft}
-                                disabled={collectorEtape?.length === 0}
-                                aria-label="move all left"
-                            >
-                                ≪
-                            </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleAllRight}
+                                    disabled={finalEtapeList?.length === 0}
+                                    aria-label="move all right"
+                                >
+                                    ≫
+                                </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleCheckedRight}
+                                    disabled={finalEtapeList?.length === 0}
+                                    aria-label="move selected right"
+                                >
+                                    &gt;
+                                </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleCheckedLeft}
+                                    disabled={collectorEtape?.length === 0}
+                                    aria-label="move selected left"
+                                >
+                                    &lt;
+                                </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleAllLeft}
+                                    disabled={collectorEtape?.length === 0}
+                                    aria-label="move all left"
+                                >
+                                    ≪
+                                </Button>
                             </Grid>
                         </Grid>
                         <Grid item>
                             <Grid marginBottom={1}>
-                                <FormControl >
+                                <FormControl>
                                     <h3>Sélectionner un collecteur:</h3>
                                     <TextField
-                                        sx={{ width: 300, mt: 0.5}}
+                                        sx={{width: 300, mt: 0.5}}
                                         id="select"
                                         select
                                         value={fillSelectOptions()}
                                         label="Collecteur"
-                                        onChange={handleChange}                        
+                                        onChange={handleChange}
                                     >
-                                        {collecteursList?.map((list) =>(
-                                            <MenuItem key={list.id} value={list.id}>{list.utilisateur.nom + " " + list.utilisateur.prenom}</MenuItem>
+                                        {collecteursList?.map((list) => (
+                                            <MenuItem key={list.id}
+                                                      value={list.id}>{list.utilisateur.nom + " " + list.utilisateur.prenom}</MenuItem>
                                         ))}
                                     </TextField>
                                 </FormControl>
                                 <FormControl>
                                     <h3>Intervale:</h3>
-                            <TextField
-                                sx={{ width: 90, mt: 0.5, ml: 0.5}}
-                                id="outlined-number"
-                                label="Minute"
-                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={(newInterval) => {
-                                    setInterval(newInterval.target.value);
-                                }}
-                            />
-                                 </FormControl>
+                                    <TextField
+                                        sx={{width: 90, mt: 0.5, ml: 0.5}}
+                                        id="outlined-number"
+                                        label="Minute"
+                                        inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        onChange={(newInterval) => {
+                                            setInterval(newInterval.target.value);
+                                        }}
+                                    />
+                                </FormControl>
                             </Grid>
-                            <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
+                            <Paper sx={{width: 400, height: 530, overflow: 'auto'}}>
                                 <List dense component="div" role="list">
                                     {collectorEtape?.map((etape: any) => {
-                                    const labelId = `transfer-list-item-${etape.id}-label`;
-                                    const date = etape.refDate;
-                                    return (
-                                        <><ListItem
-                                            // key={etape.id}
-                                            role="listitem"
-                                            button
-                                            onClick={handleRightToggle(etape.id)}
-                                        >
-                                            <ListItemIcon>
-                                                <Checkbox
-                                                    checked={rightChecked.indexOf(etape.id) !== -1}
-                                                    tabIndex={-1}
-                                                    disableRipple
-                                                    inputProps={{
-                                                        'aria-labelledby': labelId,
-                                                    }} />
-                                            </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.Client.Utilisateur.nom} ${etape.Client.Utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.Client.adresse}`} />
-                                        </ListItem>
-                                        <Grid container direction="row" alignItems="center" justifyContent="center">
-                                                <Button
-                                                    sx={{ height: 20, mx: 0.2 }}
+                                        const labelId = `
+                                    transfer - list - item -${etape.id} -label`;
+                                        const date = etape.refDate;
+                                        return (
+                                            <><ListItem
+                                                // key={etape.id}
+                                                role="listitem"
+                                                button
+                                                onClick={handleRightToggle(etape.id)}
+                                            >
+                                                <ListItemIcon>
+                                                    <Checkbox
+                                                        checked={rightChecked.indexOf(etape.id) !== -1}
+                                                        tabIndex={-1}
+                                                        disableRipple
+                                                        inputProps={{
+                                                            'aria-labelledby': labelId,
+                                                        }}/>
+                                                </ListItemIcon>
+                                                <ListItemText id={labelId}
+                                                              primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`}/>
+                                            </ListItem>
+                                                <Grid container direction="row" alignItems="center"
+                                                      justifyContent="center">
+                                                    <Button
+                                                        sx={{height: 20, mx: 0.2}}
+                                                        variant="outlined"
+                                                        onClick={() => {
+                                                            moveEtapeUp(etape)
+                                                        }}
+                                                        disabled={collectorEtape.indexOf(etape) === 0}
+                                                        aria-label="move one up"
+                                                    >
+                                                        ↑
+                                                    </Button><Button
+                                                    sx={{height: 20, mx: 0.2}}
                                                     variant="outlined"
-                                                    onClick={() => {moveEtapeUp(etape)}}
-                                                    disabled={collectorEtape.indexOf(etape) === 0}
-
-                                                    aria-label="move one up"
-                                                >
-                                                    ↑
-                                                </Button><Button
-                                                    sx={{ height: 20, mx: 0.2 }}
-                                                    variant="outlined"
-                                                    onClick={() => {moveEtapeDown(etape)}}
+                                                    onClick={() => {
+                                                        moveEtapeDown(etape)
+                                                    }}
                                                     disabled={collectorEtape.indexOf(etape) === collectorEtape.length - 1}
 
                                                     aria-label="move one down"
                                                 >
                                                     ↓
                                                 </Button>
-                                            </Grid></>
-                                    );
+                                                </Grid></>
+                                        );
                                     })}
-                                    <ListItem />
+                                    <ListItem/>
                                 </List>
                             </Paper>
                         </Grid>
                     </Grid>
                     <Button
-                                sx={{ width: 200, my: 0.5, mt: 1.5 }}
-                                variant="outlined"
-                                size="medium"
-                                onClick={sendCollectorEtape}
-                                aria-label="save all "
-                            >
-                                Sauvegarder
+                        sx={{width: 200, my: 0.5, mt: 1.5}}
+                        variant="outlined"
+                        size="medium"
+                        onClick={sendCollectorEtape}
+                        aria-label="save all "
+                    >
+                        Sauvegarder
                     </Button>
-       
-       
                 </Grid>
             </div>
-            
+
         </>
-        )
-    
+    )
+
 }
 
 export default AgendaOrganisation
-
-
-

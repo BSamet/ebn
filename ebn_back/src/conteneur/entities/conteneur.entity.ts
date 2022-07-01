@@ -14,7 +14,7 @@ export class Conteneur {
     @Column()
     public isAvailable: boolean;
 
-    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {onUpdate: 'CASCADE'})
+    @ManyToOne(() => TypeDechet, (typeDechet) => typeDechet.conteneur, {eager: true, onUpdate: 'CASCADE'})
     @JoinTable()
     typeDechet: TypeDechet;
 

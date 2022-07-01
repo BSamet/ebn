@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  
   .emptyCollect {
     color: red;
     font-weight: bold;
@@ -17,7 +18,8 @@
   height: 93%;
   overflow-y: scroll;
   scrollbar-color: rebeccapurple green;
-  scrollbar-width: thin;}
+  scrollbar-width: thin;
+}
 
 .idClient {
   word-wrap: break-word;
@@ -28,7 +30,7 @@
   margin-top: 2rem;
   gap: 10px;
   border-radius: 3rem;
-  width: 40rem;
+  width: 50rem;
   font-size: 20px;
   color: white;
   font-weight: bold;
@@ -37,6 +39,7 @@
   h4 {
     margin-top: 2rem;
   }
+
   p {
     color: #ffffff;
     font-size: 1rem;
@@ -55,7 +58,7 @@
   background-color: #8ac997;
   margin-top: 2rem;
   gap: 10px;
-  width: 40rem;
+  width: 50rem;
   border-radius: 3rem;
   font-size: 20px;
   color: white;
@@ -76,7 +79,7 @@
   }
 }
 
-.dontvalid{
+.dontvalid {
   word-wrap: break-word;
   overflow: auto;
   -webkit-box-shadow: 0px 0px 15px -1px rgba(0, 0, 0, 0.34);
@@ -85,7 +88,7 @@
   margin-top: 2rem;
   gap: 10px;
   border-radius: 3rem;
-  width: 40rem;
+  width: 50rem;
   font-size: 20px;
   font-weight: bold;
   text-align: center;
@@ -100,7 +103,7 @@
   background-color: #8ac997;
   margin-top: 2rem;
   gap: 10px;
-  width: 40rem;
+  width: 50rem;
   border-radius: 3rem;
   font-size: 20px;
   color: white;
