@@ -35,7 +35,13 @@ const DashboardAdmin = () => {
 
   const [collectorEtape, setCollectorEtape]= useState([]);
 
+  const [consultCollectorEtape, setconsultCollectorEtape] = useState([]);
+
+  const[actionSelected, setActionSelected] = useState('');
+
+
   useEffect(() => {
+    console.log("action" + actionSelected)
     const sessionExp: any = sessionStorage.getItem("token_exp");
     const role: any = sessionStorage.getItem("role");
     if (!sessionStorage.getItem("role")) {
@@ -74,11 +80,17 @@ const DashboardAdmin = () => {
           selectCollecteurId={selectCollecteurId}
           setCollectorEtape={setCollectorEtape}
           collectorEtape={collectorEtape}
+          consultCollectorEtape={consultCollectorEtape}
+          setConsultCollectorEtape={setconsultCollectorEtape}
+          actionSelected={actionSelected}
+          setActionSelected={setActionSelected}
         />
         <ViewAdminRightSide
           selectRight={selectRight}
           selectConteneurId={selectConteneurId}
           collectorEtape={collectorEtape}
+          consultCollectorEtape={consultCollectorEtape}
+          actionSelected={actionSelected}
         />
   
       </div>

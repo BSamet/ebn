@@ -7,10 +7,14 @@ import DashboardHistoryCollecteur from "./DashboardHistoryCollecteur";
 interface AgendaDashInterface{
     setCollectorEtape: any,
     collectorEtape: any,
+    consultCollectorEtape: any,
+    setConsultCollectorEtape: any,
+    actionSelected: any,
+    setActionSelected: any
 }
 
-export function AgendaDash({setCollectorEtape, collectorEtape}: AgendaDashInterface){
-    const[actionSelected, setActionSelected] = useState('');
+export function AgendaDash({setCollectorEtape, collectorEtape, consultCollectorEtape, setConsultCollectorEtape, actionSelected, setActionSelected}: AgendaDashInterface){
+    // const[actionSelected, setActionSelected] = useState('');
 
     function setOrganisation(){
         setActionSelected('Organiser')
@@ -23,11 +27,11 @@ export function AgendaDash({setCollectorEtape, collectorEtape}: AgendaDashInterf
     switch(actionSelected){
         case 'Organiser':
             return(
-                <AgendaOrganisation setCollectorEtape={setCollectorEtape} collectorEtape={collectorEtape} />   
+                <AgendaOrganisation setCollectorEtape={setCollectorEtape} collectorEtape={collectorEtape} setActionSelected={setActionSelected} />   
             )
         case 'Consulter':
             return(
-                <DashboardHistoryCollecteur />
+                <DashboardHistoryCollecteur setConsultCollectorEtape={setConsultCollectorEtape} consultCollectorEtape={consultCollectorEtape} setActionSelected={setActionSelected} />
             )
         default :
             return(
