@@ -8,6 +8,9 @@ export class CreateEtapeDto {
     public collecteurId: number;
 
     @ApiProperty()
+    public typeDechetId: number;
+
+    @ApiProperty()
     public isCollected: boolean;
 
     @ApiProperty()
