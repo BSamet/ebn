@@ -23,6 +23,10 @@ export interface collectInterface {
             prenom: string
         },
     },
+    typeDechet: {
+        id: number
+        typeDechet: string
+    },
     isSubscribe: boolean
 }
 
@@ -67,7 +71,7 @@ export class CollectService {
             .where('typeDechet.id = :id', {id: createCollectDto.typeDechetId})
             .getOne();
 
-        if (checkClientType === null){
+        if (checkClientType === null) {
             await this.clientService.addTypeOfWaste(createCollectDto.clientId, {typeDechetsId: createCollectDto.typeDechetId})
         }
 
@@ -100,11 +104,13 @@ export class CollectService {
         const allCollectSubscribe = await this.collectRepository
             .createQueryBuilder('collect')
             .leftJoinAndSelect('collect.client', 'client')
+            .leftJoinAndSelect('collect.typeDechet', 'dechet')
             .leftJoinAndSelect('client.utilisateur', 'utilisateur')
             .select('collect')
             .addSelect('client.id')
             .addSelect('client.nomCommercial')
             .addSelect('client.adresse')
+            .addSelect('dechet')
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression != ''")
@@ -118,11 +124,13 @@ export class CollectService {
         const allCollectNotSubscribe = await this.collectRepository
             .createQueryBuilder('collect')
             .leftJoinAndSelect('collect.client', 'client')
+            .leftJoinAndSelect('collect.typeDechet', 'dechet')
             .leftJoinAndSelect('client.utilisateur', 'utilisateur')
             .select('collect')
             .addSelect('client.id')
             .addSelect('client.nomCommercial')
             .addSelect('client.adresse')
+            .addSelect('dechet')
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression IS NULL")
@@ -176,13 +184,13 @@ export class CollectService {
                         let obj = intervalSubscribe.next();
                         // Si le paramètre date existe on demande à nous retourner les dates qui sont égaux au paramètre et uniquement ceux qui ne sont pas existant dans la table étape
                         if (date) {
-                            if (this.dateEquals(obj.value, date) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id)) {
-                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client))
+                            if (this.dateEquals(obj.value, date) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id, subscribe.typeDechet.id)) {
+                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client, subscribe.typeDechet))
                             }
                         } else {
                             // Si le paramètre date n'existe on demande à nous retourner les dates supérieur à la date d'aujourd'hui et uniquement ceux qui ne sont pas existant dans la table étape
-                            if (this.dateSup(obj.value, currentDay) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id)) {
-                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client))
+                            if (this.dateSup(obj.value, currentDay) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id, subscribe.typeDechet.id)) {
+                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client, subscribe.typeDechet))
                             }
                         }
                     } catch
@@ -202,13 +210,15 @@ export class CollectService {
         return await this.etapeRepository
             .createQueryBuilder('etape')
             .leftJoinAndSelect('etape.client', 'client')
+            .leftJoinAndSelect('etape.typeDechet', 'dechet')
             .getMany();
     }
 
-    hasEqualDateAndSameClient(steps: Etape[], refDate: Date, clientId: number) {
+    hasEqualDateAndSameClient(steps: Etape[], refDate: Date, clientId: number, typeDechetId: number) {
         let match = false;
+
         for (let i = 0; i < steps.length; i++) {
-            if (this.dateEquals(steps[i].date, refDate) && steps[i].client.id === clientId) {
+            if (this.dateEquals(steps[i].date, refDate) && steps[i].client.id === clientId && steps[i].typeDechet.id === typeDechetId) {
                 match = true;
                 break;
             }
@@ -216,7 +226,7 @@ export class CollectService {
         return match;
     }
 
-    setSubscribeToPush(date: Date, client: Client): collectInterface {
+    setSubscribeToPush(date: Date, client: Client, typeDechet: TypeDechet): collectInterface {
         return {
             id: null,
             refDate: new Date(date),
@@ -228,6 +238,10 @@ export class CollectService {
                     nom: client.utilisateur.nom,
                     prenom: client.utilisateur.prenom
                 },
+            },
+            typeDechet: {
+                id: typeDechet.id,
+                typeDechet: typeDechet.typeDechets
             },
             isSubscribe: true
         }
@@ -245,6 +259,10 @@ export class CollectService {
                     nom: collect.client.utilisateur.nom,
                     prenom: collect.client.utilisateur.prenom
                 },
+            },
+            typeDechet: {
+                id: collect.typeDechet.id,
+                typeDechet: collect.typeDechet.typeDechets
             },
             isSubscribe: false
         }
@@ -282,11 +300,11 @@ export class CollectService {
 
         for (let i = 0; i < collect.length; i++) {
             if (dateParam) {
-                if (this.dateEquals(collect[i].refDate, dateParam) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id)) {
+                if (this.dateEquals(collect[i].refDate, dateParam) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id, collect[i].typeDechet.id)) {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
                 }
             } else {
-                if (this.dateSup(collect[i].refDate, currentDay) && this.dateInf(collect[i].refDate, futureDayFormated) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id)) {
+                if (this.dateSup(collect[i].refDate, currentDay) && this.dateInf(collect[i].refDate, futureDayFormated) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id, collect[i].typeDechet.id)) {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
                 }
             }

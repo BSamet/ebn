@@ -130,14 +130,14 @@ const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
                         // Récupérer les heures dans la demande abonnement et les abonnements en cours
                         let refDateToDate = new Date(collect.refDate);
                         let getHourInCollectDate = refDateToDate.getHours();
-                        let subscribeRequestDateToDate = new Date(date+hour);
+                        let subscribeRequestDateToDate = new Date(date + hour);
                         let getHourInCollectRequestDate = subscribeRequestDateToDate.getHours()
 
                         if (getHourInCollectDate.toString() === getHourInCollectRequestDate.toString() && collect.typeDechet.id === typeOfWaste) {
                             let splitCronExpression = collect.cronExpression.split(' ');
-                            let takeSplitCronExpressionDays = splitCronExpression[splitCronExpression.length -1];
+                            let takeSplitCronExpressionDays = splitCronExpression[splitCronExpression.length - 1];
                             let allDaysInCronExpressionToArray = takeSplitCronExpressionDays.split(',');
-                            if(allDaysInCronExpressionToArray.some(day => dayToPost.includes(parseInt(day)))) {
+                            if (allDaysInCronExpressionToArray.some(day => dayToPost.includes(parseInt(day)))) {
                                 findSubscribe = true;
                             }
                         }
@@ -299,14 +299,14 @@ const Subscribe = ({client, setClient, allTypeOfWaste}: subscribeProps) => {
                     ))}
                 </Grid>
                 {confirm &&
-                    <Grid container justifyContent="center" alignItems="center" textAlign="center" marginTop={2}>
-                        Vous allez souscrire à un abonnement qui va démarrer
-                        le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
-                        {selectedDay.filter((checkDay) => checkDay.status).map(day =>
-                            ' le ' + day.day.toLocaleLowerCase() + ' ' + period
-                        ).join(',')}
-                        . <br /> Êtes-vous sûr ?
-                    </Grid>
+                <Grid container justifyContent="center" alignItems="center" textAlign="center" marginTop={2}>
+                    Vous allez souscrire à un abonnement qui va démarrer
+                    le {moment(date).format('DD MMMM YYYY')}, la collecte se fera{" "}
+                    {selectedDay.filter((checkDay) => checkDay.status).map(day =>
+                        ' le ' + day.day.toLocaleLowerCase() + ' ' + period
+                    ).join(',')}
+                    . <br/> Êtes-vous sûr ?
+                </Grid>
                 }
                 <Grid container justifyContent="center" alignItems="center" marginTop={2}
                       className="subscribeContainer__error">

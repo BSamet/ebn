@@ -74,8 +74,7 @@ export function ClientAskCollect({client, setClient, allTypeOfWaste}: collectPro
             let findCollect = false;
             client.collect.map((collect) => {
                 if (collect.cronExpression === null) {
-                    if (collect.refDate === date + hour && collect.typeDechet.id === typeOfWaste) {
-                        console.log("hey")
+                    if (collect.refDate === new Date(date + hour).toISOString() && collect.typeDechet.id === typeOfWaste) {
                         findCollect = true;
                     }
                 }
@@ -100,7 +99,6 @@ export function ClientAskCollect({client, setClient, allTypeOfWaste}: collectPro
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value)
         setHour(event.target.value);
     };
 
@@ -173,117 +171,117 @@ export function ClientAskCollect({client, setClient, allTypeOfWaste}: collectPro
         setOpen(false);
     };
 
-        return (
-            <div className="conteneur">
-                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert severity="success">{sendMessage}</Alert>
-                </Snackbar>
-                <h1>Demande de collecte</h1>
-                <Grid container spacing={5} justifyContent="center" alignItems="center">
-                    <Grid item>
-                        <FormControl>
-                            <h3>Sélectionner une date:</h3>
-                            <TextField
-                                disabled={confirm}
-                                id="datetime-local"
-                                label="Date"
-                                type="date"
-                                defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
-                                sx={{width: 300, mt: 0.5}}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={(newDate) => {
-                                    setDate(newDate.target.value);
-                                }}
-                                />
-                        </FormControl>
-                    </Grid>
-                    <Grid item>
-                        <FormControl>
-                            <h3>Sélectionner une tranche horaire:</h3>
-                            <TextField
-                                disabled={confirm}
-                                sx={{width: 300, mt: 0.5}}
-                                id="select"
-                                select
-                                value={hour}
-                                label="Horaire"
-                                onChange={handleChange}
-                            >
-                                {hours.map((hour) => (
-                                    <MenuItem key={hour.value} value={hour.value}>{hour.label}</MenuItem>
-                                ))}
-                            </TextField>
-                        </FormControl>
-                    </Grid>
+    return (
+        <div className="conteneur">
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert severity="success">{sendMessage}</Alert>
+            </Snackbar>
+            <h1>Demande de collecte</h1>
+            <Grid container spacing={5} justifyContent="center" alignItems="center">
+                <Grid item>
+                    <FormControl>
+                        <h3>Sélectionner une date:</h3>
+                        <TextField
+                            disabled={confirm}
+                            id="datetime-local"
+                            label="Date"
+                            type="date"
+                            defaultValue="moment(nowDate.getDate()).format('DD.MM.YYYY')"
+                            sx={{width: 300, mt: 0.5}}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={(newDate) => {
+                                setDate(newDate.target.value);
+                            }}
+                        />
+                    </FormControl>
                 </Grid>
-                <Grid container spacing={5} justifyContent="center" alignItems="center">
-                    <Grid item>
-                        <FormControl>
-                            <h3>Sélectionner un type de déchets :</h3>
-                            <TextField
-                                disabled={confirm}
-                                sx={{width: 300, mt: 0.5}}
-                                id="select"
-                                select
-                                label="Type de déchet"
-                                onChange={selectTypeOfWaste}
-                            >
-                                {allTypeOfWaste.map((typeOfWasteToSelect, index) => (
-                                    <MenuItem key={index} value={typeOfWasteToSelect.id}>
-                                        {typeOfWasteToSelect.typeDechets}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </FormControl>
-                    </Grid>
+                <Grid item>
+                    <FormControl>
+                        <h3>Sélectionner une tranche horaire:</h3>
+                        <TextField
+                            disabled={confirm}
+                            sx={{width: 300, mt: 0.5}}
+                            id="select"
+                            select
+                            value={hour}
+                            label="Horaire"
+                            onChange={handleChange}
+                        >
+                            {hours.map((hour) => (
+                                <MenuItem key={hour.value} value={hour.value}>{hour.label}</MenuItem>
+                            ))}
+                        </TextField>
+                    </FormControl>
                 </Grid>
-                {confirm &&
-                    <Grid container justifyContent="center" alignItems="center" textAlign="center" marginTop={2}>
-                        Vous allez demander une collecte pour
-                        le {moment(date).format('DD MMMM.YYYY')} {period.toLowerCase()}. <br/> Êtes-vous
-                        sûr ?
-                    </Grid>
-                }
-                <Grid container justifyContent="center" alignItems="center" marginTop={2}
-                      className="subscribeContainer__error">
-                    {errorSubscribe}
+            </Grid>
+            <Grid container spacing={5} justifyContent="center" alignItems="center">
+                <Grid item>
+                    <FormControl>
+                        <h3>Sélectionner un type de déchets :</h3>
+                        <TextField
+                            disabled={confirm}
+                            sx={{width: 300, mt: 0.5}}
+                            id="select"
+                            select
+                            label="Type de déchet"
+                            onChange={selectTypeOfWaste}
+                        >
+                            {allTypeOfWaste.map((typeOfWasteToSelect, index) => (
+                                <MenuItem key={index} value={typeOfWasteToSelect.id}>
+                                    {typeOfWasteToSelect.typeDechets}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </FormControl>
                 </Grid>
-                <Grid container justifyContent="center" alignItems="center">
-                    {!confirm ?
+            </Grid>
+            {confirm &&
+            <Grid container justifyContent="center" alignItems="center" textAlign="center" marginTop={2}>
+                Vous allez demander une collecte pour
+                le {moment(date).format('DD MMMM.YYYY')} {period.toLowerCase()}. <br/> Êtes-vous
+                sûr ?
+            </Grid>
+            }
+            <Grid container justifyContent="center" alignItems="center" marginTop={2}
+                  className="subscribeContainer__error">
+                {errorSubscribe}
+            </Grid>
+            <Grid container justifyContent="center" alignItems="center">
+                {!confirm ?
+                    <Button
+                        sx={{my: 0.5, mt: 2, ml: 0.5}}
+                        variant="outlined"
+                        size="medium"
+                        aria-label="move all left"
+                        onClick={ValidateCollect}
+                    >
+                        Valider
+                    </Button>
+                    :
+                    <>
                         <Button
-                            sx={{my: 0.5, mt: 2, ml: 0.5}}
+                            sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
                             variant="outlined"
                             size="medium"
                             aria-label="move all left"
                             onClick={ValidateCollect}
                         >
-                            Valider
+                            Confirmer
                         </Button>
-                        :
-                        <>
-                            <Button
-                                sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
-                                variant="outlined"
-                                size="medium"
-                                aria-label="move all left"
-                                onClick={ValidateCollect}
-                            >
-                                Confirmer
-                            </Button>
-                            <Button
-                                sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
-                                variant="outlined"
-                                size="medium"
-                                onClick={AnnulCollect}
-                                aria-label="move all left"
-                            >
-                                Annuler
-                            </Button>
-                        </>
-                    }
-                </Grid>
-            </div>
-        );
+                        <Button
+                            sx={{my: 0.5, mt: 4, ml: 0.5, width: 100}}
+                            variant="outlined"
+                            size="medium"
+                            onClick={AnnulCollect}
+                            aria-label="move all left"
+                        >
+                            Annuler
+                        </Button>
+                    </>
+                }
+            </Grid>
+        </div>
+    );
 }

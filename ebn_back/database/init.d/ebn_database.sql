@@ -149,7 +149,7 @@ CREATE TABLE `historique` (
 
 INSERT INTO `historique` (`id`, `typeAction`, `date`, `typeDeDechet`, `commentaire`, `poids`, `clientId`, `collecteurId`, `conteneurId`) VALUES
 (1, 'Récupération de seau', '2022-06-13 10:46:18', 'Biodéchets', 'RAS', 10, 3, 1, 1),
-(2, 'Dépot de seau', '2022-06-13 10:48:18', 'Marc de café', 'Dépot de seau', 0, 3, 1, 2);
+(2, 'Dépot de seau', '2022-06-13 10:48:18', 'Marcs de café', 'Dépot de seau', 0, 3, 1, 2);
 
 -- --------------------------------------------------------
 
