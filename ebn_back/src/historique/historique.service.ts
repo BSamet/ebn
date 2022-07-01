@@ -7,12 +7,15 @@ import { Repository } from 'typeorm';
 import { Client } from '../client/entities/client.entity';
 import { Conteneur } from '../conteneur/entities/conteneur.entity';
 import { Collecteur } from '../collecteur/entities/collecteur.entity';
+import { TypeDechet } from 'src/type-dechets/entities/type-dechet.entity';
 
 @Injectable()
 export class HistoriqueService {
   constructor(
     @InjectRepository(Historique)
     private readonly historiqueRepository: Repository<Historique>,
+    @InjectRepository(TypeDechet)
+    private readonly typeDechetsRepository: Repository<TypeDechet>
   ) {}
 
   create(createHistoriqueDto: CreateHistoriqueDto) {
@@ -54,17 +57,29 @@ export class HistoriqueService {
       .getMany();
   }
 
-  findByDate(dateStart: Date, dateEnd : Date) {
+  async findByDate(dateStart: Date, dateEnd:Date) {
     console.log(dateStart);
-    return this.historiqueRepository
+    console.log(dateEnd);
+    const allHistorique = await this.historiqueRepository
       .createQueryBuilder('historique')
-      .where('historique.date >= :dateStart' , {
+      .select('MAX(historique.date)', 'date')
+      .addSelect('MIN(historique.typeDeDechet)','typeDeDechet')
+      .addSelect('SUM(historique.poids)','poids')
+      .where('historique.date >= :dateStart', {
         dateStart,
       })
-      .andWhere(dateEnd ? 'historique.date <= :dateEnd' : '1=1', { dateEnd })
-      .getMany();
-      
-      
+      .andWhere('historique.date <= :dateEnd', { dateEnd })
+      .groupBy('historique.date')
+      .addGroupBy('historique.typeDeDechet')
+      .orderBy('historique.date')
+      .getRawMany();
+
+      const allTypeDechets = await this.typeDechetsRepository.find();
+
+      return {
+        historique: allHistorique,
+        typeDechets: allTypeDechets
+      }      
   }
 
   async findAllHistoriquesPagination(
@@ -183,3 +198,7 @@ export class HistoriqueService {
     return this.historiqueRepository.delete(id);
   }
 }
+function moment(dateEnddd: Date) {
+  throw new Error('Function not implemented.');
+}
+

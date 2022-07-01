@@ -1,15 +1,15 @@
+import { TextField } from '@mui/material';
 import axios from 'axios';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from "react-apexcharts";
+import { render } from 'react-dom';
 import { HOST_BACK } from '../environment/environment';
 
- interface HistoriqueClient {
-    id: number;
-    typeAction: string;
+ interface HistoriqueClient { 
     date: number;
     typeDeDechet: string;
-    commentaire: string;
-    poids: number;
+    poids: string;
   }
 
 
@@ -18,29 +18,63 @@ const RatioWasteCompost = () => {
     let countBio : number = 0;
     const [nbMarcCafé, setMarcCafé] = useState(Number);
     let countCafé : number = 0;
+    let realHistoryPoids : number;
+    let startDateNotFormated = new Date()
+    let endDateNotFormated = new Date().setDate(startDateNotFormated.getDate()-31)
+    let endDate = moment(startDateNotFormated).format("YYYY-MM-DD")
+    const [startDate, setstartDate] = useState(moment(endDateNotFormated).format("YYYY-MM-DD"));
+    const [endDateSend,setEndDateSent] = useState(moment(endDate).format("YYYY-MM-DD")+"T23:59:59")
     
-    useEffect(() => {
-        axios.get(HOST_BACK + '/historique/', {
+    
+        axios.get(HOST_BACK + '/historique/date/' + startDate +'/'+  endDateSend   , {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
+                res.data.historique.map((history : HistoriqueClient)=>{                  
+                     if(history.typeDeDechet == "Biodéchets"){
+                        realHistoryPoids= parseInt(history.poids)
+                        countBio+= realHistoryPoids
+                      }
+                      else{
+                        realHistoryPoids= parseInt(history.poids)
+                        countCafé+= realHistoryPoids
+                      }   
+                      
+                      
+                  })
+                  setNbBioDechet(countBio) 
+                setMarcCafé(countCafé)
+        })
+   
+     
+    function validateFilter(){
+        axios.get(HOST_BACK + '/historique/date/' + startDate +'/'+  endDateSend   , {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }}).then(res => {
+                console.log(res.data);
+                
+             
+                
                 res.data.map((history : HistoriqueClient)=>{                  
                      if(history.typeDeDechet == "Biodéchets"){
-                        
-                        countBio+= history.poids 
+                        realHistoryPoids= parseInt(history.poids)
+                        countBio+= realHistoryPoids
+                        setNbBioDechet(countBio) 
                         
                       }
                       else{
-                          countCafé += history.poids
-
+                        realHistoryPoids= parseInt(history.poids)
+                        countCafé+= realHistoryPoids
+                        setMarcCafé(countCafé)
                       }   
-                      setNbBioDechet(countBio) 
-                      setMarcCafé(countCafé)
+                    
+                      
                       
                   })
     
         })
-    }, [])
+    }
 
  
     const state = {
@@ -53,27 +87,53 @@ const RatioWasteCompost = () => {
             colors:['green','orange'],
             chart: {
             },
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
+       
         },
 
 
     };
+    
+    
+
+   
     return (
         <div className="charts">
             <h4>Ratio Déchets/Composte</h4>
-            <ReactApexChart options={state.options} series={state.series} type="donut" />
+                <ReactApexChart options={state.options} series={state.series} type="donut" />
+                <div className = "filtre">
+                <TextField
+                className = "filtre"
+                    id="datetime-local"
+                    label="Date de début"
+                    type="datetime-local"
+                    defaultValue="2022-05-24T00:01"
+                    sx={{ width: 300}}
+                    InputLabelProps={{
+                    shrink: true,
+                    }}               
+                    onChange={(e) =>  setstartDate(e.target.value)}
+                />
+                 </div>
+                 <div className = "filtre">
+                <TextField
+
+               
+                
+                    id="datetime-local"
+                    label="Date de fin"
+                    type="datetime-local"
+                    defaultValue="2022-05-24T23:59"
+                    sx={{ width: 300}}
+                    InputLabelProps={{
+                    shrink: true,
+                    }}
+                    onChange={(e) =>  setEndDateSent(e.target.value)}
+                    />
+ </div>
+               <button onClick={validateFilter}> Valider</button>
         </div>
     );
 };
+
 
 export default RatioWasteCompost;
