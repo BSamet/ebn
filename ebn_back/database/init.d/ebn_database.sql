@@ -3,14 +3,16 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: dev-database
--- Generation Time: Jun 14, 2022 at 08:48 AM
+-- Generation Time: Jun 24, 2022 at 01:32 PM
 -- Server version: 8.0.29
 -- PHP Version: 8.0.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
-
+<<<<<<< HEAD
+-- SET time_zone = "+00:00";
+=======
+>>>>>>> develop
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -41,7 +43,7 @@ CREATE TABLE `client` (
 --
 
 INSERT INTO `client` (`id`, `siret`, `nomCommercial`, `adresse`, `utilisateurId`, `clientvalide`) VALUES
-(3, NULL, 'Tacos-Pacos', '1 rue du Général de Gaule 68200 Mulhouse', 2, 1);
+(3, NULL, 'Tacos-Pacos', '1 rue du Général de Gaule 68200 Mulhouse', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -52,6 +54,20 @@ INSERT INTO `client` (`id`, `siret`, `nomCommercial`, `adresse`, `utilisateurId`
 CREATE TABLE `client_type_dechet_type_dechet` (
   `clientId` int NOT NULL,
   `typeDechetId` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `collect`
+--
+
+CREATE TABLE `collect` (
+  `id` int NOT NULL,
+  `refDate` datetime NOT NULL,
+  `cronExpression` varchar(255) DEFAULT NULL,
+  `clientId` int DEFAULT NULL,
+  `typeDechetId` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -71,7 +87,7 @@ CREATE TABLE `collecteur` (
 --
 
 INSERT INTO `collecteur` (`id`, `numeroVelo`, `utilisateurId`) VALUES
-(1, 1, 3);
+(1, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -107,7 +123,9 @@ CREATE TABLE `etape` (
   `isCollected` tinyint NOT NULL DEFAULT '0',
   `commentaire` varchar(255) DEFAULT NULL,
   `clientId` int DEFAULT NULL,
-  `collecteurId` int DEFAULT NULL
+  `collecteurId` int DEFAULT NULL,
+  `isAssigned` tinyint NOT NULL DEFAULT '0',
+  `typeDechetId` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -133,8 +151,8 @@ CREATE TABLE `historique` (
 --
 
 INSERT INTO `historique` (`id`, `typeAction`, `date`, `typeDeDechet`, `commentaire`, `poids`, `clientId`, `collecteurId`, `conteneurId`) VALUES
-(2, 'Récupération de seau', '2022-06-13 10:46:18', 'Biodéchets', 'RAS', 10, 3, 1, 1),
-(3, 'Dépot de seau', '2022-06-13 10:48:18', 'Marc de café', 'Dépot de seau', 0, 3, 1, 2);
+(1, 'Récupération de seau', '2022-06-13 10:46:18', 'Biodéchets', 'RAS', 10, 3, 1, 1),
+(2, 'Dépot de seau', '2022-06-13 10:48:18', 'Marcs de café', 'Dépot de seau', 0, 3, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -201,6 +219,14 @@ ALTER TABLE `client_type_dechet_type_dechet`
   ADD KEY `IDX_6f14d7e05de3f15627e24cb43a` (`typeDechetId`);
 
 --
+-- Indexes for table `collect`
+--
+ALTER TABLE `collect`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_6b3ba5ade01f774837f9d22bc47` (`clientId`),
+  ADD KEY `FK_c8c941e3ce6afef2ca3bba2e37d` (`typeDechetId`);
+
+--
 -- Indexes for table `collecteur`
 --
 ALTER TABLE `collecteur`
@@ -221,7 +247,8 @@ ALTER TABLE `conteneur`
 ALTER TABLE `etape`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_d0a0b787dbb78da18661d0ef407` (`clientId`),
-  ADD KEY `FK_c23d964d437e86cca810edde374` (`collecteurId`);
+  ADD KEY `FK_c23d964d437e86cca810edde374` (`collecteurId`),
+  ADD KEY `FK_833581f5fee4f3ca6c58e5edee0` (`typeDechetId`);
 
 --
 -- Indexes for table `historique`
@@ -256,6 +283,12 @@ ALTER TABLE `client`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `collect`
+--
+ALTER TABLE `collect`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `collecteur`
 --
 ALTER TABLE `collecteur`
@@ -278,18 +311,6 @@ ALTER TABLE `etape`
 --
 ALTER TABLE `historique`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `ramassage_abonnement`
---
-ALTER TABLE `ramassage_abonnement`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `ramassage_ponctuel`
---
-ALTER TABLE `ramassage_ponctuel`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `type_dechet`
@@ -321,6 +342,13 @@ ALTER TABLE `client_type_dechet_type_dechet`
   ADD CONSTRAINT `FK_ae00399606d83b91408c621edea` FOREIGN KEY (`clientId`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `collect`
+--
+ALTER TABLE `collect`
+  ADD CONSTRAINT `FK_6b3ba5ade01f774837f9d22bc47` FOREIGN KEY (`clientId`) REFERENCES `client` (`id`),
+  ADD CONSTRAINT `FK_c8c941e3ce6afef2ca3bba2e37d` FOREIGN KEY (`typeDechetId`) REFERENCES `type_dechet` (`id`);
+
+--
 -- Constraints for table `collecteur`
 --
 ALTER TABLE `collecteur`
@@ -337,6 +365,7 @@ ALTER TABLE `conteneur`
 -- Constraints for table `etape`
 --
 ALTER TABLE `etape`
+  ADD CONSTRAINT `FK_833581f5fee4f3ca6c58e5edee0` FOREIGN KEY (`typeDechetId`) REFERENCES `type_dechet` (`id`),
   ADD CONSTRAINT `FK_c23d964d437e86cca810edde374` FOREIGN KEY (`collecteurId`) REFERENCES `collecteur` (`id`),
   ADD CONSTRAINT `FK_d0a0b787dbb78da18661d0ef407` FOREIGN KEY (`clientId`) REFERENCES `client` (`id`);
 
@@ -347,18 +376,6 @@ ALTER TABLE `historique`
   ADD CONSTRAINT `FK_28ced590bd2eeec2e5e55625bd5` FOREIGN KEY (`conteneurId`) REFERENCES `conteneur` (`id`),
   ADD CONSTRAINT `FK_48ba178170f756eee7f1d3c607c` FOREIGN KEY (`clientId`) REFERENCES `client` (`id`),
   ADD CONSTRAINT `FK_ff12d0cf8dd1b5dfa287e460322` FOREIGN KEY (`collecteurId`) REFERENCES `collecteur` (`id`);
-
---
--- Constraints for table `ramassage_abonnement`
---
-ALTER TABLE `ramassage_abonnement`
-  ADD CONSTRAINT `FK_3d2ff0c939fb14c6aab339b3926` FOREIGN KEY (`clientId`) REFERENCES `client` (`id`);
-
---
--- Constraints for table `ramassage_ponctuel`
---
-ALTER TABLE `ramassage_ponctuel`
-  ADD CONSTRAINT `FK_9160c1593d2826e80af8c011bea` FOREIGN KEY (`clientId`) REFERENCES `client` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

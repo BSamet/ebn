@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {CreateCollectDto} from './dto/create-collect.dto';
 import {UpdateCollectDto} from './dto/update-collect.dto';
 import {InjectRepository} from "@nestjs/typeorm";
@@ -6,20 +6,26 @@ import {Repository} from "typeorm";
 import {Collect} from "./entities/collect.entity";
 import {Client} from "../client/entities/client.entity"
 import {Etape} from "../etape/entities/etape.entity";
+import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
+import {ClientService} from "../client/client.service";
 
 const parser = require('cron-parser');
 
 export interface collectInterface {
     id: number | null;
     refDate: Date,
-    Client: {
+    client: {
         id: number,
         nomCommercial: string,
         adresse: string,
-        Utilisateur: {
+        utilisateur: {
             nom: string,
             prenom: string
         },
+    },
+    typeDechet: {
+        id: number
+        typeDechet: string
     },
     isSubscribe: boolean
 }
@@ -32,6 +38,9 @@ export class CollectService {
         private readonly collectRepository: Repository<Collect>,
         @InjectRepository(Etape)
         private readonly etapeRepository: Repository<Etape>,
+        @InjectRepository(Client)
+        private readonly clientRepository: Repository<Client>,
+        private readonly clientService: ClientService,
     ) {
     }
 
@@ -51,7 +60,28 @@ export class CollectService {
         collect.client = Object.assign(new Client(), {
             id: createCollectDto.clientId,
         });
-        return this.collectRepository.save(collect);
+        collect.typeDechet = Object.assign(new TypeDechet(), {
+            id: createCollectDto.typeDechetId,
+        });
+        const created = await this.collectRepository.save(collect);
+
+        const checkClientType = await this.clientRepository
+            .createQueryBuilder('client')
+            .leftJoinAndSelect('client.typeDechet', 'typeDechet')
+            .where('typeDechet.id = :id', {id: createCollectDto.typeDechetId})
+            .getOne();
+
+        if (checkClientType === null) {
+            await this.clientService.addTypeOfWaste(createCollectDto.clientId, {typeDechetsId: createCollectDto.typeDechetId})
+        }
+
+        const collectId = created.id;
+
+        return this.collectRepository
+            .createQueryBuilder('collect')
+            .leftJoinAndSelect('collect.typeDechet', 'typeDechet')
+            .where("collect.id = :id", {id: collectId})
+            .getOne();
     }
 
     findAll() {
@@ -74,11 +104,13 @@ export class CollectService {
         const allCollectSubscribe = await this.collectRepository
             .createQueryBuilder('collect')
             .leftJoinAndSelect('collect.client', 'client')
+            .leftJoinAndSelect('collect.typeDechet', 'dechet')
             .leftJoinAndSelect('client.utilisateur', 'utilisateur')
             .select('collect')
             .addSelect('client.id')
             .addSelect('client.nomCommercial')
             .addSelect('client.adresse')
+            .addSelect('dechet')
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression != ''")
@@ -92,11 +124,13 @@ export class CollectService {
         const allCollectNotSubscribe = await this.collectRepository
             .createQueryBuilder('collect')
             .leftJoinAndSelect('collect.client', 'client')
+            .leftJoinAndSelect('collect.typeDechet', 'dechet')
             .leftJoinAndSelect('client.utilisateur', 'utilisateur')
             .select('collect')
             .addSelect('client.id')
             .addSelect('client.nomCommercial')
             .addSelect('client.adresse')
+            .addSelect('dechet')
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression IS NULL")
@@ -104,9 +138,7 @@ export class CollectService {
             .getMany();
 
         // Et c'est également ici que la magie va opéré pour renvoyer une liste des prochaines collecte ponctuelle
-        const notSubscribeArray = this.checkOneTimeCollect(date, allCollectNotSubscribe, allStepObjectForCheck, subscribeArray)
-
-        return notSubscribeArray;
+        return this.checkOneTimeCollect(date, allCollectNotSubscribe, allStepObjectForCheck, subscribeArray)
     }
 
     update(id: number, updateCollectDto: UpdateCollectDto) {
@@ -152,13 +184,13 @@ export class CollectService {
                         let obj = intervalSubscribe.next();
                         // Si le paramètre date existe on demande à nous retourner les dates qui sont égaux au paramètre et uniquement ceux qui ne sont pas existant dans la table étape
                         if (date) {
-                            if (this.dateEquals(obj.value, date) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id)) {
-                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client))
+                            if (this.dateEquals(obj.value, date) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id, subscribe.typeDechet.id)) {
+                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client, subscribe.typeDechet))
                             }
                         } else {
                             // Si le paramètre date n'existe on demande à nous retourner les dates supérieur à la date d'aujourd'hui et uniquement ceux qui ne sont pas existant dans la table étape
-                            if (this.dateSup(obj.value, currentDay) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id)) {
-                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client))
+                            if (this.dateSup(obj.value, currentDay) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id, subscribe.typeDechet.id)) {
+                                myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client, subscribe.typeDechet))
                             }
                         }
                     } catch
@@ -178,13 +210,15 @@ export class CollectService {
         return await this.etapeRepository
             .createQueryBuilder('etape')
             .leftJoinAndSelect('etape.client', 'client')
+            .leftJoinAndSelect('etape.typeDechet', 'dechet')
             .getMany();
     }
 
-    hasEqualDateAndSameClient(steps: Etape[], refDate: Date, clientId: number) {
+    hasEqualDateAndSameClient(steps: Etape[], refDate: Date, clientId: number, typeDechetId: number) {
         let match = false;
+
         for (let i = 0; i < steps.length; i++) {
-            if (this.dateEquals(steps[i].date, refDate) && steps[i].client.id === clientId) {
+            if (this.dateMorningOrAfternoon(steps[i].date, refDate) && steps[i].client.id === clientId && steps[i].typeDechet.id === typeDechetId) {
                 match = true;
                 break;
             }
@@ -192,18 +226,22 @@ export class CollectService {
         return match;
     }
 
-    setSubscribeToPush(date: Date, client: Client): collectInterface {
+    setSubscribeToPush(date: Date, client: Client, typeDechet: TypeDechet): collectInterface {
         return {
             id: null,
             refDate: new Date(date),
-            Client: {
+            client: {
                 id: client.id,
                 nomCommercial: client.nomCommercial,
                 adresse: client.adresse,
-                Utilisateur: {
+                utilisateur: {
                     nom: client.utilisateur.nom,
                     prenom: client.utilisateur.prenom
                 },
+            },
+            typeDechet: {
+                id: typeDechet.id,
+                typeDechet: typeDechet.typeDechets
             },
             isSubscribe: true
         }
@@ -213,28 +251,64 @@ export class CollectService {
         return {
             id: collect.id,
             refDate: collect.refDate,
-            Client: {
+            client: {
                 id: collect.client.id,
                 nomCommercial: collect.client.nomCommercial,
                 adresse: collect.client.adresse,
-                Utilisateur: {
+                utilisateur: {
                     nom: collect.client.utilisateur.nom,
                     prenom: collect.client.utilisateur.prenom
                 },
+            },
+            typeDechet: {
+                id: collect.typeDechet.id,
+                typeDechet: collect.typeDechet.typeDechets
             },
             isSubscribe: false
         }
     }
 
+    splitDate(date: Date) {
+        let formateDate = new Date(date);
+
+        const dateSecond = formateDate.getSeconds();
+        const dateMinute = formateDate.getMinutes();
+        const dateHour = formateDate.getHours();
+        const dateDay = String(formateDate.getDate()).padStart(2, '0');
+        const dateMonth = String(formateDate.getMonth() + 1).padStart(2, '0');
+        const dateYear = formateDate.getFullYear();
+
+        return {
+            year: dateYear,
+            month: dateMonth,
+            day: dateDay,
+            hour: dateHour,
+            minute: dateMinute,
+            second: dateSecond
+        }
+    }
+
+    dateMorningOrAfternoon(sourceDate: Date, targetDate: Date): boolean {
+        let targetToFormate = this.splitDate(targetDate);
+        let sourceToFormate = this.splitDate(sourceDate)
+
+        const targetDateWithoutTime = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T00:00:00.000';
+        const sourceDateWithoutTime = sourceToFormate.year + '-' + sourceToFormate.month + '-' + sourceToFormate.day + 'T00:00:00.000';
+
+        if (targetToFormate.hour >= 12 && sourceToFormate.hour >= 12 && targetDateWithoutTime === sourceDateWithoutTime) {
+            return true
+        } else if (targetToFormate.hour < 12 && sourceToFormate.hour < 12 && targetDateWithoutTime === sourceDateWithoutTime) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     dateEquals(sourceDate: Date, targetDate: Date): boolean {
-        let targetToFormate = new Date(targetDate)
+        let targetToFormate = this.splitDate(targetDate)
 
-        const targetDay = String(targetToFormate.getDate()).padStart(2, '0');
-        const targetMonth = String(targetToFormate.getMonth() + 1).padStart(2, '0');
-        const targetYear = targetToFormate.getFullYear();
-
-        const today = targetYear + '-' + targetMonth + '-' + targetDay + 'T00:00:00.000';
-        const tomorrow = targetYear + '-' + targetMonth + '-' + targetDay + 'T23:59:59.000';
+        const today = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T00:00:00.000';
+        const tomorrow = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T23:59:59.000';
 
         return new Date(sourceDate).toString() > new Date(today).toString() && new Date(sourceDate).toString() < new Date(tomorrow).toString();
     }
@@ -258,11 +332,11 @@ export class CollectService {
 
         for (let i = 0; i < collect.length; i++) {
             if (dateParam) {
-                if (this.dateEquals(collect[i].refDate, dateParam) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id)) {
+                if (this.dateEquals(collect[i].refDate, dateParam) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id, collect[i].typeDechet.id)) {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
                 }
             } else {
-                if (this.dateSup(collect[i].refDate, currentDay) && this.dateInf(collect[i].refDate, futureDayFormated) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id)) {
+                if (this.dateSup(collect[i].refDate, currentDay) && this.dateInf(collect[i].refDate, futureDayFormated) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id, collect[i].typeDechet.id)) {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
                 }
             }

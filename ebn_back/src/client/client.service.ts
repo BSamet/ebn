@@ -33,6 +33,7 @@ export class ClientService {
       client.siret = createClientDto.siret;
       client.nomCommercial = createClientDto.nomCommercial;
       client.adresse = createClientDto.adresse;
+      client.clientvalide = false;
       client.utilisateur = Object.assign(new Utilisateur(), {
         id: response.id,
       });
@@ -40,12 +41,9 @@ export class ClientService {
         Object.assign(new TypeDechet(), {
           id: createClientDto.typeDechetsId,
         }),
-        
       ];
-      client.clientvalide= false
-      
-        return this.clientRepository.save(client);
-     
+
+      return this.clientRepository.save(client);
     });
   }
 
@@ -101,7 +99,7 @@ export class ClientService {
       nomCommercial: updateClientDto.nomCommercial,
       adresse: updateClientDto.adresse,
     };
-    const updatedClient = await this.clientRepository.update(id, client);
+    await this.clientRepository.update(id, client);
 
     const newClient = await this.clientRepository.findOne({
       where: {
@@ -115,7 +113,7 @@ export class ClientService {
       telephone: updateClientDto.telephone,
     };
 
-    const updateUser = await this.utilisateursService.update(
+    await this.utilisateursService.update(
         newClient.utilisateur.id,
         user,
     );
@@ -132,5 +130,18 @@ export class ClientService {
 
   remove(id: number) {
     return this.clientRepository.delete(id);
+  }
+
+  async addTypeOfWaste(id: number, updateClientDto: UpdateClientDto) {
+    const client = await this.findOne(id);
+    client.typeDechet.push(Object.assign(new TypeDechet(), {
+      id: updateClientDto.typeDechetsId,
+    }))
+    await this.clientRepository.save(client);
+    return await this.clientRepository.findOne({
+      where: {
+        id: id
+      }
+    });
   }
 }
