@@ -9,6 +9,9 @@ export class TypeDechet {
     @Column({nullable: false})
     public typeDechets: string;
 
+    @Column({nullable: false})
+    public prixKg: number;
+
     @OneToMany(() => Conteneur, (conteneur) => conteneur.typeDechet, {})
     @JoinTable()
     conteneur: Conteneur[];

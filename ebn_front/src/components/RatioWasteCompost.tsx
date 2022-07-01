@@ -30,7 +30,7 @@ const RatioWasteCompost = () => {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
-                res.data.map((history : HistoriqueClient)=>{                  
+                res.data.historique.map((history : HistoriqueClient)=>{                  
                      if(history.typeDeDechet == "Biodéchets"){
                         realHistoryPoids= parseInt(history.poids)
                         countBio+= realHistoryPoids
@@ -101,6 +101,7 @@ const RatioWasteCompost = () => {
             <h4>Ratio Déchets/Composte</h4>
                 <ReactApexChart options={state.options} series={state.series} type="donut" />
                 <TextField
+                className = "filtre"
                     id="datetime-local"
                     label="Date de début"
                     type="datetime-local"
@@ -112,6 +113,7 @@ const RatioWasteCompost = () => {
                     onChange={(e) =>  setstartDate(e.target.value)}
                 />
                 <TextField
+                 className = "filtre"
                     id="datetime-local"
                     label="Date de fin"
                     type="datetime-local"

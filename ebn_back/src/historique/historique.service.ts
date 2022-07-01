@@ -7,12 +7,15 @@ import { Repository } from 'typeorm';
 import { Client } from '../client/entities/client.entity';
 import { Conteneur } from '../conteneur/entities/conteneur.entity';
 import { Collecteur } from '../collecteur/entities/collecteur.entity';
+import { TypeDechet } from 'src/type-dechets/entities/type-dechet.entity';
 
 @Injectable()
 export class HistoriqueService {
   constructor(
     @InjectRepository(Historique)
     private readonly historiqueRepository: Repository<Historique>,
+    @InjectRepository(TypeDechet)
+    private readonly typeDechetsRepository: Repository<TypeDechet>
   ) {}
 
   create(createHistoriqueDto: CreateHistoriqueDto) {
@@ -54,10 +57,10 @@ export class HistoriqueService {
       .getMany();
   }
 
-  findByDate(dateStart: Date, dateEnd:Date) {
+  async findByDate(dateStart: Date, dateEnd:Date) {
     console.log(dateStart);
     console.log(dateEnd);
-    return this.historiqueRepository
+    const allHistorique = await this.historiqueRepository
       .createQueryBuilder('historique')
       .select('MAX(historique.date)', 'date')
       .addSelect('MIN(historique.typeDeDechet)','typeDeDechet')
@@ -69,7 +72,14 @@ export class HistoriqueService {
       .groupBy('historique.date')
       .addGroupBy('historique.typeDeDechet')
       .orderBy('historique.date')
-      .getRawMany();  
+      .getRawMany();
+
+      const allTypeDechets = await this.typeDechetsRepository.find();
+
+      return {
+        historique: allHistorique,
+        typeDechets: allTypeDechets
+      }      
   }
 
   async findAllHistoriquesPagination(

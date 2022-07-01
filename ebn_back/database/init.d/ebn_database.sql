@@ -144,7 +144,8 @@ INSERT INTO `historique` (`id`, `typeAction`, `date`, `typeDeDechet`, `commentai
 
 CREATE TABLE `type_dechet` (
   `id` int NOT NULL,
-  `typeDechets` varchar(255) NOT NULL
+  `typeDechets` varchar(255) NOT NULL,
+  `prixKg` float NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --

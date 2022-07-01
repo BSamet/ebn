@@ -33,8 +33,8 @@ const GraphWeightPerHour = () => {
         headers: {
             "Authorization": `Bearer ${sessionStorage.getItem('token')}`
         }
-    }).then(res => {
-        res.data.map((history: HistoriqueClient) => {
+    }).then(res => {        
+        res.data.historique.map((history: HistoriqueClient) => {
             if (history.typeDeDechet == "Biodéchets") {
                 arrayBio.push(history)
             }
@@ -48,14 +48,24 @@ const GraphWeightPerHour = () => {
         for (let dateIndex = 0, historyBioIndex = 0, historyCaféIndex = 0; dateIndex < arrayDate.length; dateIndex++) {
             if (arrayDate[dateIndex] == moment(arrayBio[historyBioIndex].date).format("DD-MM")) {
                 finalArrayBio.push(arrayBio[historyBioIndex].poids)
-                historyBioIndex++
+                if(historyBioIndex<arrayBio.length-1){
+                    historyBioIndex++
+                }
+                else{
+
+                }
             }
             else {
                 finalArrayBio.push(0)
             }
             if (arrayDate[dateIndex] == moment(arrayCafé[historyCaféIndex].date).format("DD-MM")) {
                 finalArrayCafé.push(arrayCafé[historyCaféIndex].poids)
-                historyCaféIndex++
+                if(historyCaféIndex < arrayCafé.length -1){
+                    historyCaféIndex++
+                }
+                else{
+                   
+                }
             }
             else {
                 finalArrayCafé.push(0)
