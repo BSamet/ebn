@@ -373,7 +373,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
                                                     />
                                                 </ListItemIcon>
                                                 <ListItemText id={labelId}
-                                                              primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`}/>
+                                                              primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.typeDechet.typeDechet} | ${etape.client.adresse}`}/>
                                             </ListItem>
                                         );
                                     })}

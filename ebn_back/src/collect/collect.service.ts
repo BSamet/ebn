@@ -218,7 +218,7 @@ export class CollectService {
         let match = false;
 
         for (let i = 0; i < steps.length; i++) {
-            if (this.dateEquals(steps[i].date, refDate) && steps[i].client.id === clientId && steps[i].typeDechet.id === typeDechetId) {
+            if (this.dateMorningOrAfternoon(steps[i].date, refDate) && steps[i].client.id === clientId && steps[i].typeDechet.id === typeDechetId) {
                 match = true;
                 break;
             }
@@ -268,15 +268,47 @@ export class CollectService {
         }
     }
 
+    splitDate(date: Date) {
+        let formateDate = new Date(date);
+
+        const dateSecond = formateDate.getSeconds();
+        const dateMinute = formateDate.getMinutes();
+        const dateHour = formateDate.getHours();
+        const dateDay = String(formateDate.getDate()).padStart(2, '0');
+        const dateMonth = String(formateDate.getMonth() + 1).padStart(2, '0');
+        const dateYear = formateDate.getFullYear();
+
+        return {
+            year: dateYear,
+            month: dateMonth,
+            day: dateDay,
+            hour: dateHour,
+            minute: dateMinute,
+            second: dateSecond
+        }
+    }
+
+    dateMorningOrAfternoon(sourceDate: Date, targetDate: Date): boolean {
+        let targetToFormate = this.splitDate(targetDate);
+        let sourceToFormate = this.splitDate(sourceDate)
+
+        const targetDateWithoutTime = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T00:00:00.000';
+        const sourceDateWithoutTime = sourceToFormate.year + '-' + sourceToFormate.month + '-' + sourceToFormate.day + 'T00:00:00.000';
+
+        if (targetToFormate.hour >= 12 && sourceToFormate.hour >= 12 && targetDateWithoutTime === sourceDateWithoutTime) {
+            return true
+        } else if (targetToFormate.hour < 12 && sourceToFormate.hour < 12 && targetDateWithoutTime === sourceDateWithoutTime) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     dateEquals(sourceDate: Date, targetDate: Date): boolean {
-        let targetToFormate = new Date(targetDate)
+        let targetToFormate = this.splitDate(targetDate)
 
-        const targetDay = String(targetToFormate.getDate()).padStart(2, '0');
-        const targetMonth = String(targetToFormate.getMonth() + 1).padStart(2, '0');
-        const targetYear = targetToFormate.getFullYear();
-
-        const today = targetYear + '-' + targetMonth + '-' + targetDay + 'T00:00:00.000';
-        const tomorrow = targetYear + '-' + targetMonth + '-' + targetDay + 'T23:59:59.000';
+        const today = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T00:00:00.000';
+        const tomorrow = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T23:59:59.000';
 
         return new Date(sourceDate).toString() > new Date(today).toString() && new Date(sourceDate).toString() < new Date(tomorrow).toString();
     }
