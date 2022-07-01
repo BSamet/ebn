@@ -9,6 +9,7 @@ import {Collecteur} from '../collecteur/entities/collecteur.entity';
 import {Utilisateur} from 'src/utilisateurs/entities/utilisateur.entity';
 import {Historique} from 'src/historique/entities/historique.entity';
 import {HistoriqueService} from 'src/historique/historique.service';
+import {TypeDechet} from "../type-dechets/entities/type-dechet.entity";
 
 @Injectable()
 export class EtapeService {
@@ -33,6 +34,9 @@ export class EtapeService {
         etape.collecteur = Object.assign(new Collecteur(), {
             id: createEtapeDto.collecteurId,
         });
+        etape.typeDechet = Object.assign(new TypeDechet(), {
+            id: createEtapeDto.typeDechetId,
+        });
         return this.etapeRepository.save(etape);
     }
 
@@ -51,7 +55,7 @@ export class EtapeService {
     async findAllOfTheDay(
         take: number,
         skip: number,
-    ){
+    ) {
         const dateNow = new Date();
 
         const dd = String(dateNow.getDate()).padStart(2, '0');
@@ -140,10 +144,10 @@ export class EtapeService {
     async findByCollecteurAndDate(
         take: number,
         skip: number,
-        id: number, 
-        date: string, 
+        id: number,
+        date: string,
         limitDate: string
-    ){
+    ) {
         const allEtapesPagination = await this.etapeRepository
             .createQueryBuilder('etape')
             .innerJoinAndSelect('etape.client', 'c')
@@ -169,9 +173,9 @@ export class EtapeService {
             .andWhere(limitDate ? 'etape.date <= :limitDate' : '1=1', {limitDate})
             .orderBy('etape.date', "ASC")
             .getMany();
-        
-            const etapesCounted = await allEtapes.length;
-            const totalPages = Math.ceil(etapesCounted / take);
+
+        const etapesCounted = await allEtapes.length;
+        const totalPages = Math.ceil(etapesCounted / take);
 
 
         return {
@@ -192,21 +196,21 @@ export class EtapeService {
 
         const historique = await this.historiqueService.findByClient(+id);
 
-    const etape = await this.etapeRepository
-      .createQueryBuilder('etape')
-      .innerJoinAndSelect('etape.client', 'c')
-      .innerJoinAndSelect('c.utilisateur', 'u')
-      .innerJoinAndSelect('etape.collecteur', 'col')
-      .innerJoinAndSelect('col.utilisateur', 'uCol')
-      .where('c.id = :id', { id })
-      .andWhere('etape.date >= :today', { today })
-      .getMany();
+        const etape = await this.etapeRepository
+            .createQueryBuilder('etape')
+            .innerJoinAndSelect('etape.client', 'c')
+            .innerJoinAndSelect('c.utilisateur', 'u')
+            .innerJoinAndSelect('etape.collecteur', 'col')
+            .innerJoinAndSelect('col.utilisateur', 'uCol')
+            .where('c.id = :id', {id})
+            .andWhere('etape.date >= :today', {today})
+            .getMany();
 
-    return {
-      historique: historique,
-      etape: etape,
-    };
-  }
+        return {
+            historique: historique,
+            etape: etape,
+        };
+    }
 
     update(id: number, updateEtapeDto: UpdateEtapeDto) {
         const etape = {

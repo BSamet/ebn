@@ -1,13 +1,24 @@
 import axios from "axios"
 import React from "react";
-import { Alert, Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Paper, Snackbar, TextField } from '@mui/material';
-import { useEffect, useState } from "react";
-import { HOST_BACK } from "../environment/environment"
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+
+import {
+    Alert,
+    Button,
+    Checkbox,
+    Grid,
+    List, ListItem,
+    ListItemIcon,
+    ListItemText,
+    Paper,
+    Snackbar,
+    TextField
+} from '@mui/material';
+import {useEffect, useState} from "react";
+import {HOST_BACK} from "../environment/environment"
+import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import '../styles/component/_AgendaOrganisation.scss';
 import moment from 'moment'
 import 'moment/locale/fr' 
-import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 moment.locale('fr')
 
 
@@ -32,6 +43,10 @@ interface ramassageInterface {
             prenom: string;
         }
     };
+    typeDechet: {
+        id: number;
+        typeDechet: string;
+    }
     isSubscribe: boolean;
     isAssigned: boolean;
     outOfTime: string;
@@ -137,12 +152,12 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         })
         getEtapeAlreadyAssigned()
     };
-    
-    function fillSelectOptions(){
+
+    function fillSelectOptions() {
         const options = collecteursList?.map((list) => {
             return (
                 [
-                    { value: list.id, label: list.utilisateur.nom },
+                    {value: list.id, label: list.utilisateur.nom},
                 ]);
         })
         return options;
@@ -151,11 +166,11 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const handleLeftToggle = (value: number) => () => {
         const currentIndex = leftChecked.indexOf(value);
         const newChecked = [...leftChecked];
-    
+
         if (currentIndex === -1) {
-          newChecked.push(value);
+            newChecked.push(value);
         } else {
-          newChecked.splice(currentIndex, 1);
+            newChecked.splice(currentIndex, 1);
         }
         setLeftChecked(newChecked);
     };
@@ -163,11 +178,11 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const handleRightToggle = (value: number) => () => {
         const currentIndex = rightChecked.indexOf(value);
         const newChecked = [...rightChecked];
-    
+
         if (currentIndex === -1) {
-          newChecked.push(value);
+            newChecked.push(value);
         } else {
-          newChecked.splice(currentIndex, 1);
+            newChecked.splice(currentIndex, 1);
         }
         setRightChecked(newChecked);
     };
@@ -181,21 +196,21 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         setPeriod(event.target.value); 
     }
     const handleAllRight = () => {
-      if(finalEtapeList![0] == undefined){
-      }else{
-          finalEtapeList.map(etape => {
-            setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
-            })          
-          setFinalEtapeList([]);
+        if (finalEtapeList![0] == undefined) {
+        } else {
+            finalEtapeList.map(etape => {
+                setCollectorEtape(collectorEtape => [...collectorEtape, etape]);
+            })
+            setFinalEtapeList([]);
         }
-      };      
-    
+    };
+
     const handleCheckedRight = () => {
-        leftChecked.sort((a, b) => a - b )
+        leftChecked.sort((a, b) => a - b)
         let newFinalEtapeList = Array.from(finalEtapeList)
-        for(let i = 0; i < leftChecked.length; i++){
-            finalEtapeList?.map((etape) => {   
-                if(etape.id == leftChecked[i]){
+        for (let i = 0; i < leftChecked.length; i++) {
+            finalEtapeList?.map((etape) => {
+                if (etape.id == leftChecked[i]) {
                     let etapeIndex = newFinalEtapeList.indexOf(etape);
                     let checkedIndex = leftChecked.indexOf(leftChecked[i]);
                     newFinalEtapeList?.splice(etapeIndex, 1);
@@ -208,24 +223,24 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     };
 
     const handleCheckedLeft = () => {
-        rightChecked.sort((a, b) => a - b )
+        rightChecked.sort((a, b) => a - b)
         let newCollectorEtape = Array.from(collectorEtape)
-        for(let i = 0; i < rightChecked.length; i++){
-            collectorEtape?.map((etape: ramassageInterface) => {   
-                if(etape.id == rightChecked[i]){
+        for (let i = 0; i < rightChecked.length; i++) {
+            collectorEtape?.map((etape: ramassageInterface) => {
+                if (etape.id == rightChecked[i]) {
                     let etapeIndex = newCollectorEtape.indexOf(etape);
                     let checkedIndex = rightChecked.indexOf(rightChecked[i]);
-                    newCollectorEtape?.splice(etapeIndex, 1); 
-                    rightChecked.splice(checkedIndex, 1);   
+                    newCollectorEtape?.splice(etapeIndex, 1);
+                    rightChecked.splice(checkedIndex, 1);
                     setFinalEtapeList((finalEtapeList: ramassageInterface[]) => [...finalEtapeList, etape]);
                 }
             })
         }
-        setCollectorEtape(newCollectorEtape);  
+        setCollectorEtape(newCollectorEtape);
     };
-    
+
     const handleAllLeft = () => {
-        if(collectorEtape![0] == undefined){
+        if (collectorEtape![0] == undefined) {
         } else {
             collectorEtape.map(etape => {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
@@ -236,12 +251,12 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
         setOpen(false);
     };
 
-    function deleteCollect(id: number){
+    function deleteCollect(id: number) {
         axios.delete(HOST_BACK + "/collect/" + id, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
@@ -249,7 +264,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         })
     };
 
-    function moveEtapeUp(etape: any){
+    function moveEtapeUp(etape: any) {
         const newCollectorEtape = Array.from(collectorEtape)
         const fromIndex = newCollectorEtape.indexOf(etape);
         const toindex = fromIndex - 1;
@@ -258,7 +273,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         setCollectorEtape(newCollectorEtape)
     }
 
-    function moveEtapeDown(etape: any){
+    function moveEtapeDown(etape: any) {
         const newCollectorEtape = Array.from(collectorEtape)
         const fromIndex = newCollectorEtape.indexOf(etape);
         const toindex = fromIndex + 1;
@@ -270,7 +285,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     function sendCollectorEtape() {
         let numberOfEtape = 0;
         let etapeNotSend = 0;
-        collectorEtape?.map((etape) => { 
+        collectorEtape?.map((etape) => {
             const etapeToAdd = {
                 clientId: etape.client.id,
                 collecteurId: Collector,
@@ -329,18 +344,30 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
             } else {
                 setSendMessage('Toutes les étapes ont été assignées au collecteur')
             }
+    
+        
+        }   
+
+    
+
+    function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface) {
+        let timeInterval = interval * etapeNumber;
+
+        const travelTime = moment(date).zone("+02:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
+        if (date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12) {
+            return
+
+        }
+        if (date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19) {
+            return
+        }
+        if (new Date(date).getDate() != new Date(travelTime).getDate()) {
+            return
         }
 
-      function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface){
-        let timeInterval = interval * etapeNumber;
-            const travelTime = moment(date).add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");   
-            if(date.toString() == moment(date).format("YYYY-MM-DD") + "T08:00:00.000Z" && new Date(travelTime).getHours() >= 12 || new Date(date).getDate() != new Date(travelTime).getDate()){
-                return
-            }
-            return travelTime
-            }
-             
-            
+        return travelTime
+    }
+
     return (
         <>
             <div className="conteneur">
@@ -348,20 +375,21 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     className="backButton"
                     variant="outlined"
                     size="medium"
-                    onClick={() => {setActionSelected('')}}
+                    onClick={() => {
+                        setActionSelected('')
+                    }}
                     aria-label="move all left"
                 >
                     Retour
                 </Button>
-                <h1>Organiser l'agenda</h1>      
+                <h1>Organiser l'agenda</h1>
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                     <Alert severity="success">{sendMessage}</Alert>
                 </Snackbar>
                 
                 <Grid container justifyContent="center" alignItems="center">
-                
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
-                        <Grid item >
+                        <Grid item>
                             <Grid marginBottom={1}>
                                 <FormControl>
                                     <h3>Date:</h3>  
@@ -377,8 +405,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                         onChange={(newDate) => {
                                             setDate(newDate.target.value);
                                         }}
-                                        
-                                    />       
+                                    />
                                 </FormControl>
                                 <FormControl>
                                     <h3>Intervale:</h3>
@@ -411,18 +438,18 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                     </TextField>
                                 </FormControl> 
                             </Grid>
-                            <Paper sx={{ width: 400, height: 530, overflow: 'auto', fontSize: 10 }}>
+                            <Paper sx={{width: 400, height: 530, overflow: 'auto', fontSize: 10}}>
                                 <List dense component="div" role="list">
                                     {finalEtapeList?.map((etape: any) => {
-                                    const labelId = `transfer-list-item-${etape.id}-label`;
-                                    const date = etape.refDate;
-                                    return (
-                                        
-                                        <ListItem
-                                            // key={etape.id}
-                                            role="listitem"
-                                            button
-                                            onClick={handleLeftToggle(etape.id)}
+                                        const labelId = `transfer-list-item-${etape.id}-label`;
+                                        const date = etape.refDate;
+                                        return (
+
+                                            <ListItem
+                                                // key={etape.id}
+                                                role="listitem"
+                                                button
+                                                onClick={handleLeftToggle(etape.id)}
                                             >
                                             <ListItemIcon>
                                                 <Checkbox
@@ -438,68 +465,69 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                         </ListItem>
                                     );
                                     })}
-                                    <ListItem />
+                                    <ListItem/>
                                 </List>
                             </Paper>
                         </Grid>
                         <Grid item>
                             <Grid container direction="column" alignItems="center">
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleAllRight}
-                                disabled={finalEtapeList?.length === 0}
-                                aria-label="move all right"
-                            >
-                                ≫
-                            </Button>
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleCheckedRight}
-                                disabled={finalEtapeList?.length === 0}
-                                aria-label="move selected right"
-                            >
-                                &gt;
-                            </Button>
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleCheckedLeft}
-                                disabled={collectorEtape?.length === 0}
-                                aria-label="move selected left"
-                            >
-                                &lt;
-                            </Button>
-                            <Button
-                                sx={{ my: 0.5 }}
-                                variant="outlined"
-                                size="small"
-                                onClick={handleAllLeft}
-                                disabled={collectorEtape?.length === 0}
-                                aria-label="move all left"
-                            >
-                                ≪
-                            </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleAllRight}
+                                    disabled={finalEtapeList?.length === 0}
+                                    aria-label="move all right"
+                                >
+                                    ≫
+                                </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleCheckedRight}
+                                    disabled={finalEtapeList?.length === 0}
+                                    aria-label="move selected right"
+                                >
+                                    &gt;
+                                </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleCheckedLeft}
+                                    disabled={collectorEtape?.length === 0}
+                                    aria-label="move selected left"
+                                >
+                                    &lt;
+                                </Button>
+                                <Button
+                                    sx={{my: 0.5}}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleAllLeft}
+                                    disabled={collectorEtape?.length === 0}
+                                    aria-label="move all left"
+                                >
+                                    ≪
+                                </Button>
                             </Grid>
                         </Grid>
                         <Grid item>
                             <Grid marginBottom={1}>
-                                <FormControl >
+                                <FormControl>
                                     <h3>Sélectionner un collecteur:</h3>
                                     <TextField
-                                        sx={{ width: 300, mt: 0.5}}
+                                        sx={{width: 300, mt: 0.5}}
                                         id="select"
                                         select
                                         value={fillSelectOptions()}
                                         label="Collecteur"
-                                        onChange={handleChange}                        
+                                        onChange={handleChange}
                                     >
-                                        {collecteursList?.map((list) =>(
-                                            <MenuItem key={list.id} value={list.id}>{list.utilisateur.nom + " " + list.utilisateur.prenom}</MenuItem>
+                                        {collecteursList?.map((list) => (
+                                            <MenuItem key={list.id}
+                                                      value={list.id}>{list.utilisateur.nom + " " + list.utilisateur.prenom}</MenuItem>
                                         ))}
                                     </TextField>
                                 </FormControl>
@@ -513,7 +541,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                     Valider
                                 </Button>
                             </Grid>
-                            <Paper sx={{ width: 400, height: 530, overflow: 'auto' }}>
+                            <Paper sx={{width: 400, height: 530, overflow: 'auto'}}>
                                 <List dense component="div" role="list">
                                     {collectorEtape?.map((etape: any) => {
                                     const labelId = `transfer-list-item-${etape.id}-label`;
@@ -550,41 +578,38 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                                 </Button><Button
                                                     sx={{ height: 20, mx: 0.2 }}
                                                     variant="outlined"
-                                                    onClick={() => {moveEtapeDown(etape)}}
+                                                    onClick={() => {
+                                                        moveEtapeDown(etape)
+                                                    }}
                                                     disabled={collectorEtape.indexOf(etape) === collectorEtape.length - 1}
 
                                                     aria-label="move one down"
                                                 >
                                                     ↓
                                                 </Button>
-                                            </Grid></>
-                                    );
+                                                </Grid></>
+                                        );
                                     })}
-                                    <ListItem />
+                                    <ListItem/>
                                 </List>
                             </Paper>
                         </Grid>
                     </Grid>
                     <Button
-                                sx={{ width: 200, my: 0.5, mt: 1.5 }}
-                                variant="outlined"
-                                size="medium"
-                                onClick={sendCollectorEtape}
-                                aria-label="save all "
-                            >
-                                Sauvegarder
+                        sx={{width: 200, my: 0.5, mt: 1.5}}
+                        variant="outlined"
+                        size="medium"
+                        onClick={sendCollectorEtape}
+                        aria-label="save all "
+                    >
+                        Sauvegarder
                     </Button>
-       
-       
                 </Grid>
             </div>
-            
+
         </>
-        )
-    
+    )
+
 }
 
 export default AgendaOrganisation
-
-
-
