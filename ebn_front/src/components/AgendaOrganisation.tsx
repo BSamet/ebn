@@ -16,8 +16,11 @@ import {
 import {useEffect, useState} from "react";
 import {HOST_BACK} from "../environment/environment"
 import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
-import moment from "moment";
 import '../styles/component/_AgendaOrganisation.scss';
+import moment from 'moment'
+import 'moment/locale/fr'
+
+moment.locale('fr')
 
 
 interface collecteursInterface {
@@ -41,32 +44,24 @@ interface ramassageInterface {
         }
     };
     typeDechet: {
-        id: number,
-        typeDechet: string
-    },
+        id: number;
+        typeDechet: string;
+    }
     isSubscribe: boolean;
 }
 
-interface etapesInterface {
-    id: number;
-    date: Date;
-    isCollected: boolean;
-    clientId: number;
-    commentaire: string;
-    collecteurId: number;
-    typeDechetId: number;
-}
-
-export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
+export function AgendaOrganisation({setCollectorEtape, collectorEtape, setActionSelected}: any) {
     const [fetchOnce, setFetchOnce] = useState(true);
     const [collecteursList, setCollecteurslist] = useState<collecteursInterface[]>();
     const [sendMessage, setSendMessage] = useState('');
+    const [sendErrorMessage, setSendErrorMessage] = useState('');
     const [open, setOpen] = React.useState(false);
     const [finalEtapeList, setFinalEtapeList] = useState<ramassageInterface[]>([]);
     const [Collector, setCollector] = useState(1);
     const [date, setDate] = useState('');
     const [leftChecked, setLeftChecked] = React.useState<number[]>([]);
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
+    const [interval, setInterval] = useState('');
 
 
     // let collectorList
@@ -83,7 +78,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
             });
         }
     }, [collecteursList, fetchOnce]);
-
     useEffect(() => {
         setCollectorEtape(collectorEtape)
     })
@@ -153,40 +147,41 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
     };
 
     const handleCheckedRight = () => {
-        for (let i = 0; i <= leftChecked.length; i++) {
+        leftChecked.sort((a, b) => a - b)
+        let newFinalEtapeList = Array.from(finalEtapeList)
+        for (let i = 0; i < leftChecked.length; i++) {
             finalEtapeList?.map((etape) => {
                 if (etape.id == leftChecked[i]) {
-                    const newFinalEtapeList = Array.from(finalEtapeList)
                     let etapeIndex = newFinalEtapeList.indexOf(etape);
                     let checkedIndex = leftChecked.indexOf(leftChecked[i]);
-                    setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
                     newFinalEtapeList?.splice(etapeIndex, 1);
-                    setFinalEtapeList(newFinalEtapeList)
                     leftChecked.splice(checkedIndex, 1);
+                    setCollectorEtape((collectorEtape: any) => [...collectorEtape, etape]);
                 }
             })
         }
+        setFinalEtapeList(newFinalEtapeList);
     };
 
     const handleCheckedLeft = () => {
-        for (let i = 0; i <= rightChecked.length; i++) {
+        rightChecked.sort((a, b) => a - b)
+        let newCollectorEtape = Array.from(collectorEtape)
+        for (let i = 0; i < rightChecked.length; i++) {
             collectorEtape?.map((etape: ramassageInterface) => {
                 if (etape.id == rightChecked[i]) {
-                    const newCollectorEtape = Array.from(collectorEtape)
                     let etapeIndex = newCollectorEtape.indexOf(etape);
                     let checkedIndex = rightChecked.indexOf(rightChecked[i]);
-                    setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                     newCollectorEtape?.splice(etapeIndex, 1);
-                    setCollectorEtape(newCollectorEtape);
                     rightChecked.splice(checkedIndex, 1);
+                    setFinalEtapeList((finalEtapeList: ramassageInterface[]) => [...finalEtapeList, etape]);
                 }
             })
         }
+        setCollectorEtape(newCollectorEtape);
     };
 
     const handleAllLeft = () => {
         if (collectorEtape![0] == undefined) {
-
         } else {
             collectorEtape.map(etape => {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
@@ -230,96 +225,92 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
 
     function sendCollectorEtape() {
         let numberOfEtape = 0;
-        //heure matin
-        let h1am = 0;
-        let h2am = 8;
-        let m1am = 0;
-        let m2am = 0;
-        //heure aprem
-        let h1pm = 1;
-        let h2pm = 2;
-        let m1pm = 0;
-        let m2pm = 0;
-        //set Date
-        let date: string;
-
-        collectorEtape.map((etape: { refDate: moment.MomentInput; client: { id: any; }; isSubscribe: boolean; id: number; }) => {
-            if (moment(etape.refDate).toISOString(true) === moment(etape.refDate).format("YYYY-MM-DDT08:00:00.000") + "+02:00") {
-                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1am + h2am + ":" + m1am + m2am + "" + ":00";
-            } else if (moment(etape.refDate).toISOString(true) === moment(etape.refDate).format("YYYY-MM-DDT12:00:00.000") + "+02:00") {
-                date = moment(etape.refDate).format("YYYY-MM-DD") + "T" + "" + h1pm + h2pm + ":" + m1pm + m2pm + "" + ":00";
-            }
+        let etapeNotSend = 0;
+        collectorEtape?.map((etape) => {
             const etapeToAdd = {
                 clientId: etape.client.id,
                 collecteurId: Collector,
                 isCollected: false,
                 commentaire: "",
-                date: date,
+                date: incrementDateTime(etape.refDate, numberOfEtape, parseInt(interval), etape),
                 typeDechetId: etape.typeDechet.id
             }
-            axios
-                .post(HOST_BACK + "/etape", etapeToAdd, {
-                    headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                    }
-                })
-                .then(response => {
-                    numberOfEtape++;
-                    if (numberOfEtape == collectorEtape?.length) {
-                        setCollectorEtape([]);
-                        setOpen(true)
-                        setSendMessage('Les étapes ont été assignées au collecteur')
-                    }
-                    if (etape.isSubscribe == false) {
-                        deleteCollect(etape.id);
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-                });
-            if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T08:00:00.000Z") {
-                m1am += 2;
-                if (m1am == 6) {
-                    m1am = 0;
-                    h2am += 1;
-                }
-                if (h2am == 10) {
-                    h2am = 0;
-                    h1am += 1;
-                }
-                if (h1am == 2 && h2am == 4) {
-                    h1am = 0;
-                    h2am = 0;
-                }
-            } else if (etape.refDate.toString() == moment(etape.refDate).format("YYYY-MM-DD") + "T12:00:00.000Z") {
-                m1pm += 2;
-                if (m1pm == 6) {
-                    m1pm = 0;
-                    h2pm += 1;
-                }
-                if (h2pm == 10) {
-                    h2pm = 0;
-                    h1pm += 1;
-                }
-                if (h1pm == 2 && h2pm == 4) {
-                    h1pm = 0;
-                    h2pm = 0;
-                }
+            if (etapeToAdd.date != null) {
+                axios
+                    .post(HOST_BACK + "/etape", etapeToAdd, {
+                        headers: {
+                            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                        }
+                    })
+                    .then(response => {
+                        if (numberOfEtape == collectorEtape?.length) {
+                            setCollectorEtape([]);
+                            setOpen(true)
+                        }
+                        if (etape.isSubscribe == false) {
+                            deleteCollect(etape.id);
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+            } else {
+                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape])
+                etapeNotSend++
             }
 
+            numberOfEtape++;
+
         })
+        if (etapeNotSend > 0) {
+            setSendMessage(etapeNotSend + " étapes sur " + numberOfEtape + " n'ont pas été assignées")
+        } else {
+            setSendMessage('Toutes les étapes ont été assignées au collecteur')
+        }
+
 
     }
+
+    function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface) {
+        let timeInterval = interval * etapeNumber;
+
+        const travelTime = moment(date).zone("+00:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
+        if (date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12) {
+            return
+
+        }
+        if (date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19) {
+            return
+        }
+        if (new Date(date).getDate() != new Date(travelTime).getDate()) {
+            return
+        }
+
+        return travelTime
+    }
+
 
     return (
         <>
             <div className="conteneur">
+                <Button
+                    className="backButton"
+                    variant="outlined"
+                    size="medium"
+                    onClick={() => {
+                        setActionSelected('')
+                    }}
+                    aria-label="move all left"
+                >
+                    Retour
+                </Button>
                 <h1>Organiser l'agenda</h1>
-
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                     <Alert severity="success">{sendMessage}</Alert>
                 </Snackbar>
+
                 <Grid container justifyContent="center" alignItems="center">
+
                     <Grid container spacing={2} justifyContent="center" alignItems="center" marginTop={1}>
                         <Grid item>
                             <Grid marginBottom={1}>
@@ -337,6 +328,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
                                         onChange={(newDate) => {
                                             setDate(newDate.target.value);
                                         }}
+
                                     />
                                 </FormControl>
                                 <Button
@@ -357,7 +349,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
                                         return (
 
                                             <ListItem
-                                                key={etape.id}
+                                                // key={etape.id}
                                                 role="listitem"
                                                 button
                                                 onClick={handleLeftToggle(etape.id)}
@@ -373,7 +365,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
                                                     />
                                                 </ListItemIcon>
                                                 <ListItemText id={labelId}
-                                                              primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.typeDechet.typeDechet} | ${etape.client.adresse}`}/>
+                                                              primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`}/>
                                             </ListItem>
                                         );
                                     })}
@@ -443,6 +435,21 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
                                         ))}
                                     </TextField>
                                 </FormControl>
+                                <FormControl>
+                                    <h3>Intervale:</h3>
+                                    <TextField
+                                        sx={{width: 90, mt: 0.5, ml: 0.5}}
+                                        id="outlined-number"
+                                        label="Minute"
+                                        inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        onChange={(newInterval) => {
+                                            setInterval(newInterval.target.value);
+                                        }}
+                                    />
+                                </FormControl>
                             </Grid>
                             <Paper sx={{width: 400, height: 530, overflow: 'auto'}}>
                                 <List dense component="div" role="list">
@@ -451,7 +458,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
                                         const date = etape.refDate;
                                         return (
                                             <><ListItem
-                                                key={etape.id}
+                                                // key={etape.id}
                                                 role="listitem"
                                                 button
                                                 onClick={handleRightToggle(etape.id)}
@@ -510,6 +517,8 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
                     >
                         Sauvegarder
                     </Button>
+
+
                 </Grid>
             </div>
 
@@ -519,6 +528,3 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape}: any) {
 }
 
 export default AgendaOrganisation
-
-
-
