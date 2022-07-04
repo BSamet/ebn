@@ -80,6 +80,38 @@ const Maps: React.VFC = ({collectorEtape, consultCollectorEtape, actionSelected}
         })
     }, [markers])
 
+  useEffect(() => {
+      
+      markers.map(marker => {
+          marker.remove()        
+      })
+      setMarkers([])
+      //On Parcours la liste d'etape du collecteur
+      etapes.map((etape: any) => {
+        //On récupère l'adresse du client stockée en base de donnée que l'on stocke dans une variable
+        let adress = etape.client.adresse;
+        //On formate l'adresse récupérée pour remplacer les espaces par des '+'
+        let adressFormat = adress.replaceAll(" ", "+")
+        //Requête vers l'API gouvernementale
+        axios.get("https://api-adresse.data.gouv.fr/search/?q=" + adressFormat)
+        .then(coords => {
+          //On stock la longitude et la latitude dans une variable séparée
+          let lng = coords.data.features[0].geometry.coordinates[0];
+          let lat = coords.data.features[0].geometry.coordinates[1];      
+          //Création du Marker sur la carte
+          const mkStyle = document.createElement('div');
+          mkStyle.className = "marker";
+          mkStyle.innerHTML =(etapes.indexOf(etape) + 1).toString();
+          mkStyle.style.color = "black";
+          mkStyle.style.fontSize = "3em";
+          mkStyle.style.textAlign = "center";
+          let marker = new Marker(mkStyle, {anchor: "bottom"})
+            .setLngLat([lng, lat])
+          setMarkers(markers => [...markers, marker])             
+        })       
+      })               
+    }, [etapes]
+  )  
 
     return (
         <div className="map-wrap">
