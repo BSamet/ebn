@@ -83,6 +83,19 @@ export class EtapeController {
 
   @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('collecteur/:id/:date')
+  findByCollecteurDate(
+      @Param('id') id: number, 
+      @Param('date') date: string, 
+    ) {
+      return this.etapeService.findByCollecteurDate(
+        +id, 
+        date
+      );
+  }
+
+  @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('collecteur/:id')
   findByCollecteur(@Param('id') id: number) {
     return this.etapeService.findByCollecteur(+id);

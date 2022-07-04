@@ -96,9 +96,25 @@ export class CollectService {
         });
     }
 
-    async findAllByDate(date: Date, clientId: number) {
+    async findAllByDate(date: Date, clientId: number, period: string) {
         // Récupération de la liste des étapes pour vérifié si la collecte à déjà été programmé
         const allStepObjectForCheck = await this.getStepArray();
+        let start;
+        let limit;
+        console.log("period" + period)
+        if(period == 'am'){
+            start = date + "T08:00:00.000Z"
+            limit = date + "T11:59:59.OOOZ"
+            console.log(start)
+            console.log(limit);
+            
+        } else if(period == 'pm') {
+            start = date + "T12:00:00.000Z"
+            limit = date + "T23:59:59.000Z"
+            console.log(start)
+            console.log(limit);
+            
+        }
 
         // Récupération de la liste des collect en abonnement
         const allCollectSubscribe = await this.collectRepository
@@ -114,6 +130,8 @@ export class CollectService {
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression != ''")
+            .andWhere('collect.refDate >= :start', {start})
+            .andWhere('collect.refDate <= :limit', {limit})
             .andWhere(clientId ? "collect.client.id = :clientId" : '1=1', {clientId})
             .getMany();
 
@@ -134,6 +152,8 @@ export class CollectService {
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression IS NULL")
+            .andWhere('collect.refDate >= :start', {start})
+            .andWhere('collect.refDate <= :limit', {limit})
             .andWhere(clientId ? "collect.client.id = :clientId" : '1=1', {clientId})
             .getMany();
 

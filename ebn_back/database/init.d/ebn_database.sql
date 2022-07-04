@@ -9,10 +9,6 @@
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-<<<<<<< HEAD
--- SET time_zone = "+00:00";
-=======
->>>>>>> develop
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -162,8 +158,7 @@ INSERT INTO `historique` (`id`, `typeAction`, `date`, `typeDeDechet`, `commentai
 
 CREATE TABLE `type_dechet` (
   `id` int NOT NULL,
-  `typeDechets` varchar(255) NOT NULL,
-  `prixKg` float NOT NULL,
+  `typeDechets` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
