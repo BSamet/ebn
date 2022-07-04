@@ -20,6 +20,7 @@ import QrCodeScanner from '../../components/qrCodeScanner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Divider} from "react-native-elements";
 import {Card, Paragraph, ActivityIndicator} from "react-native-paper";
+import OpenMaps from "../../components/OpenMaps";
 
 require('moment/locale/fr.js');
 
@@ -229,6 +230,7 @@ const DashBordCollecteur = () => {
                         </Card>
                     ))
                 }
+                <OpenMaps  address={"1 rue des charpentiers"} city={"Soultz Haut-Rhin"} zipCode={"68360"}/>
                 {etapes === null &&
                     <View style={styles.loader}>
                         <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
