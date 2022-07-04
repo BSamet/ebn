@@ -105,11 +105,13 @@ export class CollectService {
         if(period == 'am'){
             start = date + "T08:00:00.000Z"
             limit = date + "T11:59:59.OOOZ"
+            console.log(start)
             console.log(limit);
             
         } else if(period == 'pm') {
             start = date + "T12:00:00.000Z"
             limit = date + "T23:59:59.000Z"
+            console.log(start)
             console.log(limit);
             
         }

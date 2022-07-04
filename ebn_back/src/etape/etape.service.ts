@@ -107,8 +107,8 @@ export class EtapeService {
         const mm = String(dateNow.getMonth() + 1).padStart(2, '0');
         const yyyy = dateNow.getFullYear();
 
-        const today = yyyy + '-' + mm + '-' + dd + 'T00:00:00.000';
-        const tomorrow = yyyy + '-' + mm + '-' + dd + 'T23:59:59.000';
+        const today = yyyy + '-' + mm + '-' + dd + 'T00:00:00.000Z';
+        const tomorrow = yyyy + '-' + mm + '-' + dd + 'T23:59:59.000Z';
 
         return this.etapeRepository
             .createQueryBuilder('etape')
@@ -133,6 +133,7 @@ export class EtapeService {
             .innerJoinAndSelect('c.utilisateur', 'u')
             .innerJoinAndSelect('etape.collecteur', 'col')
             .innerJoinAndSelect('col.utilisateur', 'uCol')
+            .innerJoinAndSelect('etape.typeDechet', 'tDech')
             .where('etape.collecteur.id = :id', {id})
             .andWhere('etape.date >= :today', {today})
             .andWhere('etape.date <= :tomorrow', {tomorrow})
@@ -215,7 +216,7 @@ export class EtapeService {
     update(id: number, updateEtapeDto: UpdateEtapeDto) {
         const etape = {
             date: updateEtapeDto.date,
-            // collecteurId: updateEtapeDto.collecteurId
+            // typeDechetId: updateEtapeDto.typeDechetId
         }
         return this.etapeRepository.update(id, etape);
     }

@@ -94,26 +94,22 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     }, [collecteursList, fetchOnce]);
 
     useEffect(() => {
-        setCollectorEtape(collectorEtape)
-    })
-
-    useEffect(() => {
         collectorEtape.map((etape: any) => {
             console.log(etape)
 
             if(period == 'am'){
-                etape.refDate = moment(date).format('YYYY-MM-DD') + "T08:00:00.000Z"
+                etape.refDate = moment(date).format('YYYY-MM-DD') + "T06:00:00.000Z"
             } else{
-                etape.refDate = moment(date).format('YYYY-MM-DD') + "T12:00:00.000Z"
+                etape.refDate = moment(date).format('YYYY-MM-DD') + "T10:00:00.000Z"
             }
-            etape.date = incrementDateTime(etape.refDate, (collectorEtape.indexOf(etape)), parseInt(interval), etape)
-            if(etape.date == undefined){
+            etape.date = incrementDateTime(etape.refDate, (collectorEtape.indexOf(etape)), parseInt(interval))
+            if(etape.date == 'Heure invalide'){
                 etape.outOfTime = 'red';
             } else {
                 etape.outOfTime = 'black';
             }
         })
-    })
+    }, [collectorEtape])
 
 
     function getEtapeAlreadyAssigned() {
@@ -123,6 +119,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
             }
         }).then(etapesAssigned => {
             setCollectorEtape([])
+            console.log(etapesAssigned.data)
             etapesAssigned.data.map((etapeAss: ramassageInterface) => {
                 etapeAss.isAssigned = true;
                 etapeAss.outOfTime = 'black';
@@ -264,6 +261,29 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         })
     };
 
+    function deleteEtape(id: number){
+        axios.delete(HOST_BACK + "/etape/" + id, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }).then(() => 
+        console.log("etape Delete"))
+    }
+
+    function createCollectIfNotAssigned(clientId: number, etapeDate: Date, typeDechetId: number){
+        const collectToAdd = {
+            clientId: clientId,
+            refDate: etapeDate,
+            typeDechetId: typeDechetId
+        }
+        axios
+            .post(HOST_BACK + "/collect", collectToAdd, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                    }
+                })
+    }
+
     function moveEtapeUp(etape: any) {
         const newCollectorEtape = Array.from(collectorEtape)
         const fromIndex = newCollectorEtape.indexOf(etape);
@@ -292,8 +312,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 isCollected: false,
                 commentaire: "",
                 date: etape.date,
+                typeDechetId: etape.typeDechet.id
             }
-            if(etapeToAdd.date != null){
+            if(etapeToAdd.date != 'Heure invalide'){
                 if(etape.isAssigned == false){
                     axios
                     .post(HOST_BACK + "/etape", etapeToAdd, {
@@ -335,6 +356,8 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 }
             } else {
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape])
+                deleteEtape(etape.id)
+                createCollectIfNotAssigned(etape.client.id, etape.refDate, etape.typeDechet.id)
                 etapeNotSend ++
             }   
                 numberOfEtape ++;
@@ -344,25 +367,22 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
             } else {
                 setSendMessage('Toutes les étapes ont été assignées au collecteur')
             }
-    
-        
         }   
 
-    
-
-    function incrementDateTime(date: Date, etapeNumber: number, interval: number, etape: ramassageInterface) {
+    function incrementDateTime(date: Date, etapeNumber: number, interval: number) {
         let timeInterval = interval * etapeNumber;
 
         const travelTime = moment(date).zone("+02:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
+        console.log(date.toString())
         if (date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12) {
-            return
+            return 'Heure invalide'
 
         }
         if (date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19) {
-            return
+            return 'Heure invalide'
         }
         if (new Date(date).getDate() != new Date(travelTime).getDate()) {
-            return
+            return 'Heure invalide'
         }
 
         return travelTime
@@ -461,7 +481,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                                 }}
                                                 />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(date).format('DD.MM.YYYY')} | ${etape.client.adresse}`} />
+                                            <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechets}`} />
                                         </ListItem>
                                     );
                                     })}
@@ -563,7 +583,12 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                                         'aria-labelledby': labelId,
                                                     }} />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${moment(etape.date).format('HH [h] mm')} | ${etape.client.adresse}`} />
+                                            {etape.date == 'Heure invalide' && 
+                                                <ListItemText id={labelId} primary={`Horraire invalide | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse}`} />
+                                            }
+                                            {etape.date != 'Heure invalide' &&
+                                            <ListItemText id={labelId} primary={`${moment(etape.date).format('HH [h] mm')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechets}`} />
+                                            }
                                         </ListItem>
                                         <Grid container direction="row" alignItems="center" justifyContent="center">
                                                 <Button
