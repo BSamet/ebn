@@ -130,12 +130,17 @@ const HistoriqueClient = () => {
           orientation="horizontal"
         />
 
+        <View style={styles.historiqueLegende}>
+          <Text style={styles.modalText}>🟢 : Récupération</Text>
+          <Text style={styles.modalText}>🔵 : Assignation</Text>
+        </View>
         {myHistorique != null &&
             <DataTable>
               <DataTable.Header>
                 <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
                 <DataTable.Title style={{flex: 1}}>Type de déchets</DataTable.Title>
-                <DataTable.Title>poids</DataTable.Title>
+                <DataTable.Title style={{flex: 0.5, justifyContent: 'center'}}>Poids</DataTable.Title>
+                <DataTable.Title style={{flex: 0.5, justifyContent: 'center'}}>Action</DataTable.Title>
               </DataTable.Header>
 
               {myHistorique?.map((hist, index) => (
@@ -147,7 +152,8 @@ const HistoriqueClient = () => {
                       <DataTable.Cell style={{flex: 1}}>
                         {hist.typeDeDechet}
                       </DataTable.Cell>
-                      <DataTable.Cell>{hist.poids} kg</DataTable.Cell>
+                      <DataTable.Cell style={{flex: 0.5, justifyContent: 'center'}}>{hist.poids != 0 ? hist.poids + " kg" : "/"}</DataTable.Cell>
+                      <DataTable.Cell style={{flex: 0.5, justifyContent: 'center'}}>{hist.poids != 0 ? "🟢" : "🔵"}</DataTable.Cell>
                     </DataTable.Header>
                   </Pressable>
               ))}
@@ -175,9 +181,11 @@ const HistoriqueClient = () => {
               <Text style={styles.modalText}>
                 Action : {infoHistorique?.typeAction}
               </Text>
-              <Text style={styles.modalText}>
-                Poids récuperé : {infoHistorique?.poids} kg
-              </Text>
+              {infoHistorique?.poids != 0 &&
+                <Text style={styles.modalText}>
+                  Poids récuperé : {infoHistorique?.poids} kg
+                </Text>
+              }
               <Text style={styles.modalText}>
                 Commentaire : {infoHistorique?.commentaire}
               </Text>
@@ -276,6 +284,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '50%',
     marginVertical: 5,
+  },
+  historiqueLegende: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around"
   },
   modalText: {
     marginBottom: 15,
