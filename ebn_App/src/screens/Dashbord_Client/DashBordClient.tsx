@@ -21,7 +21,7 @@ import {format} from 'date-fns';
 import {ActivityIndicator, Checkbox, DataTable, RadioButton, Snackbar} from 'react-native-paper';
 import {RefreshControl} from 'react-native';
 
-const wait = timeout => {
+const wait = (timeout: number | undefined) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
@@ -50,6 +50,7 @@ export interface ShowClient {
     siret: number;
     nomCommercial: string;
     adresse: string;
+    clientvalide: boolean;
     utilisateur: {
         id: number;
         role: string;
@@ -60,6 +61,23 @@ export interface ShowClient {
         mail: string;
         telephone: string;
     };
+    collect: [{
+        cronExpression: string;
+        refDate: string;
+        typeDechet: {
+            id: number,
+            typeDechets: string;
+        }
+    }];
+    typeDechet: [{
+        id: number,
+        typeDechets: string;
+    }]
+}
+
+export interface TypeOfWaste {
+    id: number,
+    typeDechets: string
 }
 
 
@@ -72,6 +90,7 @@ const DashBordClient = () => {
 
     const [tourner, setTouner] = useState<dashboardClient[]>();
     const [myclient, setMyClient] = useState<ShowClient>();
+    const [allTypeOfWaste, setAllTypeOfWaste] = useState<TypeOfWaste[]>();
     const [modalOpen, setModalOpen] = useState(false);
     const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
     const [isVisible, setIsVisible] = React.useState(false);
@@ -83,6 +102,7 @@ const DashBordClient = () => {
     // Modal Collect OneTime
     const [date, setDate] = useState(new Date());
     const [timeSlot, setTimeSlot] = useState('');
+    const [typeOfWaste, setTypeOfWaste] = useState<TypeOfWaste>()
     const [textDate, setTextDate] = useState('');
     const [errorOneTimeCollect, setErrorOneTimeCollect] = useState<string>();
     //Modal Subscribe
@@ -106,19 +126,20 @@ const DashBordClient = () => {
     const postRamasagge = (dayToPost: number[]) => {
         let formatDateSave = formatDateForPost(date)
         let data;
-
         if (wichModalCollect === 'subscribe') {
             data = {
                 refDate: formatDateSave,
                 clientId: myClientId,
                 days: dayToPost,
                 isSubscribe: true,
+                typeDechetId: typeOfWaste?.id
             };
         } else {
             data = {
                 refDate: formatDateSave,
                 clientId: myClientId,
                 isSubscribe: false,
+                typeDechetId: typeOfWaste?.id
             };
         }
 
@@ -130,6 +151,9 @@ const DashBordClient = () => {
             })
             .then(resp => {
                 if (resp.status === 201) {
+                    let newCollect = {...myclient};
+                    newCollect.collect?.push(resp.data)
+                    setMyClient(newCollect)
                     setIsVisible(true);
                 }
             })
@@ -154,13 +178,46 @@ const DashBordClient = () => {
             setErrorOneTimeCollect('Veuillez sélectionner une tranche horaire !')
         } else if (wichModalCollect === 'subscribe' && dayToPost.length === 0) {
             setErrorOneTimeCollect('Veuillez sélectionner au moins un jour !')
+        } else if (typeOfWaste === undefined) {
+            setErrorOneTimeCollect("Veuillez séléctionner un type de déchet !")
         } else {
-            updateAllCheckedDayToFalse();
-            setErrorOneTimeCollect('')
-            setTextDate('')
-            setTimeSlot('')
-            setModalRamassage(!modalRamassage);
-            postRamasagge(dayToPost);
+            let formatDateSave = formatDateForPost(date)
+            let findCollect = false;
+            myclient?.collect.map((collect) => {
+                if(collect.cronExpression === null && wichModalCollect === 'oneTime') {
+                    if (collect.refDate === new Date(formatDateSave).toISOString() && collect.typeDechet.id === typeOfWaste.id) {
+                        findCollect = true;
+                    }
+                } else if (collect.cronExpression != null && wichModalCollect === 'subscribe') {
+                    // Récupérer les heures dans la demande abonnement et les abonnements en cours
+                    let refDateToDate = new Date(collect.refDate);
+                    let getHourInCollectDate = refDateToDate.getHours();
+                    let subscribeRequestDateToDate = new Date(formatDateSave);
+                    let getHourInCollectRequestDate = subscribeRequestDateToDate.getUTCHours()
+
+                    if (getHourInCollectDate.toString() === getHourInCollectRequestDate.toString() && collect.typeDechet.id === typeOfWaste.id) {
+                        let splitCronExpression = collect.cronExpression.split(' ');
+                        let takeSplitCronExpressionDays = splitCronExpression[splitCronExpression.length - 1];
+                        let allDaysInCronExpressionToArray = takeSplitCronExpressionDays.split(',');
+                        if (allDaysInCronExpressionToArray.some(day => dayToPost.includes(parseInt(day)))) {
+                            findCollect = true;
+                        }
+                    }
+                }
+            })
+            if(findCollect && wichModalCollect === "oneTime") {
+                setErrorOneTimeCollect('Vous avez déjà une demande collecte à cette date !')
+            } else if (findCollect && wichModalCollect === "subscribe") {
+                    setErrorOneTimeCollect('Vous avez déjà un abonnement à cette date en cours !')
+            } else {
+                updateAllCheckedDayToFalse();
+                setErrorOneTimeCollect('');
+                setTextDate('');
+                setTimeSlot('');
+                setTypeOfWaste(undefined);
+                setModalRamassage(!modalRamassage);
+                postRamasagge(dayToPost);
+            }
         }
     };
     const cancel = () => {
@@ -168,6 +225,7 @@ const DashBordClient = () => {
         setErrorOneTimeCollect('')
         setTextDate('')
         setTimeSlot('')
+        setTypeOfWaste(undefined)
         setModalRamassage(!modalRamassage);
     };
 
@@ -179,13 +237,34 @@ const DashBordClient = () => {
                 },
             })
             .then(res => {
-                // appel de l'api
-                // recupération client
-                setMyClient(res.data.etape[0].client);
-                // recuperer les infos du collecteur sans map
                 setTouner(res.data.etape);
             });
     };
+
+    const fetchClient = () => {
+        axios
+            .get(HOST_BACK + '/client/' + myClientId, {
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                },
+            })
+            .then(res => {
+                console.log(res.data)
+                setMyClient(res.data);
+            });
+    }
+
+    const fetchTypeOfWaste = () => {
+        axios
+            .get(HOST_BACK + '/type-dechets/', {
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                },
+            })
+            .then(res => {
+                setAllTypeOfWaste(res.data);
+            });
+    }
 
     useEffect(() => {
         AsyncStorage.getItem('token').then(tokenValue => {
@@ -204,7 +283,9 @@ const DashBordClient = () => {
 
     useEffect(() => {
         if (clientToken != null && myClientId != null) {
+            fetchClient();
             fetchEtape();
+            fetchTypeOfWaste()
         }
     }, [clientToken, myClientId]);
 
@@ -236,7 +317,7 @@ const DashBordClient = () => {
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || date;
         setVisible(false);
-        let Fdate = format(currentDate, 'dd/MM/yyyy', 'Europe/Berlin');
+        let Fdate = format(currentDate, 'dd/MM/yyyy', 'Europe/Paris');
         let formatDateSave = formatDateForPost(currentDate)
 
         setDate(formatDateSave);
@@ -336,99 +417,127 @@ const DashBordClient = () => {
                 <Modal
                     animationType="slide"
                     transparent={true}
-                    visible={modalRamassage}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalTitre}> Votre demande
-                                {wichModalCollect === 'oneTime' ? ' de collecte' : wichModalCollect === 'subscribe' ? ' d\'abonnement' : ' ERREUR !'}
-                            </Text>
-                            <Pressable style={styles.collecteModalSubmit} onPress={showDate}>
-                                <Text style={styles.textStyle}> Choisir une date</Text>
-                            </Pressable>
-                            <View style={styles.timeSlotContainer}>
+                    visible={modalRamassage}
+                >
+                    <ScrollView>
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.modalTitre}> Votre demande
+                                    {wichModalCollect === 'oneTime' ? ' de collecte' : wichModalCollect === 'subscribe' ? ' d\'abonnement' : ' ERREUR !'}
+                                </Text>
+                                <Pressable style={styles.collecteModalSubmit} onPress={showDate}>
+                                    <Text style={styles.textStyle}> Choisir une date</Text>
+                                </Pressable>
                                 {wichModalCollect === 'subscribe' &&
-                                selectedDay.map((day, index) => (
-                                    <Pressable key={index}
-                                               style={styles.timeSlot}
-                                               onPress={() => {
-                                                   onPressOnCheckbox(day.id)
-                                               }}>
+                                    <Text style={styles.textDate}>Jour demandé :</Text>
+                                }
+                                <View style={styles.timeSlotContainer}>
+                                    {wichModalCollect === 'subscribe' &&
+                                        selectedDay.map((day, index) => (
+                                            <Pressable key={index}
+                                                       style={styles.timeSlot}
+                                                       onPress={() => {
+                                                           onPressOnCheckbox(day.id)
+                                                       }}>
+                                                <Text
+                                                    style={[styles.timeSlotBaseButton, day.status ? styles.daySelected : '']}>{day.day}</Text>
+                                                <Checkbox
+                                                    color={'#2196F3'} uncheckedColor={'lightgrey'}
+                                                    status={day.status ? 'checked' : 'unchecked'}
+                                                />
+                                            </Pressable>
+                                        ))
+                                    }
+                                </View>
+                                <Text style={styles.textDate}>Tranche horaire :</Text>
+                                <View style={styles.timeSlotContainer}>
+                                    <Pressable style={styles.timeSlot} onPress={() => setTimeSlot('Matin')}>
                                         <Text
-                                            style={[styles.timeSlotBaseButton, day.status ? styles.daySelected : '']}>{day.day}</Text>
-                                        <Checkbox
-                                            color={'#2196F3'} uncheckedColor={'lightgrey'}
-                                            status={day.status ? 'checked' : 'unchecked'}
+                                            style={[styles.timeSlotBaseButton, timeSlot === 'Matin' ? styles.timeSlotSelected : '']}>Matin</Text>
+                                        <RadioButton color={'#8AC997'} uncheckedColor={'lightgrey'} value="Matin"
+                                                     status={timeSlot === 'Matin' ? 'checked' : 'unchecked'}
+                                                     onPress={() => setTimeSlot('Matin')}
                                         />
                                     </Pressable>
-                                ))
-                                }
-                            </View>
-                            <View style={styles.timeSlotContainer}>
-                                <Pressable style={styles.timeSlot} onPress={() => setTimeSlot('Matin')}>
-                                    <Text
-                                        style={[styles.timeSlotBaseButton, timeSlot === 'Matin' ? styles.timeSlotSelected : '']}>Matin</Text>
-                                    <RadioButton color={'#8AC997'} uncheckedColor={'lightgrey'} value="Matin"
-                                                 status={timeSlot === 'Matin' ? 'checked' : 'unchecked'}
-                                                 onPress={() => setTimeSlot('Matin')}
-                                    />
-                                </Pressable>
-                                <Pressable style={styles.timeSlot} onPress={() => setTimeSlot('Après-midi')}>
-                                    <Text
-                                        style={[styles.timeSlotBaseButton, timeSlot === 'Après-midi' ? styles.timeSlotSelected : '']}>Après-midi</Text>
-                                    <RadioButton color={'#8AC997'} uncheckedColor={'lightgrey'} value="Après-midi"
-                                                 status={timeSlot === 'Après-midi' ? 'checked' : 'unchecked'}
-                                                 onPress={() => setTimeSlot('Après-midi')}
-                                    />
-                                </Pressable>
-                            </View>
-                            <Text style={styles.textDate}>
-                                Vous avez
-                                demander {wichModalCollect === "oneTime" ? 'une collecte' : wichModalCollect === 'subscribe' ? 'un abonnement' : ''} : {'\n'}
-                                {wichModalCollect === "oneTime" &&
-                                <Text style={styles.date}>
-                                    {textDate != '' ? 'Le ' + textDate : ''}
-                                    {textDate != '' && timeSlot != '' ? ' entre ' : textDate === '' && timeSlot != '' ? ' Entre ' : ''}
-                                    {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
+                                    <Pressable style={styles.timeSlot} onPress={() => setTimeSlot('Après-midi')}>
+                                        <Text
+                                            style={[styles.timeSlotBaseButton, timeSlot === 'Après-midi' ? styles.timeSlotSelected : '']}>Après-midi</Text>
+                                        <RadioButton color={'#8AC997'} uncheckedColor={'lightgrey'} value="Après-midi"
+                                                     status={timeSlot === 'Après-midi' ? 'checked' : 'unchecked'}
+                                                     onPress={() => setTimeSlot('Après-midi')}
+                                        />
+                                    </Pressable>
+                                </View>
+                                <Text style={styles.textDate}>Type de déchet :</Text>
+                                <View style={styles.timeSlotContainer}>
+                                    {allTypeOfWaste?.map((waste, index) => (
+                                        <Pressable style={styles.timeSlot} onPress={() => setTypeOfWaste({
+                                            id: waste.id,
+                                            typeDechets: waste.typeDechets
+                                        })} key={index}>
+                                            <Text
+                                                style={[styles.timeSlotBaseButton, typeOfWaste?.id === waste.id ? styles.timeSlotSelected : '']}>{waste.typeDechets}</Text>
+                                            <RadioButton color={'#8AC997'} uncheckedColor={'lightgrey'} value="Matin"
+                                                         status={typeOfWaste?.id === waste.id ? 'checked' : 'unchecked'}
+                                                         onPress={() => setTypeOfWaste({
+                                                             id: waste.id,
+                                                             typeDechets: waste.typeDechets
+                                                         })}
+                                            />
+                                        </Pressable>
+                                    ))}
+                                </View>
+                                <Text style={styles.textDate}>
+                                    Vous avez
+                                    demander {wichModalCollect === "oneTime" ? 'une collecte' : wichModalCollect === 'subscribe' ? 'un abonnement' : ''} : {'\n'}
+                                    {wichModalCollect === "oneTime" &&
+                                        <Text style={styles.date}>
+                                            {typeOfWaste?.typeDechets != undefined ? "De " + typeOfWaste?.typeDechets.toLowerCase() : ''}
+                                            {textDate != '' && typeOfWaste === undefined ? 'Le ' + textDate : textDate != '' && typeOfWaste != undefined ? ', le ' + textDate : ''}
+                                            {(textDate != '' && timeSlot != '') || (timeSlot != '' && typeOfWaste != undefined) ? ' entre ' : textDate === '' && typeOfWaste === undefined && timeSlot != '' ? ' Entre ' : ''}
+                                            {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
+                                        </Text>
+                                    }
+                                    {wichModalCollect === "subscribe" &&
+                                        <Text style={styles.date}>
+                                            {typeOfWaste?.typeDechets != undefined ? "De " + typeOfWaste?.typeDechets.toLowerCase() : ''}
+                                            {textDate != '' && typeOfWaste === undefined ? 'À partir du ' + textDate + ',\n' : textDate != '' && typeOfWaste != undefined ? ', à partir du ' + textDate + ',\n': ''}
+                                            {textDate != '' && timeSlot != '' ? 'entre ' : textDate === '' && timeSlot != '' ? 'Entre ' : ''}
+                                            {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
+                                            {selectedDay.filter((checkDay) => checkDay.status).map(day =>
+                                                ' le ' + day.day
+                                            ).join(',')}
+                                        </Text>
+                                    }
                                 </Text>
-                                }
-                                {wichModalCollect === "subscribe" &&
-                                <Text style={styles.date}>
-                                    {textDate != '' ? 'A partir du ' + textDate + ',\n' : ''}
-                                    {textDate != '' && timeSlot != '' ? 'entre ' : textDate === '' && timeSlot != '' ? 'Entre ' : ''}
-                                    {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
-                                    {selectedDay.filter((checkDay) => checkDay.status).map(day =>
-                                        ' le ' + day.day
-                                    ).join(',')}
-                                </Text>
-                                }
-                            </Text>
-                            {visible && (
-                                <RNDateTimePicker
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={mode}
-                                    onChange={onChange}
-                                />
-                            )}
-                            <View style={styles.collecteModalSubmitContainer}>
-                                <Pressable
-                                    style={styles.collecteModalCancel}
-                                    onPress={() => {
-                                        cancel();
-                                    }}>
-                                    <Text style={styles.textStyle}>Annuler</Text>
-                                </Pressable>
-                                <Pressable
-                                    style={styles.collecteModalSubmit}
-                                    onPress={() => {
-                                        submit();
-                                    }}>
-                                    <Text style={styles.textStyle}>Enregistrer</Text>
-                                </Pressable>
+                                {visible && (
+                                    <RNDateTimePicker
+                                        testID="dateTimePicker"
+                                        value={date}
+                                        mode={mode}
+                                        onChange={onChange}
+                                    />
+                                )}
+                                <View style={styles.collecteModalSubmitContainer}>
+                                    <Pressable
+                                        style={styles.collecteModalCancel}
+                                        onPress={() => {
+                                            cancel();
+                                        }}>
+                                        <Text style={styles.textStyle}>Annuler</Text>
+                                    </Pressable>
+                                    <Pressable
+                                        style={styles.collecteModalSubmit}
+                                        onPress={() => {
+                                            submit();
+                                        }}>
+                                        <Text style={styles.textStyle}>Enregistrer</Text>
+                                    </Pressable>
+                                </View>
+                                <Text style={styles.errorOneTimeCollect}>{errorOneTimeCollect}</Text>
                             </View>
-                            <Text style={styles.errorOneTimeCollect}>{errorOneTimeCollect}</Text>
                         </View>
-                    </View>
+                    </ScrollView>
                 </Modal>
 
                 <View style={styles.requestCollecteContainer}>
@@ -455,33 +564,33 @@ const DashBordClient = () => {
                 />
 
                 {tourner != null &&
-                <DataTable>
-                    <DataTable.Header>
-                        <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
-                        <DataTable.Title style={{flex: 1}}>Collecteur</DataTable.Title>
-                        <DataTable.Title>Numéro téléphone</DataTable.Title>
-                    </DataTable.Header>
-
-                    {tourner?.map((item, index) => (
-                        <DataTable.Header key={index}>
-                            <DataTable.Cell style={{flex: 1.5}}>
-                                {moment(item.date).format('DD.MM.YYYY à HH[h] mm')}
-                            </DataTable.Cell>
-                            <DataTable.Cell style={{flex: 1}}>
-                                {item.collecteur.utilisateur.nom}{' '}
-                                {item.collecteur.utilisateur.prenom}
-                            </DataTable.Cell>
-                            <DataTable.Cell>
-                                {item.collecteur.utilisateur.telephone}
-                            </DataTable.Cell>
+                    <DataTable>
+                        <DataTable.Header>
+                            <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
+                            <DataTable.Title style={{flex: 1}}>Collecteur</DataTable.Title>
+                            <DataTable.Title>Numéro téléphone</DataTable.Title>
                         </DataTable.Header>
-                    ))}
-                </DataTable>
+
+                        {tourner?.map((item, index) => (
+                            <DataTable.Header key={index}>
+                                <DataTable.Cell style={{flex: 1.5}}>
+                                    {moment(item.date).format('DD.MM.YYYY à HH[h] mm')}
+                                </DataTable.Cell>
+                                <DataTable.Cell style={{flex: 1}}>
+                                    {item.collecteur.utilisateur.nom}{' '}
+                                    {item.collecteur.utilisateur.prenom}
+                                </DataTable.Cell>
+                                <DataTable.Cell>
+                                    {item.collecteur.utilisateur.telephone}
+                                </DataTable.Cell>
+                            </DataTable.Header>
+                        ))}
+                    </DataTable>
                 }
                 {tourner === null &&
-                <View style={styles.loader}>
-                    <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
-                </View>
+                    <View style={styles.loader}>
+                        <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
+                    </View>
                 }
             </View>
         </ScrollView>
