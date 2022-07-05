@@ -481,7 +481,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                                 }}
                                                 />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechets}`} />
+                                            <ListItemText id={labelId} primary={`${moment(date).format('DD.MM.YYYY')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechet}`} />
                                         </ListItem>
                                     );
                                     })}
@@ -587,7 +587,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                                 <ListItemText id={labelId} primary={`Horraire invalide | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse}`} />
                                             }
                                             {etape.date != 'Heure invalide' &&
-                                            <ListItemText id={labelId} primary={`${moment(etape.date).format('HH [h] mm')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechets}`} />
+                                            <ListItemText id={labelId} primary={`${moment(etape.date).format('HH [h] mm')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechet}`} />
                                             }
                                         </ListItem>
                                         <Grid container direction="row" alignItems="center" justifyContent="center">
