@@ -24,7 +24,7 @@ import OpenMaps from "../../components/OpenMaps";
 
 require('moment/locale/fr.js');
 
-interface EtapeCollecteur {
+export interface EtapeCollecteur {
     id: number;
     date: string;
     isCollected: boolean;
@@ -65,7 +65,6 @@ interface collecteurInterface {
 }
 
 const DashBordCollecteur = () => {
-    // const navigation = useNavigation<AuthScreenNavigate>();
     const {height} = useWindowDimensions();
     const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
     const [modalOpen, setModalOpen] = useState(false);
@@ -175,6 +174,13 @@ const DashBordCollecteur = () => {
                         du {'\n'} {moment(Date.now()).locale('fr').format('DD MMMM YYYY')}</Text>
                 </View>
 
+
+                {etapes != null &&
+                    <View style={styles.centeredButton}>
+                        <OpenMaps steps={etapes}/>
+                    </View>
+                }
+
                 <Divider
                     style={{width: '100%', margin: 10}}
                     color="#8AC997"
@@ -230,7 +236,6 @@ const DashBordCollecteur = () => {
                         </Card>
                     ))
                 }
-                <OpenMaps  address={"1 rue des charpentiers"} city={"Soultz Haut-Rhin"} zipCode={"68360"}/>
                 {etapes === null &&
                     <View style={styles.loader}>
                         <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
@@ -270,6 +275,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 22,
+    },
+    centeredButton: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     modalText: {
         marginBottom: 15,

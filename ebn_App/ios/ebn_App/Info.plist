@@ -78,5 +78,8 @@
 		<string>japonais.otf</string>
 		<string>Comfortaa-VariableFont_wght.ttf</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysUsageDescription</key>
 </dict>
 </plist>
