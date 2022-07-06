@@ -214,11 +214,7 @@ export class EtapeService {
     }
 
     update(id: number, updateEtapeDto: UpdateEtapeDto) {
-        const etape = {
-            date: updateEtapeDto.date,
-            // typeDechetId: updateEtapeDto.typeDechetId
-        }
-        return this.etapeRepository.update(id, etape);
+        return this.etapeRepository.update(id, updateEtapeDto);
     }
 
     remove(id: number) {
