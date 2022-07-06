@@ -29,8 +29,8 @@ export class CollectController {
 
     @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Get('/date/:period')
-    findAllByDateOrClient(@Query('date') date: Date, @Query('clientId') clientId: number, @Param('period') period: string) {
+    @Get('/date')
+    findAllByDateOrClient(@Query('date') date: Date, @Query('clientId') clientId: number, @Query('period') period: string) {
         return this.collectService.findAllByDate(date, clientId, period);
     }
 
