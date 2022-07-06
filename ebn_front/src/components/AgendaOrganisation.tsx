@@ -76,6 +76,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
     const [interval, setInterval] = useState(''); 
     const [period, setPeriod] = React.useState('');
+    const [hour, setHour] = React.useState<string[]>([]);
 
     // let collectorList
     useEffect(() => {
@@ -110,6 +111,14 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         })
     }, [collectorEtape])
 
+    useEffect(() => {
+        let hourToStock: string;
+        collectorEtape.map((etape:any) => {
+            hourToStock = moment(etape.date).format('h:mm a');
+            setHour(hour => [...hour, hourToStock])
+        })
+        console.log(hour)
+    }, [collectorEtape])
 
     function getEtapeAlreadyAssigned() {
         axios.get(HOST_BACK + '/etape/collecteur/' + Collector + '/' + date, {
@@ -355,6 +364,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     });
                 }
             } else {
+                console.log("passe etape")
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 deleteEtape(etape.id);
                 createCollectIfNotAssigned(etape.client.id, etape.refDate, etape.typeDechet.id);
