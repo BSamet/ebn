@@ -175,7 +175,7 @@ const DashBordCollecteur = () => {
                 </View>
 
 
-                {etapes != null &&
+                {etapes != null && etapes.length != 0 &&
                     <View style={styles.centeredButton}>
                         <OpenMaps steps={etapes}/>
                     </View>
