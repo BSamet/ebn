@@ -249,7 +249,6 @@ const DashBordClient = () => {
                 },
             })
             .then(res => {
-                console.log(res.data)
                 setMyClient(res.data);
             });
     }
