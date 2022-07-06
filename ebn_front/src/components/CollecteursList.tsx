@@ -113,10 +113,10 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                                 onClick={(event) => handleListItemClick(event, list.id)}
                                 key={index}
                             >
-                                <ListItemText className='listItem' primary={list.id} />
-                                <ListItemText className='listItem' primary={list.utilisateur.nom} />
-                                <ListItemText className='listItem' primary={list.utilisateur.prenom} />
-                                <ListItemText className='listItem' primary={list.numeroVelo} />
+                                <ListItemText className='listItem1' primary={list.id} />
+                                <ListItemText className='listItem1' primary={list.utilisateur.nom} />
+                                <ListItemText className='listItem2' primary={list.utilisateur.prenom} />
+                                <ListItemText className='listItem2' primary={list.numeroVelo} />
                                 <div>
                                     <UpdateCollecteur selectCollecteurId={selectCollecteurId} />
                                 </div>
