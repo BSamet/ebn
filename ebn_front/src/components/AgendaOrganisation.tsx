@@ -77,7 +77,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const [interval, setInterval] = useState(''); 
     const [period, setPeriod] = React.useState('');
 
-    
     // let collectorList
     useEffect(() => {
         if (fetchOnce) {
@@ -132,8 +131,8 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
 
     function setEtapesArray() {
         setFinalEtapeList([])
-        console.log(date)
-        axios.get(HOST_BACK + '/collect/date/' + period  + '?date=' + date, {
+        console.log(HOST_BACK + '/collect/date?date=' + date  + '&period=' + period)
+        axios.get(HOST_BACK + '/collect/date?date=' + date  + '&period=' + period, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             } 
@@ -192,6 +191,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const handleChangeHour = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPeriod(event.target.value); 
     }
+
     const handleAllRight = () => {
         if (finalEtapeList![0] == undefined) {
         } else {
@@ -336,7 +336,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     });
                 } else {
                     axios
-                    .patch(HOST_BACK + "/etape/" + etape.id, etapeToAdd, {
+                    .patch(HOST_BACK + "/etape/date/" + etape.id, etapeToAdd, {
                         headers: {
                             "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                         }
@@ -355,10 +355,10 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     });
                 }
             } else {
-                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape])
-                deleteEtape(etape.id)
-                createCollectIfNotAssigned(etape.client.id, etape.refDate, etape.typeDechet.id)
-                etapeNotSend ++
+                setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
+                deleteEtape(etape.id);
+                createCollectIfNotAssigned(etape.client.id, etape.refDate, etape.typeDechet.id);
+                etapeNotSend ++;
             }   
                 numberOfEtape ++;
             })

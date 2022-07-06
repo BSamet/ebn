@@ -99,22 +99,6 @@ export class CollectService {
     async findAllByDate(date: Date, clientId: number, period: string) {
         // Récupération de la liste des étapes pour vérifié si la collecte à déjà été programmé
         const allStepObjectForCheck = await this.getStepArray();
-        let start;
-        let limit;
-        console.log("period" + period)
-        if(period == 'am'){
-            start = date + "T08:00:00.000Z"
-            limit = date + "T11:59:59.OOOZ"
-            console.log(start)
-            console.log(limit);
-            
-        } else if(period == 'pm') {
-            start = date + "T12:00:00.000Z"
-            limit = date + "T23:59:59.000Z"
-            console.log(start)
-            console.log(limit);
-            
-        }
 
         // Récupération de la liste des collect en abonnement
         const allCollectSubscribe = await this.collectRepository
@@ -130,13 +114,10 @@ export class CollectService {
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression != ''")
-            .andWhere('collect.refDate >= :start', {start})
-            .andWhere('collect.refDate <= :limit', {limit})
             .andWhere(clientId ? "collect.client.id = :clientId" : '1=1', {clientId})
             .getMany();
-
         // C'est ici que la magie va opéré pour renvoyer une liste des prochaines collecte des abonnements
-        const subscribeArray = await this.getNextIntervalCollecte(allCollectSubscribe, date, allStepObjectForCheck)
+        const subscribeArray = await this.getNextIntervalCollecte(allCollectSubscribe, date, allStepObjectForCheck, period)
 
         // Récupération de la liste des collect en non abonnement
         const allCollectNotSubscribe = await this.collectRepository
@@ -152,13 +133,11 @@ export class CollectService {
             .addSelect('utilisateur.nom')
             .addSelect('utilisateur.prenom')
             .where("collect.cronExpression IS NULL")
-            .andWhere('collect.refDate >= :start', {start})
-            .andWhere('collect.refDate <= :limit', {limit})
             .andWhere(clientId ? "collect.client.id = :clientId" : '1=1', {clientId})
             .getMany();
-
+        console.log(allCollectNotSubscribe)
         // Et c'est également ici que la magie va opéré pour renvoyer une liste des prochaines collecte ponctuelle
-        return this.checkOneTimeCollect(date, allCollectNotSubscribe, allStepObjectForCheck, subscribeArray)
+        return this.checkOneTimeCollect(date, allCollectNotSubscribe, allStepObjectForCheck, subscribeArray, period)
     }
 
     update(id: number, updateCollectDto: UpdateCollectDto) {
@@ -172,7 +151,7 @@ export class CollectService {
         return this.collectRepository.delete(id);
     }
 
-    async getNextIntervalCollecte(collects: Array<Collect>, date: Date, allStepObjectForCheck: Etape[]) {
+    async getNextIntervalCollecte(collects: Array<Collect>, date: Date, allStepObjectForCheck: Etape[], period: string) {
         // -- Cette fonction va nous parser le cron qui est dans la table collect et gerer les intervales pour crée une liste --
 
         // On initialise une table
@@ -204,7 +183,7 @@ export class CollectService {
                         let obj = intervalSubscribe.next();
                         // Si le paramètre date existe on demande à nous retourner les dates qui sont égaux au paramètre et uniquement ceux qui ne sont pas existant dans la table étape
                         if (date) {
-                            if (this.dateEquals(obj.value, date) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id, subscribe.typeDechet.id)) {
+                            if (this.dateEquals(obj.value, date, period) && !this.hasEqualDateAndSameClient(allStepObjectForCheck, new Date(obj.value), subscribe.client.id, subscribe.typeDechet.id)) {
                                 myAwesomeCollectObject.push(this.setSubscribeToPush(obj.value, subscribe.client, subscribe.typeDechet))
                             }
                         } else {
@@ -324,12 +303,22 @@ export class CollectService {
         }
     }
 
-    dateEquals(sourceDate: Date, targetDate: Date): boolean {
+    dateEquals(sourceDate: Date, targetDate: Date, period: string): boolean {
         let targetToFormate = this.splitDate(targetDate)
+        let start: string;
+        let end: string;
 
-        const today = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T00:00:00.000';
-        const tomorrow = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + 'T23:59:59.000';
+        if(period === 'am') {
+            start = 'T07:59:00';
+            end = 'T11:59:00';
+        } else {
+            start = "T11:59:00"
+            end = "T23:00:00"
+        }
 
+        const today = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + start;
+        const tomorrow = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + end;
+        console.log("today" + today + "tomorrow" + tomorrow)
         return new Date(sourceDate).toString() > new Date(today).toString() && new Date(sourceDate).toString() < new Date(tomorrow).toString();
     }
 
@@ -342,7 +331,7 @@ export class CollectService {
     }
 
     // TODO Faire une fonction unique pour les abonnement et les collecte ponctuelle, ligne 150 & 238
-    checkOneTimeCollect(dateParam: Date, collect: Collect[], stepArrayForCheck: Etape[], arrayToPush: collectInterface[]) {
+    checkOneTimeCollect(dateParam: Date, collect: Collect[], stepArrayForCheck: Etape[], arrayToPush: collectInterface[], period: string) {
         // On fait la même chose que du côté abonnement mais pour les collecte unique
         let currentDay = new Date();
         let futureDay = new Date().setDate(currentDay.getDate() + 31)
@@ -352,15 +341,17 @@ export class CollectService {
 
         for (let i = 0; i < collect.length; i++) {
             if (dateParam) {
-                if (this.dateEquals(collect[i].refDate, dateParam) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id, collect[i].typeDechet.id)) {
+                if (this.dateEquals(collect[i].refDate, dateParam, period) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id, collect[i].typeDechet.id)) {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
                 }
             } else {
                 if (this.dateSup(collect[i].refDate, currentDay) && this.dateInf(collect[i].refDate, futureDayFormated) && !this.hasEqualDateAndSameClient(stepArrayForCheck, new Date(collect[i].refDate), collect[i].client.id, collect[i].typeDechet.id)) {
                     arrayToPush.push(this.setCollectToPush(collect[i]))
+
                 }
             }
         }
+        console.log("push" + pushInArray)
         return pushInArray;
     }
 

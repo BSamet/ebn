@@ -213,7 +213,7 @@ export class EtapeService {
         };
     }
 
-    update(id: number, updateEtapeDto: UpdateEtapeDto) {
+    updateDate(id: number, updateEtapeDto: UpdateEtapeDto) {
         const etape = {
             date: updateEtapeDto.date,
             // typeDechetId: updateEtapeDto.typeDechetId
