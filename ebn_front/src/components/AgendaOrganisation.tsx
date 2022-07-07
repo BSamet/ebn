@@ -76,7 +76,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const [rightChecked, setRightChecked] = React.useState<number[]>([]);
     const [interval, setInterval] = useState(''); 
     const [period, setPeriod] = React.useState('');
-    const [hour, setHour] = React.useState<string[]>([]);
 
     // let collectorList
     useEffect(() => {
@@ -112,14 +111,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     }, [interval, collectorEtape])
 
     useEffect(() => {
-        let hourToStock: string;
-        setHour([])
         collectorEtape.map((etape:any) => {
             etape.date = etape.date
-            // hourToStock = moment(etape.date).format('h:mm a');
-            // setHour(hour => [...hour, hourToStock])
         })
-        console.log(hour)
     }, [collectorEtape, interval])
 
     function getEtapeAlreadyAssigned() {
@@ -129,7 +123,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
             }
         }).then(etapesAssigned => {
             setCollectorEtape([])
-            console.log(etapesAssigned.data)
             etapesAssigned.data.map((etapeAss: ramassageInterface) => {
                 etapeAss.isAssigned = true;
                 etapeAss.outOfTime = 'black';
@@ -137,7 +130,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
             })
         })
     }
-
 
     function setEtapesArray() {
         setFinalEtapeList([])
@@ -171,7 +163,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const handleLeftToggle = (value: number) => () => {
         const currentIndex = leftChecked.indexOf(value);
         const newChecked = [...leftChecked];
-
         if (currentIndex === -1) {
             newChecked.push(value);
         } else {
@@ -183,7 +174,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
     const handleRightToggle = (value: number) => () => {
         const currentIndex = rightChecked.indexOf(value);
         const newChecked = [...rightChecked];
-
         if (currentIndex === -1) {
             newChecked.push(value);
         } else {
@@ -364,7 +354,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     });
                 }
             } else {
-                console.log("passe etape")
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 deleteEtape(etape.id);
                 createCollectIfNotAssigned(etape.client.id, etape.refDate, etape.typeDechet.id);
@@ -381,12 +370,9 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
 
     function incrementDateTime(date: Date, etapeNumber: number, interval: number) {
         let timeInterval = interval * etapeNumber;
-
         const travelTime = moment(date).zone("+02:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
-        console.log(date.toString())
         if (date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12) {
             return 'Heure invalide'
-
         }
         if (date.toString() == moment(date).format("YYYY-MM-DD") + "T10:00:00.000Z" && new Date(travelTime).getHours() >= 19) {
             return 'Heure invalide'
