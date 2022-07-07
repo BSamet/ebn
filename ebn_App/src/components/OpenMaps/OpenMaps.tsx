@@ -2,7 +2,7 @@ import {Linking, PermissionsAndroid, Pressable, StyleSheet, Text, View} from 're
 import {EtapeCollecteur} from "../../screens/Dashbord_Collecteur/DashBordCollecteur";
 import Geolocation, {GeolocationResponse} from '@react-native-community/geolocation';
 import {ActivityIndicator} from "react-native-paper";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 
 const OpenMaps = ({steps}:EtapeCollecteur[]) => {
     let filteredAddress: any[];
