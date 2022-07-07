@@ -109,16 +109,18 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 etape.outOfTime = 'black';
             }
         })
-    }, [collectorEtape])
+    }, [interval, collectorEtape])
 
     useEffect(() => {
         let hourToStock: string;
+        setHour([])
         collectorEtape.map((etape:any) => {
-            hourToStock = moment(etape.date).format('h:mm a');
-            setHour(hour => [...hour, hourToStock])
+            etape.date = etape.date
+            // hourToStock = moment(etape.date).format('h:mm a');
+            // setHour(hour => [...hour, hourToStock])
         })
         console.log(hour)
-    }, [collectorEtape])
+    }, [collectorEtape, interval])
 
     function getEtapeAlreadyAssigned() {
         axios.get(HOST_BACK + '/etape/collecteur/' + Collector + '/' + date, {
@@ -134,13 +136,11 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 setCollectorEtape((collectorEtape: any) => [...collectorEtape, etapeAss])
             })
         })
-        console.log(collectorEtape);
     }
 
 
     function setEtapesArray() {
         setFinalEtapeList([])
-        console.log(HOST_BACK + '/collect/date?date=' + date  + '&period=' + period)
         axios.get(HOST_BACK + '/collect/date?date=' + date  + '&period=' + period, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
