@@ -72,7 +72,7 @@ export class ClientController {
 
   @hasRoles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientService.update(+id, updateClientDto);
   }

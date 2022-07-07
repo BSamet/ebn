@@ -14,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
 
 interface propsUpdateConteneurInterface {
-    selectConteneurId: string;
+    conteneur: any;
 }
 
 const style = {
@@ -29,7 +29,7 @@ const style = {
     p: 4,
 };
 
-export default function UpdateConteneur({selectConteneurId }: propsUpdateConteneurInterface) {
+export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterface) {
     
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -95,7 +95,7 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={dechet}
+                                    defaultValue={conteneur.typeDechet.typeDechets}
                                     label="Déchets"
                                     onChange={dechetChange}
                                 >
@@ -106,7 +106,7 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
                                 <InputLabel htmlFor="component-outlined">Capacité maximum du conteneur (kg)</InputLabel>
                                 <OutlinedInput
                                     id="component-outlined"
-                                    value={poids}
+                                    value={conteneur.capaciteMax}
                                     onChange={poidsChange}
                                     label="Capacité maximum"
                                 />

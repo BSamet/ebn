@@ -99,6 +99,8 @@ export class ClientService {
       nomCommercial: updateClientDto.nomCommercial,
       adresse: updateClientDto.adresse,
     };
+    console.log(client);
+    
     await this.clientRepository.update(id, client);
 
     const newClient = await this.clientRepository.findOne({
@@ -112,6 +114,7 @@ export class ClientService {
       prenom: updateClientDto.prenom,
       telephone: updateClientDto.telephone,
     };
+    console.log(user);
 
     await this.utilisateursService.update(
         newClient.utilisateur.id,

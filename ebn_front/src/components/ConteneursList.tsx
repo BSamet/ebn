@@ -137,7 +137,7 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
                                     : <ListItemText className='listItem' primary={list.client.nomCommercial} />
                                 }
                                 <div>
-                                    <UpdateConteneur selectConteneurId={selectConteneurId} />
+                                    <UpdateConteneur conteneur={list} />
                                 </div>
                                 <div onClick={(event) => deleteConteneur(event, list.id)}>
                                     <IconButton color='warning' aria-label="delete" size="large">
