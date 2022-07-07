@@ -46,8 +46,8 @@ export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterfa
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [poids, setPoids] = React.useState('');
-    const [dechet, setDechet] = React.useState('1');
+    const [poids, setPoids] = React.useState(conteneur.capaciteMax);
+    const [dechet, setDechet] = React.useState(conteneur.typeDechet.typeDechets);
     const [clients, setClients] = React.useState([])
     const [client, setClient] = React.useState<clientInterface>();
     const [fetchOnce, setFetchOnce] = React.useState(true)
@@ -80,7 +80,7 @@ export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterfa
     }, [clients, fetchOnce]);
     const updateConteneur = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        axios.patch(HOST_BACK + '/conteneur/' + selectConteneurId, dataConteneur, {
+        axios.patch(HOST_BACK + '/conteneur/' + conteneur.id, dataConteneur, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
@@ -132,7 +132,7 @@ export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterfa
                                     sx={{width: 300, mt: 0.5}}
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    defaultValue={conteneur.typeDechet.typeDechets}
+                                    defaultValue={dechet}
                                     label="Déchets"
                                     onChange={dechetChange}
                                 >
@@ -145,7 +145,7 @@ export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterfa
                                     sx={{width: 300, mt: 0.5}}
 
                                     id="component-outlined"
-                                    value={conteneur.capaciteMax}
+                                    value={poids}
                                     onChange={poidsChange}
                                     label="Capacité maximum"
                                 />

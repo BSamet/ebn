@@ -117,11 +117,9 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
                             <ListItemText className='listHeader' primary="Type de déchet" />
                             <ListItemText className='listHeader' primary="Capacité maximum" />
                             <ListItemText className='listHeader' primary="Client" />
-                            <ListItemText className='listHeaderEnd' primary="Modifier / Supprimer" />
+                            <ListItemText className='listHeader' primary="Modifier / Supprimer" />
                         </ListItem>
-                        <ListItem className='listItemHeader'>
-                            <ListItemText className='listHeader' primary=" " />
-                        </ListItem>
+
                         <Divider />
                         {conteneursList?.map((list, index) =>
                             <ListItemButton
@@ -132,18 +130,20 @@ const ConteneursList = ({ setSelectConteneurId, selectConteneurId }: propsConten
                                 <ListItemText className='listItem' primary={list.id} />
                                 <ListItemText className='listItem' primary={list.typeDechet.typeDechets} />
                                 <ListItemText className='listItem' primary={list.capaciteMax} />
-                                {!list.client || !list.client.nomCommercial
-                                    ? <ListItemText className='listItem' primary='' />
-                                    : <ListItemText className='listItem' primary={list.client.nomCommercial} />
-                                }
-                                <div>
-                                    <UpdateConteneur conteneur={list} />
-                                </div>
-                                <div onClick={(event) => deleteConteneur(event, list.id)}>
-                                    <IconButton color='warning' aria-label="delete" size="large">
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </div>
+                                <ListItemText className='listItem' primary={!list.client || !list.client.nomCommercial
+                                    ? ''
+                                    : list.client.nomCommercial
+                                } />
+                                <ListItemText className='listItem1'>
+                                    <div>
+                                        <UpdateConteneur conteneur={list} />
+                                    </div>
+                                    <div onClick={(event) => deleteConteneur(event, list.id)}>
+                                        <IconButton color='warning' aria-label="delete" size="large">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </div>
+                                </ListItemText>
                             </ListItemButton>
                         )}
                     </List>
