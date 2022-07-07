@@ -16,7 +16,7 @@ h1 {
 .listHeader {
     color: white;
     font-weight: bolder;
-    width: 16%;
+
 }
 
 .listHeaderEnd {
@@ -28,8 +28,20 @@ h1 {
 }
 
 .listItem {
-    width: 16%;
+    width: 2%;
     text-align: center;
+}
+
+.listItem1 {
+  margin-left: 4%;
+}
+.listItem2 {
+    margin-left: 2%;
+}
+
+
+.ValidClient {
+    margin-left: 20%;
 }
 
 .listItemEnd {

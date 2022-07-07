@@ -110,9 +110,9 @@ export class EtapeController {
 
   @hasRoles(UserRole.ADMIN, UserRole.COLLECTEUR)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEtapeDto: UpdateEtapeDto) {
-    return this.etapeService.update(+id, updateEtapeDto);
+  @Patch('date/:id')
+  updateDate(@Param('id') id: string, @Body() updateEtapeDto: UpdateEtapeDto) {
+    return this.etapeService.updateDate(+id, updateEtapeDto);
   }
 
   @hasRoles(UserRole.ADMIN)

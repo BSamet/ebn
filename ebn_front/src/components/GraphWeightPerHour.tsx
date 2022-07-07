@@ -43,6 +43,9 @@ const GraphWeightPerHour = () => {
             }
         })
 
+console.log(arrayCafé);
+console.log(arrayBio);
+
 
 
         for (let dateIndex = 0, historyBioIndex = 0, historyCaféIndex = 0; dateIndex < arrayDate.length; dateIndex++) {
@@ -90,6 +93,8 @@ const GraphWeightPerHour = () => {
         arrayDate.push(previousDate)
     }
 
+    console.log(finalArrayBio);
+    
 
     const state = {
 

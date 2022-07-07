@@ -107,29 +107,29 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
     }
   }
 
-    const validClient = (
-        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        list: clientsInterface
-    ) => {
-        if (list.clientvalide == true) {
+  const validClient = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    list: clientsInterface
+) => {
+    if (list.clientvalide == true) {
 
-            axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientnonvalide, {
-                headers: {
-                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                }
-            })
-            list.clientvalide = false;
-        } else {
+        axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientnonvalide, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
+        list.clientvalide = false;
+    } else {
 
-            axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientvalide, {
-                headers: {
-                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                }
-            })
-            list.clientvalide = true;
-        }
-
+        axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientvalide, {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
+        list.clientvalide = true;
     }
+
+}
 
   const deleteClient = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,

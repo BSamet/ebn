@@ -58,8 +58,7 @@ export class HistoriqueService {
   }
 
   async findByDate(dateStart: Date, dateEnd:Date) {
-    console.log(dateStart);
-    console.log(dateEnd);
+   
     const allHistorique = await this.historiqueRepository
       .createQueryBuilder('historique')
       .select('MAX(historique.date)', 'date')
