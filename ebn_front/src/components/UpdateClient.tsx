@@ -12,7 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
 
 interface propsUpdateClientListInterface {
-    selectClientId: string;
+    client : any;
 }
 
 const style = {
@@ -27,18 +27,18 @@ const style = {
     p: 4,
 };
 
-export default function UpdateClient({ selectClientId}: propsUpdateClientListInterface) {
+export default function UpdateClient({ client}: propsUpdateClientListInterface) {
     
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [nom, setNom] = React.useState('');
-    const [prenom, setPrenom] = React.useState('');
-    const [nomCommercial, setNomComercial] =React.useState('');
-    const [adresse, setAdresse] =React.useState('');
-    const [siret, setSiret] =React.useState('');
-    const [telephone, setTelephone] =React.useState('');
+    const [nom, setNom] = React.useState(client.utilisateur.nom);
+    const [prenom, setPrenom] = React.useState(client.utilisateur.prenom);
+    const [nomCommercial, setNomComercial] =React.useState(client.nomCommercial);
+    const [adresse, setAdresse] =React.useState(client.adresse);
+    const [siret, setSiret] =React.useState(client.siret);
+    const [telephone, setTelephone] =React.useState(client.utilisateur.telephone);
 
     let dataConteneur = {
         "nom": nom,
@@ -70,15 +70,15 @@ export default function UpdateClient({ selectClientId}: propsUpdateClientListInt
 
     const updateClient = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        axios.put(HOST_BACK + '/client/' + selectClientId, dataConteneur, {
+        axios.put(HOST_BACK + '/client/' + client.id, dataConteneur, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
         })
-        
-        
+
         handleClose()
     }
+
     return (
         <div>
             <div onClick={handleOpen}>

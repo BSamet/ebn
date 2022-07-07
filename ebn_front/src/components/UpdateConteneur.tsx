@@ -16,7 +16,7 @@ import { FormControl, TextField } from '@mui/material';
 import { useEffect } from 'react';
 
 interface propsUpdateConteneurInterface {
-    selectConteneurId: string;
+    conteneur: any;
 }
 
 interface clientInterface {
@@ -40,14 +40,14 @@ const style = {
     p: 4,
 };
 
-export default function UpdateConteneur({selectConteneurId }: propsUpdateConteneurInterface) {
+export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterface) {
     
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [poids, setPoids] = React.useState('');
-    const [dechet, setDechet] = React.useState('1');
+    const [poids, setPoids] = React.useState(conteneur.capaciteMax);
+    const [dechet, setDechet] = React.useState(conteneur.typeDechet.typeDechets);
     const [clients, setClients] = React.useState([])
     const [client, setClient] = React.useState<clientInterface>();
     const [fetchOnce, setFetchOnce] = React.useState(true)
@@ -80,7 +80,7 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
     }, [clients, fetchOnce]);
     const updateConteneur = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        axios.patch(HOST_BACK + '/conteneur/' + selectConteneurId, dataConteneur, {
+        axios.patch(HOST_BACK + '/conteneur/' + conteneur.id, dataConteneur, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
@@ -132,7 +132,7 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
                                     sx={{width: 300, mt: 0.5}}
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={dechet}
+                                    defaultValue={dechet}
                                     label="Déchets"
                                     onChange={dechetChange}
                                 >

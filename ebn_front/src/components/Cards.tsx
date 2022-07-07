@@ -27,7 +27,7 @@ const Cards = () => {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
-              console.log("prix",res.data);
+              
               
                 res.data.historique.map((history : any)=>{                  
                      if(history.typeDeDechet == "Biodéchets"){

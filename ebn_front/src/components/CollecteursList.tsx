@@ -25,6 +25,7 @@ interface collecteursInterface {
     utilisateur: {
         nom: string,
         prenom: string,
+        telephone:number
     }
 }
 
@@ -45,7 +46,10 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
         }).then(res => {
+            console.log(res.data.collecteurs);
             setCollecteurslist(res.data.collecteurs)
+          
+            
         });
     };
 
@@ -58,6 +62,7 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                 }
             }).then(res => {
+                console.log(res.data.collecteurs);
                 setCollecteurslist(res.data.collecteurs)
                 // appel de l'api
                 setFetchOnce(false);
@@ -113,18 +118,20 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                                 onClick={(event) => handleListItemClick(event, list.id)}
                                 key={index}
                             >
-                                <ListItemText className='listItem1' primary={list.id} />
-                                <ListItemText className='listItem1' primary={list.utilisateur.nom} />
-                                <ListItemText className='listItem2' primary={list.utilisateur.prenom} />
-                                <ListItemText className='listItem2' primary={list.numeroVelo} />
+                                <ListItemText className='listItem' primary={list.id} />
+                                <ListItemText className='listItem' primary={list.utilisateur.nom} />
+                                <ListItemText className='listItem' primary={list.utilisateur.prenom} />
+                                <ListItemText className='listItem' primary={list.numeroVelo} />
+                                <ListItemText className='listItem1' >
                                 <div>
-                                    <UpdateCollecteur selectCollecteurId={selectCollecteurId} />
+                                    <UpdateCollecteur collecteur={list} />
                                 </div>
                                 <div onClick={(event) => deleteCollecteur(event, list.id)} >
                                     <IconButton aria-label="delete" size="large" color="warning">
                                         <DeleteIcon />
                                     </IconButton>
                                 </div>
+                                </ListItemText>
                             </ListItemButton>
                         )}
                     </List>
