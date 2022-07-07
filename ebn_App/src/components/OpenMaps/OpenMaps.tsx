@@ -1,8 +1,8 @@
 import {Linking, PermissionsAndroid, Pressable, StyleSheet, Text, View} from 'react-native';
 import {EtapeCollecteur} from "../../screens/Dashbord_Collecteur/DashBordCollecteur";
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation, {GeolocationResponse} from '@react-native-community/geolocation';
 import {ActivityIndicator} from "react-native-paper";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const OpenMaps = ({steps}:EtapeCollecteur[]) => {
     let filteredAddress: any[];
@@ -10,14 +10,6 @@ const OpenMaps = ({steps}:EtapeCollecteur[]) => {
     const [askedLocationPermission, setAskedLocationPermission] = useState(false);
     const [openSettings, setOpenSettings] = useState(false);
     const [errorLocation, setErrorLocation] = useState('');
-
-    const filterAdresseByNotCollected = async () => {
-        filteredAddress = []
-
-        await steps.filter((notCollected) => !notCollected.isCollected).map((step) => {
-            filteredAddress.push(step.client.adresse)
-        })
-    }
 
     const requestAccessLocationPermission = async () => {
         try {
@@ -43,38 +35,48 @@ const OpenMaps = ({steps}:EtapeCollecteur[]) => {
         await Linking.openSettings()
     }
 
-    const openMap = async () => {
+    const getCurrentLocation = () => {
         setLoadingMaps(true);
-        // On filtre les adresses pour avoir que ceux qui ne sont pas collecté
-        await filterAdresseByNotCollected();
         Geolocation.getCurrentPosition(
             async (position) => {
                 setErrorLocation('');
                 setOpenSettings(false);
-                JSON.stringify(position);
-                // On met les adresses filtrer dans un nouveau tableau
-                let allWaypoint = Object.assign([], filteredAddress);
-                // On enlever la dernière
-                allWaypoint.splice(-1, 1);
-                // On fait une jointure avec | pour l'api google
-                let allWaypointJoined = allWaypoint.join("|");
-                // On paramètre la position actuelle
-                let origin = position.coords.latitude + "%2C" + position.coords.longitude;
-                // On paramètre la destination final
-                let finalDestination = filteredAddress[filteredAddress.length - 1];
-                // On crée notre url
-                const url = 'https://www.google.com/maps/dir/?api=1&origin=' + origin + '&destination=' + finalDestination + '&waypoints=' + allWaypointJoined + '&dir_action=navigate&travelmode=bicycling';
-                // On ouvre notre maps
-                await Linking.openURL(url).then(() => {
-                    setLoadingMaps(false);
-                });
+                await openMaps(position)
             },
-            () => {
-                requestAccessLocationPermission();
+            async () => {
+                await requestAccessLocationPermission();
                 setLoadingMaps(false);
             },
             {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
         );
+    }
+
+    const filterAdresseByNotCollected = () => {
+        filteredAddress = []
+        steps.filter((notCollected: { isCollected: any; }) => !notCollected.isCollected).map((step: { client: { adresse: any; }; }) => {
+            filteredAddress.push(step.client.adresse)
+        })
+    }
+
+    const openMaps = async (position: GeolocationResponse) => {
+        // On filtre les adresses pour avoir que ceux qui ne sont pas collecté
+        filterAdresseByNotCollected();
+        // On met les adresses filtrer dans un nouveau tableau
+        let allWaypoint = Object.assign([], filteredAddress);
+        // On enlever la dernière
+        allWaypoint.splice(-1, 1);
+        // On fait une jointure avec | pour l'api google
+        let allWaypointJoined = allWaypoint.join("|");
+        // On paramètre la position actuelle
+        let origin = position.coords.latitude + "%2C" + position.coords.longitude;
+        // On paramètre la destination final
+        let finalDestination = filteredAddress[filteredAddress.length - 1];
+        // On crée notre url
+        const url = 'https://www.google.com/maps/dir/?api=1&origin=' + origin + '&destination=' + finalDestination + '&waypoints=' + allWaypointJoined + '&dir_action=navigate&travelmode=bicycling';
+        // On ouvre notre maps
+        await Linking.openURL(url).then(() => {
+            setLoadingMaps(false);
+        });
     }
 
     return (
@@ -82,7 +84,7 @@ const OpenMaps = ({steps}:EtapeCollecteur[]) => {
             <View>
                 <Pressable
                     style={styles.openMapsButton}
-                    onPress={() => openMap() }>
+                    onPress={() => getCurrentLocation() }>
                     {!loadingMaps ?
                         <Text style={styles.textButton}>Commencer la collecte</Text>
                         :
