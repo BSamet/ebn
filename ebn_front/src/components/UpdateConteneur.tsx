@@ -12,9 +12,20 @@ import { HOST_BACK } from '../environment/environment';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
+import { FormControl, TextField } from '@mui/material';
+import { useEffect } from 'react';
 
 interface propsUpdateConteneurInterface {
     selectConteneurId: string;
+}
+
+interface clientInterface {
+    id: number;
+    adresse: string;
+    utilisateur:{
+        nom: string;
+        prenom: string;
+    }
 }
 
 const style = {
@@ -37,12 +48,15 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
 
     const [poids, setPoids] = React.useState('');
     const [dechet, setDechet] = React.useState('1');
-    const [idClient, setClient] =React.useState('');
+    const [clients, setClients] = React.useState([])
+    const [client, setClient] = React.useState<clientInterface>();
+    const [fetchOnce, setFetchOnce] = React.useState(true)
+
     let dataConteneur = {
         "capaciteMax": poids,
         "isAvailable": true,
         "typeDechet": dechet,
-        "client":idClient
+        "client": client?.id
     };
     const dechetChange = (event: SelectChangeEvent) => {
         setDechet(event.target.value as string);
@@ -50,9 +64,20 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
     const poidsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPoids(event.target.value);
     };
-    const clientChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setClient(event.target.value);
-    };
+    useEffect(() => {
+        if (fetchOnce) {
+            axios.get(HOST_BACK + '/client', {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            }).then(res => {
+                setClients(res.data)
+                // appel de l'api
+                console.log(clients)
+                setFetchOnce(false);
+            });
+        }
+    }, [clients, fetchOnce]);
     const updateConteneur = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         axios.patch(HOST_BACK + '/conteneur/' + selectConteneurId, dataConteneur, {
@@ -61,6 +86,17 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
             }
         })
         handleClose()
+    }
+    // function fillSelectOptions() {
+    //     if(client == undefined || client === null){
+    //         return
+    //     } else{
+    //         return client.utilisateur.nom + " " + client.utilisateur.prenom;
+    //     }
+    // }
+    const handleChange = (event: any) => {
+        setClient(event.target.value);
+        console.log(client)
     }
     return (
         <div>
@@ -93,30 +129,42 @@ export default function UpdateConteneur({selectConteneurId }: propsUpdateContene
 
                                 <InputLabel id="demo-simple-select-label">Type de déchets</InputLabel>
                                 <Select
+                                    sx={{width: 300, mt: 0.5}}
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     value={dechet}
                                     label="Déchets"
                                     onChange={dechetChange}
                                 >
-                                    <MenuItem value={1}>bio-déchets</MenuItem>
-                                    <MenuItem value={2}>café</MenuItem>
+                                    <MenuItem value={1}>Bio-déchets</MenuItem>
+                                    <MenuItem value={2}>Café</MenuItem>
                                 </Select>
 
                                 <InputLabel htmlFor="component-outlined">Capacité maximum du conteneur (kg)</InputLabel>
                                 <OutlinedInput
+                                    sx={{width: 300, mt: 0.5}}
+
                                     id="component-outlined"
                                     value={poids}
                                     onChange={poidsChange}
                                     label="Capacité maximum"
                                 />
-                                <InputLabel htmlFor="component-outlined">Client N°</InputLabel>
-                                <OutlinedInput
-                                    id="component-outlined"
-                                    value={idClient}
-                                    onChange={clientChange}
-                                    label="ID Client"
-                                />
+                                <InputLabel htmlFor="component-outlined">Client</InputLabel>
+                                <FormControl>
+                                    
+                                    <TextField
+                                        sx={{width: 300, mt: 0.5}}
+                                        id="select"
+                                        select
+                                        value={client}
+                                        onChange={(event) => handleChange(event)}
+                                    >
+                                        {clients?.map((client: clientInterface) => (
+                                            <MenuItem key={client.id}
+                                                      value={client.id}>{client.utilisateur.nom + " " + client.utilisateur.prenom}</MenuItem>
+                                        ))}
+                                    </TextField>
+                                </FormControl>
                                 <div onClick={(event) => updateConteneur(event)}>
                                     <Button>Valider</Button>
                                 </div>
