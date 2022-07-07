@@ -4,7 +4,12 @@ import Geolocation, {GeolocationResponse} from '@react-native-community/geolocat
 import {ActivityIndicator} from "react-native-paper";
 import React, {useState} from "react";
 
-const OpenMaps = ({steps}:EtapeCollecteur[]) => {
+interface openMapsProps {
+    etapes: EtapeCollecteur[]
+}
+
+const OpenMaps = (props:openMapsProps) => {
+    let steps: EtapeCollecteur[] = props.etapes
     let filteredAddress: any[];
     const [loadingMaps, setLoadingMaps] = useState(false);
     const [askedLocationPermission, setAskedLocationPermission] = useState(false);
@@ -53,7 +58,7 @@ const OpenMaps = ({steps}:EtapeCollecteur[]) => {
 
     const filterAdresseByNotCollected = () => {
         filteredAddress = []
-        steps.filter((notCollected: { isCollected: any; }) => !notCollected.isCollected).map((step: { client: { adresse: any; }; }) => {
+        steps.filter((notCollected) => !notCollected.isCollected).map((step) => {
             filteredAddress.push(step.client.adresse)
         })
     }

@@ -48,22 +48,6 @@ export interface EtapeCollecteur {
     };
 }
 
-interface collecteurInterface {
-    id: number;
-    numeroCollecteur: number;
-    numeroVelo: number;
-    utilisateur: {
-        id: number;
-        role: string;
-        utilisateur: string;
-        password: string;
-        nom: string;
-        prenom: string;
-        mail: string;
-        telephone: string;
-    };
-}
-
 const DashBordCollecteur = () => {
     const {height} = useWindowDimensions();
     const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
@@ -177,7 +161,7 @@ const DashBordCollecteur = () => {
 
                 {etapes != null && etapes.length != 0 &&
                     <View style={styles.centeredButton}>
-                        <OpenMaps steps={etapes}/>
+                        <OpenMaps etapes={etapes}/>
                     </View>
                 }
 
