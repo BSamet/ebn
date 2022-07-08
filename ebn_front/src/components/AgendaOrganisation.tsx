@@ -363,7 +363,12 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 console.log("passe etape")
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 deleteEtape(etape.id);
-                createCollectIfNotAssigned(etape.client.id, etape.refDate, etape.typeDechet.id);
+                if(etape.isSubscribe == false) {
+                    if(etape.isAssigned == true){
+                        etape.isAssigned = false
+                        createCollectIfNotAssigned(etape.client.id, etape.refDate, etape.typeDechet.id);
+                    }
+                }
                 etapeNotSend ++;
             }   
                 numberOfEtape ++;
@@ -589,11 +594,11 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                                                         'aria-labelledby': labelId,
                                                     }} />
                                             </ListItemIcon>
-                                            {etape.date == 'Heure invalide' && 
-                                                <ListItemText id={labelId} primary={`Horraire invalide | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse}`} />
+                                            {etape.date == 'Heure invalide' &&
+                                                <ListItemText id={labelId} primary={`Horaire invalide | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechet} `} />
                                             }
                                             {etape.date != 'Heure invalide' &&
-                                            <ListItemText id={labelId} primary={`${moment(etape.date).format('HH [h] mm')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechet}`} />
+                                                <ListItemText id={labelId} primary={`${moment(etape.date).format('HH [h] mm')} | ${etape.client.utilisateur.nom} ${etape.client.utilisateur.prenom} | ${etape.client.adresse} | ${etape.typeDechet.typeDechet}`} />
                                             }
                                         </ListItem>
                                         <Grid container direction="row" alignItems="center" justifyContent="center">
