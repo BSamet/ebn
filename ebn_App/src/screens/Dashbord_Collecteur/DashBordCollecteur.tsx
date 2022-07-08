@@ -166,7 +166,7 @@ const DashBordCollecteur = () => {
                 }
 
                 <Divider
-                    style={{width: '100%', margin: 10}}
+                    style={{width: '100%', marginVertical: 10}}
                     color="#8AC997"
                     width={2}
                     orientation="horizontal"
