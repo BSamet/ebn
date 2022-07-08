@@ -87,8 +87,9 @@ const DashBordClient = () => {
     const [myClientId, setClientId] = useState<string | null>();
     const [clientLastname, setClientLastname] = useState<string | null>();
     const [clientName, setClientName] = useState<string | null>();
+    const [clientIsValide, setClientIsValide] = useState<string | null>();
 
-    const [tourner, setTouner] = useState<dashboardClient[]>();
+    const [tournee, setTournee] = useState<dashboardClient[]>();
     const [myclient, setMyClient] = useState<ShowClient>();
     const [allTypeOfWaste, setAllTypeOfWaste] = useState<TypeOfWaste[]>();
     const [isVisible, setIsVisible] = React.useState(false);
@@ -116,10 +117,14 @@ const DashBordClient = () => {
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(() => {
-        fetchEtape();
+        if (clientToken != null && myClientId != null) {
+            fetchClient();
+            fetchEtape();
+            fetchTypeOfWaste()
+        }
         setRefreshing(true);
         wait(1000).then(() => setRefreshing(false));
-    }, []);
+    }, [clientToken, myClientId]);
 
     const postRamasagge = (dayToPost: number[]) => {
         let formatDateSave = formatDateForPost(date)
@@ -182,7 +187,7 @@ const DashBordClient = () => {
             let formatDateSave = formatDateForPost(date)
             let findCollect = false;
             myclient?.collect.map((collect) => {
-                if(collect.cronExpression === null && wichModalCollect === 'oneTime') {
+                if (collect.cronExpression === null && wichModalCollect === 'oneTime') {
                     if (collect.refDate === new Date(formatDateSave).toISOString() && collect.typeDechet.id === typeOfWaste.id) {
                         findCollect = true;
                     }
@@ -203,10 +208,10 @@ const DashBordClient = () => {
                     }
                 }
             })
-            if(findCollect && wichModalCollect === "oneTime") {
+            if (findCollect && wichModalCollect === "oneTime") {
                 setErrorOneTimeCollect('Vous avez déjà une demande collecte à cette date !')
             } else if (findCollect && wichModalCollect === "subscribe") {
-                    setErrorOneTimeCollect('Vous avez déjà un abonnement à cette date en cours !')
+                setErrorOneTimeCollect('Vous avez déjà un abonnement à cette date en cours !')
             } else {
                 updateAllCheckedDayToFalse();
                 setErrorOneTimeCollect('');
@@ -235,7 +240,7 @@ const DashBordClient = () => {
                 },
             })
             .then(res => {
-                setTouner(res.data.etape);
+                setTournee(res.data.etape);
             });
     };
 
@@ -272,6 +277,9 @@ const DashBordClient = () => {
                     setClientLastname(lastnameValue);
                     AsyncStorage.getItem('prenom').then(nameValue => {
                         setClientName(nameValue);
+                        AsyncStorage.getItem('isValide').then(isValide => {
+                            setClientIsValide(isValide);
+                        });
                     });
                 });
             });
@@ -497,7 +505,7 @@ const DashBordClient = () => {
                                     {wichModalCollect === "subscribe" &&
                                         <Text style={styles.date}>
                                             {typeOfWaste?.typeDechets != undefined ? "De " + typeOfWaste?.typeDechets.toLowerCase() : ''}
-                                            {textDate != '' && typeOfWaste === undefined ? 'À partir du ' + textDate + ',\n' : textDate != '' && typeOfWaste != undefined ? ', à partir du ' + textDate + ',\n': ''}
+                                            {textDate != '' && typeOfWaste === undefined ? 'À partir du ' + textDate + ',\n' : textDate != '' && typeOfWaste != undefined ? ', à partir du ' + textDate + ',\n' : ''}
                                             {textDate != '' && timeSlot != '' ? 'entre ' : textDate === '' && timeSlot != '' ? 'Entre ' : ''}
                                             {timeSlot != '' && timeSlot === 'Matin' ? '08h00 et 12h00' : timeSlot != '' && timeSlot === 'Après-midi' ? '12h00 et 17h00' : ''}
                                             {selectedDay.filter((checkDay) => checkDay.status).map(day =>
@@ -536,30 +544,32 @@ const DashBordClient = () => {
                     </ScrollView>
                 </Modal>
 
-                <View style={styles.requestCollecteContainer}>
-                    <Text style={styles.titleText}>Vos collectes</Text>
-                    <View style={styles.requestCollecteButton}>
-                        <Pressable
-                            style={[styles.Ramassage, styles.collectButton]}
-                            onPress={() => showOneTimeModal()}>
-                            <Text style={styles.textStyle}>Collecte</Text>
-                        </Pressable>
-                        <Pressable
-                            style={[styles.Ramassage, styles.subscribeButton]}
-                            onPress={() => showSubscribeModal()}>
-                            <Text style={styles.textStyle}>Abonnement</Text>
-                        </Pressable>
+                {clientIsValide === 'true' &&
+                    <View style={styles.requestCollecteContainer}>
+                        <Text style={styles.titleText}>Vos collectes</Text>
+                        <View style={styles.requestCollecteButton}>
+                            <Pressable
+                                style={[styles.Ramassage, styles.collectButton]}
+                                onPress={() => showOneTimeModal()}>
+                                <Text style={styles.textStyle}>Collecte</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[styles.Ramassage, styles.subscribeButton]}
+                                onPress={() => showSubscribeModal()}>
+                                <Text style={styles.textStyle}>Abonnement</Text>
+                            </Pressable>
+                        </View>
                     </View>
-                </View>
+                }
 
                 <Divider
-                    style={{width: '100%', margin: 10}}
+                    style={{width: '100%', marginVertical: 10}}
                     color="#8AC997"
                     width={2}
                     orientation="horizontal"
                 />
 
-                {tourner != null &&
+                {(tournee != null && clientIsValide === 'true') &&
                     <DataTable>
                         <DataTable.Header>
                             <DataTable.Title style={{flex: 1.5}}>Date</DataTable.Title>
@@ -567,7 +577,7 @@ const DashBordClient = () => {
                             <DataTable.Title>Numéro téléphone</DataTable.Title>
                         </DataTable.Header>
 
-                        {tourner?.map((item, index) => (
+                        {tournee?.map((item, index) => (
                             <DataTable.Header key={index}>
                                 <DataTable.Cell style={{flex: 1.5}}>
                                     {moment(item.date).format('DD.MM.YYYY à HH[h] mm')}
@@ -583,9 +593,14 @@ const DashBordClient = () => {
                         ))}
                     </DataTable>
                 }
-                {tourner === null &&
+                {tournee === null &&
                     <View style={styles.loader}>
                         <ActivityIndicator animating={true} color={"#8AC997"} size={75}/>
+                    </View>
+                }
+                {clientIsValide === 'false' &&
+                    <View>
+                        <Text style={styles.errorIsValide}>Votre compte est en attente de validation.{'\n'}Lorque celui-ci sera validé vous aurez accès à l'ensemble de l'application.</Text>
                     </View>
                 }
             </View>
@@ -659,6 +674,14 @@ const styles = StyleSheet.create({
     errorOneTimeCollect: {
         textAlign: 'center',
         fontSize: 15,
+        color: 'red',
+        fontWeight: 'bold',
+        fontFamily: 'Confortaa-Regular',
+    },
+    errorIsValide: {
+        paddingBottom: 10,
+        textAlign: 'center',
+        fontSize: 17,
         color: 'red',
         fontWeight: 'bold',
         fontFamily: 'Confortaa-Regular',

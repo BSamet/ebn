@@ -1,5 +1,5 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, StackActions} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 
@@ -9,8 +9,10 @@ import DashBordClient from './src/screens/Dashbord_Client';
 import DashBordCollecteur from './src/screens/Dashbord_Collecteur';
 import HistoriqueClient from './src/screens/Historique_Client';
 import SignInScreen from './src/screens/SignInScreen/SignInScreen';
-import {Icon} from '@rneui/themed';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {LogBox} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 LogBox.ignoreLogs([
@@ -25,23 +27,40 @@ export type AuthRootParamList = {
   Historique: undefined;
   Home: undefined;
 };
+
+const clearAll = async () => {
+    try {
+        await AsyncStorage.clear();
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 const RootStack = createNativeStackNavigator<AuthRootParamList>();
 const Tab = createBottomTabNavigator();
 // ajouter ici les différents routes dans NavTab pour la bottomNav
 
-const NavTabClient = () => {
+const NavTabClient = ({navigation}:any) => {
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#8AC997',
       }}>
       <Tab.Screen
-        name="Dashbord"
+        name="Dashboard"
         component={DashBordClient}
         options={{
           headerShown: false,
-          tabBarLabel: 'Dashboard',
-          tabBarIcon: () => <Icon name="desktop-outline" type="ionicon" />,
+          tabBarLabel: 'Tableau de bord',
+            tabBarLabelStyle: {
+                fontSize: 12,
+            },
+          tabBarIcon: () => <Icon
+              raised
+              size={25}
+              name='home'
+              type='font-awesome'
+              color='#8AC997'/>,
         }}
       />
       <Tab.Screen
@@ -50,46 +69,87 @@ const NavTabClient = () => {
         options={{
           headerShown: false,
           tabBarLabel: 'Historique',
-          tabBarIcon: () => <Icon name="receipt-outline" type="ionicon" />,
+            tabBarLabelStyle: {
+                fontSize: 12,
+            },
+          tabBarIcon: () => <Icon
+              raised
+              size={25}
+              name='history'
+              type='font-awesome'
+              color='#8AC997'/>,
         }}
       />
       <Tab.Screen
         name="Déconnexion"
         component={SignInScreen}
+        listeners={{
+            tabPress: () => navigation.dispatch(StackActions.popToTop(), clearAll())
+        }}
         options={{
           tabBarStyle: {display: 'none'},
           headerShown: false,
-          tabBarLabel: 'Exit',
-          tabBarIcon: () => <Icon name="enter-outline" type="ionicon" />,
+          tabBarLabel: 'Déconnexion',
+            tabBarLabelStyle: {
+                fontSize: 12,
+            },
+          tabBarIcon: () => <Icon
+              raised
+              size={25}
+              name='sign-out'
+              type='font-awesome'
+              color='#ff0000'
+              />,
         }}
       />
     </Tab.Navigator>
   );
 };
 
-const NavTabCollecteur = () => {
+const NavTabCollecteur = ({navigation}:any) => {
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#8AC997',
-      }}>
+      }}
+    >
       <Tab.Screen
         name="Dashbord"
         component={DashBordCollecteur}
         options={{
           headerShown: false,
-          tabBarLabel: 'Dashboard',
-          tabBarIcon: () => <Icon name="desktop-outline" type="ionicon" />,
+            tabBarLabel: 'Tableau de bord',
+            tabBarLabelStyle: {
+                fontSize: 12,
+            },
+            tabBarIcon: () => <Icon
+                raised
+                size={25}
+                name='home'
+                type='font-awesome'
+                color='#8AC997'/>,
         }}
       />
       <Tab.Screen
         name="Déconnexion"
         component={SignInScreen}
+        listeners={{
+            tabPress: () => navigation.dispatch(StackActions.popToTop(), clearAll())
+        }}
         options={{
           tabBarStyle: {display: 'none'},
           headerShown: false,
-          tabBarLabel: 'Exit',
-          tabBarIcon: () => <Icon name="enter-outline" type="ionicon" />,
+            tabBarLabel: 'Déconnexion',
+            tabBarLabelStyle: {
+                fontSize: 12,
+            },
+            tabBarIcon: () => <Icon
+                raised
+                size={25}
+                name='sign-out'
+                type='font-awesome'
+                color='#ff0000'
+                />,
         }}
       />
     </Tab.Navigator>
