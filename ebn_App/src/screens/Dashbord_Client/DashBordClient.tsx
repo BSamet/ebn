@@ -91,8 +91,6 @@ const DashBordClient = () => {
     const [tourner, setTouner] = useState<dashboardClient[]>();
     const [myclient, setMyClient] = useState<ShowClient>();
     const [allTypeOfWaste, setAllTypeOfWaste] = useState<TypeOfWaste[]>();
-    const [modalOpen, setModalOpen] = useState(false);
-    const [myCollecteurModal, setMyCollecteurModal] = useState<dashboardClient>();
     const [isVisible, setIsVisible] = React.useState(false);
     // Modal Collect
     const [modalRamassage, setModalRamassage] = useState(false);
@@ -193,7 +191,7 @@ const DashBordClient = () => {
                     let refDateToDate = new Date(collect.refDate);
                     let getHourInCollectDate = refDateToDate.getHours();
                     let subscribeRequestDateToDate = new Date(formatDateSave);
-                    let getHourInCollectRequestDate = subscribeRequestDateToDate.getUTCHours()
+                    let getHourInCollectRequestDate = subscribeRequestDateToDate.getHours()
 
                     if (getHourInCollectDate.toString() === getHourInCollectRequestDate.toString() && collect.typeDechet.id === typeOfWaste.id) {
                         let splitCronExpression = collect.cronExpression.split(' ');
@@ -309,7 +307,7 @@ const DashBordClient = () => {
             0,
         )
 
-        return new Date(moment(formatDate).utc(true).format());
+        return new Date(formatDate);
     }
 
     // toute les fonction pour le datePicker
@@ -361,7 +359,6 @@ const DashBordClient = () => {
         setIsVisible(false);
     };
 
-    const [testDay, setTestDay] = useState(['lundi', 'jeudi', 'vendredi'])
     return (
         <ScrollView
             refreshControl={

@@ -12,6 +12,7 @@ import SignInScreen from './src/screens/SignInScreen/SignInScreen';
 import {Icon} from '@rneui/themed';
 import {LogBox} from "react-native";
 
+
 LogBox.ignoreLogs([
     "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
 ])

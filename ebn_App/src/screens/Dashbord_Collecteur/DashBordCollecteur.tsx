@@ -20,10 +20,11 @@ import QrCodeScanner from '../../components/qrCodeScanner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Divider} from "react-native-elements";
 import {Card, Paragraph, ActivityIndicator} from "react-native-paper";
+import OpenMaps from "../../components/OpenMaps";
 
 require('moment/locale/fr.js');
 
-interface EtapeCollecteur {
+export interface EtapeCollecteur {
     id: number;
     date: string;
     isCollected: boolean;
@@ -47,24 +48,7 @@ interface EtapeCollecteur {
     };
 }
 
-interface collecteurInterface {
-    id: number;
-    numeroCollecteur: number;
-    numeroVelo: number;
-    utilisateur: {
-        id: number;
-        role: string;
-        utilisateur: string;
-        password: string;
-        nom: string;
-        prenom: string;
-        mail: string;
-        telephone: string;
-    };
-}
-
 const DashBordCollecteur = () => {
-    // const navigation = useNavigation<AuthScreenNavigate>();
     const {height} = useWindowDimensions();
     const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
     const [modalOpen, setModalOpen] = useState(false);
@@ -174,6 +158,13 @@ const DashBordCollecteur = () => {
                         du {'\n'} {moment(Date.now()).locale('fr').format('DD MMMM YYYY')}</Text>
                 </View>
 
+
+                {etapes != null && etapes.length != 0 &&
+                    <View style={styles.centeredButton}>
+                        <OpenMaps etapes={etapes}/>
+                    </View>
+                }
+
                 <Divider
                     style={{width: '100%', margin: 10}}
                     color="#8AC997"
@@ -268,6 +259,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 22,
+    },
+    centeredButton: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     modalText: {
         marginBottom: 15,

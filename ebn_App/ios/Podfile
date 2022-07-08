@@ -27,6 +27,8 @@ target 'ebn_App' do
 
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'ebn_AppTests' do
     inherit! :complete
     # Pods for testing

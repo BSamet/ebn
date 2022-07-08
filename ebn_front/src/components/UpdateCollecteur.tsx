@@ -12,7 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
 
 interface propsUpdateCollecteurListInterface {
-    selectCollecteurId: string;
+    collecteur: any;
 }
 
 const style = {
@@ -27,21 +27,20 @@ const style = {
     p: 4,
 };
 
-export default function UpdateCollecteur({ selectCollecteurId }: propsUpdateCollecteurListInterface) {
+export default function UpdateCollecteur({ collecteur }: propsUpdateCollecteurListInterface) {
     
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [nom, setNom] = React.useState('');
-    const [prenom, setPrenom] = React.useState('');
-    const [telephone, setTelephone] = React.useState('');
-    const [numeroVelo, setNumeroVelo] = React.useState('');
+    const [nom, setNom] = React.useState(collecteur.utilisateur.nom);
+    const [prenom, setPrenom] = React.useState(collecteur.utilisateur.prenom);
+   
+    const [numeroVelo, setNumeroVelo] = React.useState(collecteur.numeroVelo);
 
     let dataConteneur = {
         "nom": nom,
         "prenom": prenom,
-        "telephone": telephone,
         "numeroVelo": numeroVelo
     };
 
@@ -51,9 +50,7 @@ export default function UpdateCollecteur({ selectCollecteurId }: propsUpdateColl
     const prenomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPrenom(event.target.value);
     };
-    const telephoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTelephone(event.target.value);
-    };
+
     const numeroVeloChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNumeroVelo(event.target.value);
     };
@@ -61,7 +58,7 @@ export default function UpdateCollecteur({ selectCollecteurId }: propsUpdateColl
     const updateCollecteur = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             
-        axios.patch(HOST_BACK + '/collecteur/' + selectCollecteurId, dataConteneur, {
+        axios.patch(HOST_BACK + '/collecteur/' + collecteur.id, dataConteneur, {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
@@ -100,7 +97,7 @@ export default function UpdateCollecteur({ selectCollecteurId }: propsUpdateColl
                                 <InputLabel htmlFor="component-outlined">Nom</InputLabel>
                                 <OutlinedInput
                                     id="component-outlined"
-                                    value={nom}
+                                    defaultValue={nom}
                                     onChange={nomChange}
                                     label="Nom"
                                 />
@@ -108,21 +105,15 @@ export default function UpdateCollecteur({ selectCollecteurId }: propsUpdateColl
                                 <InputLabel htmlFor="component-outlined">Prénom</InputLabel>
                                 <OutlinedInput
                                     id="component-outlined"
-                                    value={prenom}
+                                    defaultValue={prenom}
                                     onChange={prenomChange}
                                     label="Prénom"
                                 />
-                                <InputLabel htmlFor="component-outlined">Téléphone</InputLabel>
-                                <OutlinedInput
-                                    id="component-outlined"
-                                    value={telephone}
-                                    onChange={telephoneChange}
-                                    label="Téléphone"
-                                />
+                               
                                 <InputLabel htmlFor="component-outlined">N° de vélo</InputLabel>
                                 <OutlinedInput
                                     id="component-outlined"
-                                    value={numeroVelo}
+                                    defaultValue={numeroVelo}
                                     onChange={numeroVeloChange}
                                     label="N° de vélo"
                                 />

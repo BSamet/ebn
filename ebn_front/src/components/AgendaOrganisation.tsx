@@ -95,7 +95,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
 
     useEffect(() => {
         collectorEtape.map((etape: any) => {
-
             if(period == 'am'){
                 etape.refDate = moment(date).format('YYYY-MM-DD') + "T06:00:00.000Z"
             } else{
@@ -125,7 +124,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
             }
         }).then(etapesAssigned => {
             setCollectorEtape([])
-            console.log(etapesAssigned.data)
             etapesAssigned.data.map((etapeAss: ramassageInterface) => {
                 etapeAss.isAssigned = true;
                 etapeAss.outOfTime = 'black';
@@ -360,7 +358,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                     });
                 }
             } else {
-                console.log("passe etape")
                 setFinalEtapeList(finalEtapeList => [...finalEtapeList, etape]);
                 deleteEtape(etape.id);
                 if(etape.isSubscribe == false) {

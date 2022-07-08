@@ -36,7 +36,7 @@ interface clientsInterface {
   {
     typeDechets: number
   }
-  clientvalide:boolean,
+  clientvalide: boolean,
 }
 
 const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInterface) => {
@@ -53,19 +53,19 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
     setPage(value);
     axios.get(HOST_BACK + '/client/all/' + value, {
       headers: {
-          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
       }
-  }).then(res => {
+    }).then(res => {
       setClientslist(res.data.clients)
-      
+
     });
   };
 
   let clientvalide = {
     "clientvalide": clientValid,
-};
+  };
   let clientnonvalide = {
-    "clientvalide" : clientNotValid,
+    "clientvalide": clientNotValid,
   }
 
   //Fin pagination des clients
@@ -74,9 +74,9 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
     if (fetchOnce) {
       axios.get(HOST_BACK + '/client/all/' + page, {
         headers: {
-            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
         }
-    }).then(res => {
+      }).then(res => {
         setClientslist(res.data.clients)
         // appel de l'api
         setFetchOnce(false);
@@ -84,8 +84,8 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
       });
     }
   }, [clientsList, fetchOnce]);
- 
-  
+
+
 
 
   const handleListItemClick = (
@@ -97,12 +97,12 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
   }
 
   const statusClient = (
-    list : clientsInterface
+    list: clientsInterface
   ) => {
-    if(list.clientvalide == false){
+    if (list.clientvalide == false) {
       return <p>En attente</p>
     }
-    else{
+    else {
       return <p>Valide</p>
     }
   }
@@ -110,26 +110,26 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
   const validClient = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     list: clientsInterface
-) => {
+  ) => {
     if (list.clientvalide == true) {
 
-        axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientnonvalide, {
-            headers: {
-                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            }
-        })
-        list.clientvalide = false;
+      axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientnonvalide, {
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+      })
+      list.clientvalide = false;
     } else {
 
-        axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientvalide, {
-            headers: {
-                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            }
-        })
-        list.clientvalide = true;
+      axios.patch(HOST_BACK + '/client/' + list.id + '/status', clientvalide, {
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+      })
+      list.clientvalide = true;
     }
 
-}
+  }
 
   const deleteClient = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -138,12 +138,13 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
     setSelectedIndex(index);
     axios.delete(HOST_BACK + '/client/' + index, {
       headers: {
-          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
       }
-  }).then(res => {
-    axios.get(HOST_BACK + '/client/all/' + page, {
-      headers: {
-          "Authorization": `Bearer ${sessionStorage.getItem('token')}`}
+    }).then(res => {
+      axios.get(HOST_BACK + '/client/all/' + page, {
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
       }).then(res => {
         setClientslist(res.data.clients)
         setTotalPages(res.data.totalPages)
@@ -152,12 +153,13 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
 
   }
 
+
   return (
     <div className='conteneurs'>
       <h1>LISTE DES CLIENTS</h1>
       <div className='bouton'>
-                <AddClient />
-            </div>
+        <AddClient />
+      </div>
       <div className='liste'>
         <Box sx={{ width: '80%', bgcolor: 'background.paper' }}>
 
@@ -170,9 +172,7 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
               <ListItemText className='listHeader' primary="Statut" />
               <ListItemText className='listHeader' primary="Modifier / Supprimer" />
             </ListItem>
-            <ListItem className='listItemHeader'>
-              <ListItemText className='listHeader' primary=" " />
-            </ListItem>
+
             <Divider />
             {clientsList?.map((list, index) =>
               <ListItemButton
@@ -184,17 +184,17 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
                 <ListItemText className='listItem' primary={list.utilisateur.nom} />
                 <ListItemText className='listItem' primary={list.utilisateur.prenom} />
                 <ListItemText className='listItem' primary={list.utilisateur.telephone} />
-                <ListItemButton >
-                <ListItemText onClick={(event) => validClient(event, list)}  className='ValidClient' primary={statusClient(list)}/>
+                <ListItemButton className='ValidClient'>
+                  <ListItemText onClick={(event) => validClient(event, list)} className='ValidClient' primary={statusClient(list)} />
                 </ListItemButton>
-                <div>
-                  <UpdateClient selectClientId={selectClientId} />
-                </div>
-                <div onClick={(event) => deleteClient(event, list.id)}>
-                  <IconButton aria-label="delete" size="large" color="warning">
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
+                <ListItemText className='listItem1' >
+                  <UpdateClient client={list} />
+                  <div onClick={(event) => deleteClient(event, list.id)}>
+                    <IconButton aria-label="delete" size="large" color="warning">
+                      <DeleteIcon />
+                    </IconButton>
+                  </div>
+                </ListItemText>
               </ListItemButton>
             )}
           </List>
@@ -213,5 +213,5 @@ const ClientsList = ({ setSelectClientId, selectClientId }: propsClientListInter
 
 
 
-             
+
 export default ClientsList
