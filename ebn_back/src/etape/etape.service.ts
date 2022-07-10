@@ -216,6 +216,12 @@ export class EtapeService {
     update(id: number, updateEtapeDto: UpdateEtapeDto) {
         return this.etapeRepository.update(id, updateEtapeDto);
     }
+    updateDate(id: number, updateEtapeDto: UpdateEtapeDto) {
+        const dateUpdate = {
+            date: updateEtapeDto.date
+        }
+        return this.etapeRepository.update(id, dateUpdate);
+    }
 
     remove(id: number) {
         return this.etapeRepository.delete(id);
