@@ -255,9 +255,6 @@ export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCo
                         <ListItemText className='listHeader' primary="Collecteur"/>
                         <ListItemText className='listHeader' primary="Date"/>
                     </ListItem>
-                    <ListItem className='listItemHeader'>
-                        <ListItemText className='listHeader' primary=" "/>
-                    </ListItem>
                     <Divider/>
                     {InformationEtape?.map((list) => {
                         return(    
