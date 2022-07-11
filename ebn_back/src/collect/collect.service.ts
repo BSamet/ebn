@@ -25,7 +25,7 @@ export interface collectInterface {
     },
     typeDechet: {
         id: number
-        typeDechet: string
+        typeDechets: string
     },
     isSubscribe: boolean
 }
@@ -240,7 +240,7 @@ export class CollectService {
             },
             typeDechet: {
                 id: typeDechet.id,
-                typeDechet: typeDechet.typeDechets
+                typeDechets: typeDechet.typeDechets
             },
             isSubscribe: true
         }
@@ -261,7 +261,7 @@ export class CollectService {
             },
             typeDechet: {
                 id: collect.typeDechet.id,
-                typeDechet: collect.typeDechet.typeDechets
+                typeDechets: collect.typeDechet.typeDechets
             },
             isSubscribe: false
         }
