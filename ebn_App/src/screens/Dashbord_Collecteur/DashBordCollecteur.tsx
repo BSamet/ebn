@@ -21,8 +21,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Divider} from "react-native-elements";
 import {Card, Paragraph, ActivityIndicator} from "react-native-paper";
 import OpenMaps from "../../components/OpenMaps";
+import {StackActions, useNavigation} from "@react-navigation/native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack/lib/typescript/src/types";
+import {AuthRootParamList} from "../../../App";
 
 require('moment/locale/fr.js');
+
+type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
+
 
 export interface EtapeCollecteur {
     id: number;
@@ -49,6 +55,7 @@ export interface EtapeCollecteur {
 }
 
 const DashBordCollecteur = () => {
+    const navigation = useNavigation<AuthScreenNavigate>();
     const {height} = useWindowDimensions();
     const [etapes, setEtapes] = useState<EtapeCollecteur[]>();
     const [modalOpen, setModalOpen] = useState(false);
@@ -57,6 +64,32 @@ const DashBordCollecteur = () => {
     const [collecteurLastname, setCollecteurLastname] = useState<string | null>();
     const [collecteurId, setCollecteurId] = useState<string | null>();
     const [collecteurToken, setCollecteurToken] = useState<string | null>();
+    const [collecteurTokenExp, setcollecteurTokenExp] = useState<number | null>();
+
+
+    const clearAll = async () => {
+        try {
+            await AsyncStorage.clear();
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const checkTokenExp = () => {
+        if(collecteurTokenExp) {
+            if (collecteurTokenExp * 1000 < Date.now()) {
+                clearAll().then(() => {
+                    navigation.dispatch(StackActions.popToTop());
+                })
+            } else {
+                return
+            }
+        } else {
+            clearAll().then(() => {
+                navigation.dispatch(StackActions.popToTop());
+            })
+        }
+    }
 
     useEffect(() => {
         AsyncStorage.getItem('id').then(idValue => {
@@ -67,6 +100,11 @@ const DashBordCollecteur = () => {
                     setCollecteurName(nameValue);
                     AsyncStorage.getItem('nom').then(lastnameValue => {
                         setCollecteurLastname(lastnameValue);
+                        AsyncStorage.getItem('token_exp').then(tokenExp => {
+                            if (typeof tokenExp === "string") {
+                                setcollecteurTokenExp(parseInt(tokenExp))
+                            }
+                        })
                     });
                 });
             });
@@ -204,7 +242,7 @@ const DashBordCollecteur = () => {
                                         subtitle={collectedOrAssigned(index)}
                                         subtitleStyle={{color: collectedOrAssignedColor(index)}}/>
                             <Card.Content style={styles.cardMainContainer}>
-                                <Paragraph>Heure : {moment(item.date).utc().format('HH[h] mm')}</Paragraph>
+                                <Paragraph>Heure : {moment(item.date).format('HH[h] mm')}</Paragraph>
                                 <Paragraph>Adresse : {item.client.adresse}</Paragraph>
                             </Card.Content>
                             <Card.Actions style={styles.cardActionContainer}>

@@ -20,6 +20,12 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {format} from 'date-fns';
 import {ActivityIndicator, Checkbox, DataTable, RadioButton, Snackbar} from 'react-native-paper';
 import {RefreshControl} from 'react-native';
+import {StackActions, useNavigation} from "@react-navigation/native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack/lib/typescript/src/types";
+import {AuthRootParamList} from "../../../App";
+
+type AuthScreenNavigate = NativeStackNavigationProp<AuthRootParamList>;
+
 
 const wait = (timeout: number | undefined) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -82,8 +88,11 @@ export interface TypeOfWaste {
 
 
 const DashBordClient = () => {
+    const navigation = useNavigation<AuthScreenNavigate>();
+
     // AsyncStorage
     const [clientToken, setClienToken] = useState<string | null>();
+    const [clientTokenExp, setClientTokenExp] = useState<number | null>();
     const [myClientId, setClientId] = useState<string | null>();
     const [clientLastname, setClientLastname] = useState<string | null>();
     const [clientName, setClientName] = useState<string | null>();
@@ -268,6 +277,30 @@ const DashBordClient = () => {
             });
     }
 
+    const clearAll = async () => {
+        try {
+            await AsyncStorage.clear();
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const checkTokenExp = () => {
+        if(clientTokenExp) {
+            if (clientTokenExp * 1000 < Date.now()) {
+                clearAll().then(() => {
+                    navigation.dispatch(StackActions.popToTop());
+                })
+            } else {
+                return
+            }
+        } else {
+            clearAll().then(() => {
+                navigation.dispatch(StackActions.popToTop());
+            })
+        }
+    }
+
     useEffect(() => {
         AsyncStorage.getItem('token').then(tokenValue => {
             setClienToken(tokenValue);
@@ -279,6 +312,11 @@ const DashBordClient = () => {
                         setClientName(nameValue);
                         AsyncStorage.getItem('isValide').then(isValide => {
                             setClientIsValide(isValide);
+                            AsyncStorage.getItem('token_exp').then(tokenExp => {
+                                if (typeof tokenExp === "string") {
+                                    setClientTokenExp(parseInt(tokenExp))
+                                }
+                            })
                         });
                     });
                 });
@@ -287,12 +325,13 @@ const DashBordClient = () => {
     }, []);
 
     useEffect(() => {
-        if (clientToken != null && myClientId != null) {
+        if (clientToken != null && myClientId != null && clientTokenExp != null) {
             fetchClient();
             fetchEtape();
             fetchTypeOfWaste()
+            checkTokenExp()
         }
-    }, [clientToken, myClientId]);
+    }, [clientToken, myClientId, clientTokenExp]);
 
     // fonction pour les modales
     const showOneTimeModal = () => {
