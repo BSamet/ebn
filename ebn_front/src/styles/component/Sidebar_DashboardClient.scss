@@ -1,8 +1,9 @@
 ._sidebar {
-  display: flex;
+  display: block;
   flex-direction: column;
   position: relative;
   padding-top: 4rem;
+  overflow: auto;
   transition: all 300ms ease;
 }
 
