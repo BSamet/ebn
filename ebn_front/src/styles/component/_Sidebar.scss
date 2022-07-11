@@ -1,8 +1,8 @@
 .sidebar {
-  display: flex;
+  display: block;
+  overflow: auto;
   flex-direction: column;
   position: relative;
-
   transition: all 300ms ease;
 }
 
