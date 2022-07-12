@@ -73,7 +73,6 @@ export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterfa
             }).then(res => {
                 setClients(res.data)
                 // appel de l'api
-                console.log(clients)
                 setFetchOnce(false);
             });
         }
@@ -96,7 +95,6 @@ export default function UpdateConteneur({conteneur}: propsUpdateConteneurInterfa
     // }
     const handleChange = (event: any) => {
         setClient(event.target.value);
-        console.log(client)
     }
     return (
         <div>

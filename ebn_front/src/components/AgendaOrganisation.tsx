@@ -140,7 +140,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             } 
         }).then(ramassage =>{
-                console.log(ramassage.data)
                 ramassage.data.map((etape: ramassageInterface) => {
                     etape.isAssigned = false;  
                     etape.outOfTime = 'black';                  
@@ -269,9 +268,7 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
-        }).then(() => 
-        console.log("etape Delete"))
-    }
+        })}
 
     function createCollectIfNotAssigned(clientId: number, etapeDate: Date, typeDechetId: number){
         const collectToAdd = {
@@ -381,7 +378,6 @@ export function AgendaOrganisation({setCollectorEtape, collectorEtape, setAction
         let timeInterval = interval * etapeNumber;
 
         const travelTime = moment(date).zone("+02:00").add(timeInterval, 'minutes').format("YYYY-MM-DD" + "T" + "HH:mm:ss");
-        console.log(date.toString())
         if (date.toString() == moment(date).format("YYYY-MM-DD") + "T06:00:00.000Z" && new Date(travelTime).getHours() >= 12) {
             return 'Heure invalide'
 

@@ -135,7 +135,6 @@ export class CollectService {
             .where("collect.cronExpression IS NULL")
             .andWhere(clientId ? "collect.client.id = :clientId" : '1=1', {clientId})
             .getMany();
-        console.log(allCollectNotSubscribe)
         // Et c'est également ici que la magie va opéré pour renvoyer une liste des prochaines collecte ponctuelle
         return this.checkOneTimeCollect(date, allCollectNotSubscribe, allStepObjectForCheck, subscribeArray, period)
     }
@@ -318,7 +317,6 @@ export class CollectService {
 
         const today = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + start;
         const tomorrow = targetToFormate.year + '-' + targetToFormate.month + '-' + targetToFormate.day + end;
-        console.log("today" + today + "tomorrow" + tomorrow)
         return new Date(sourceDate).toString() > new Date(today).toString() && new Date(sourceDate).toString() < new Date(tomorrow).toString();
     }
 
@@ -351,7 +349,6 @@ export class CollectService {
                 }
             }
         }
-        console.log("push" + pushInArray)
         return pushInArray;
     }
 

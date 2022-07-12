@@ -46,7 +46,6 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }
         }).then(res => {
-            console.log(res.data.collecteurs);
             setCollecteurslist(res.data.collecteurs)
           
             
@@ -62,7 +61,6 @@ const CollecteursList = ({ setSelectCollecteurId, selectCollecteurId }: propsCol
                     "Authorization": `Bearer ${sessionStorage.getItem('token')}`
                 }
             }).then(res => {
-                console.log(res.data.collecteurs);
                 setCollecteurslist(res.data.collecteurs)
                 // appel de l'api
                 setFetchOnce(false);

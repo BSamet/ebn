@@ -58,7 +58,6 @@ export default function SignInSide() {
             .then((res) => {
                 const decode: any = jwt_decode(res.data.access_token);
                 if (decode.utilisateur.role === "Collecteur") {
-                    console.log("vous êtes un collecteur");
                 } else {
                     sessionStorage.setItem("role", decode.utilisateur.role);
                     sessionStorage.setItem("name", decode.utilisateur.nom);

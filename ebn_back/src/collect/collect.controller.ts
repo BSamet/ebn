@@ -16,7 +16,6 @@ export class CollectController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     create(@Body() createCollectDto: CreateCollectDto) {
-        console.log('post received', createCollectDto)
         return this.collectService.create(createCollectDto);
     }
 

@@ -18,10 +18,8 @@ const Maps: React.VFC = ({collectorEtape, consultCollectorEtape, actionSelected}
     useEffect(() => {
         if (actionSelected == 'Organiser') {
             setEtapes(collectorEtape)
-            console.log("collecok")
         } else if (actionSelected == 'Consulter') {
             setEtapes(consultCollectorEtape)
-            console.log("consultok")
         }
     }, [etapes][actionSelected])
 

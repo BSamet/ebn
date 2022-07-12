@@ -52,7 +52,6 @@ const RatioWasteCompost = () => {
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
-                console.log(res.data);
                 
              
                 
