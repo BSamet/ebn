@@ -1,6 +1,7 @@
 import * as React from "react";
 import {useEffect, useRef, useState} from "react";
-import maplibregl, {Marker, Popup} from 'maplibre-gl'
+import maplibregl from "maplibre-gl";
+import {Map, Marker, Popup} from 'maplibre-gl'
 import axios from "axios";
 
 const Maps: React.VFC = ({collectorEtape, consultCollectorEtape, actionSelected}: any) => {
