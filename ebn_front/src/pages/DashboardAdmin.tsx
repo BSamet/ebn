@@ -39,7 +39,6 @@ const DashboardAdmin = () => {
     const [actionSelected, setActionSelected] = useState('');
 
     useEffect(() => {
-        console.log("action" + actionSelected)
         const sessionExp: any = sessionStorage.getItem("token_exp");
         const role: any = sessionStorage.getItem("role");
         if (!sessionStorage.getItem("role")) {

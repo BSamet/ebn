@@ -86,7 +86,6 @@ export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCo
                 res.data.etapes.map(etape => {
                     setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
                 })
-                console.log(consultCollectorEtape);
                 setFetchOnce(false)
 
             })
@@ -103,7 +102,6 @@ export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCo
                 }}).then(res => {
                     setInformationEtape(res.data)
                     res.data.etapes.map(etape => {
-                        console.log(etape)
                         setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
                     })
                 }).catch((err) =>
@@ -113,14 +111,11 @@ export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCo
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem('token')}`
             }}).then(res => {
-                console.log(res.data);
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
                 res.data.etapes.map(etape => {
-                    console.log(etape)
                     setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
                 })
-                console.log(consultCollectorEtape);
             }).catch((err) =>
             console.log(err.response))
         }
@@ -128,7 +123,6 @@ export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCo
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setHour(event.target.value);      
-        console.log(hour)
 
         if(event.target.value == 'T08:00:00.000Z'){
             setLimit('T11:59:59.000Z')
@@ -149,7 +143,6 @@ export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCo
                 setInformationEtape(res.data.etapes)
                 setTotalPages(res.data.totalPages)
                 res.data.etapes.map(etape => {
-                    console.log(etape)
                     setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
                 })
                 setFetchOnce(false)
@@ -162,7 +155,6 @@ export function DashboardHistoryCollecteur ({setConsultCollectorEtape, consultCo
                     setInformationEtape(res.data.etapes)
                     setTotalPages(res.data.totalPages)
                     res.data.etapes.map(etape => {
-                        console.log(etape)
                         setConsultCollectorEtape(consultCollectorEtape => [...consultCollectorEtape, etape])
                     })
                 }).catch((err) =>
